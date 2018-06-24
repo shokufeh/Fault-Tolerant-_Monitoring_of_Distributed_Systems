@@ -1,0 +1,219 @@
+
+\documentclass[9pt]{beamer}
+
+
+%\usepackage[ngerman]{babel}
+\usepackage{xspace}
+\usepackage{pgf}
+\usepackage{amssymb}
+\usepackage{pifont}
+\usepackage{color, colortbl}
+\usepackage{subfigure}
+\usepackage{tikz}
+\usepackage[boxed, vlined, linesnumbered]{algorithm2e}
+
+\usetheme{PaloAlto}
+
+\usetikzlibrary{matrix,positioning,mindmap,automata,fit,backgrounds,
+shapes, arrows,petri,calc, decorations.pathreplacing}
+
+%\input{macros_talk}
+\newcommand{\Def}[1]{\alert{#1}}
+
+\mode<presentation>{
+\usetheme{McMaster}
+\title{ Decentralized Crash-Resilient Runtime Verification}
+\subtitle{}
+\author[Shokoufeh Kazemlou]{\textcolor{blue}{\Large Shokoufeh Kazemlou}}
+\institute{\large Department of Computing and Software \\ McMaster University}
+\subject{Fault-tolerant Monitoring}
+\keywords{}
+\date{\today}
+}
+
+\mode<article>{
+\usepackage{document}
+\documentCourse{}
+\documentAuthors{Shokoufeh Kazemlou}
+\documentTerm{}
+\documentDate{}
+\documentTitle{Presentation at McMaster University}
+\documentSubtitle{}
+}
+
+\iffalse
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+\fi
+
+\AtBeginSection[]{\frame{\frametitle{Presentation outline}\tableofcontents[current]}}
+
+%\renewcommand{\cite}[1]{\textcolor{lightBlue}{[#1]}}
+
+\newcommand{\I}[1]{\mathit{#1}}
+\newcommand{\syntru}{\I{true}} %syntactical true
+\newcommand{\synfals}{\I{false}} %syntactical false
+\newcommand{\inftrace}{w}
+\newcommand{\fintrace}{u}
+\newcommand{\tru}{\mathit{true}}
+\newcommand{\fals}{\mathit{false}}
+\newcommand{\word}{w}
+\newcommand{\emptyword}{\epsilon}
+\newcommand{\alphabet}{\Sigma}
+\newcommand{\LS}{\mathit{LS}}
+\newcommand{\SM}{\mathit{SM}}
+\newcommand{\TT}{{\top_p}}
+\newcommand{\FT}{{\bot_p}}
+\newcommand{\LTL}{{\sc Ltl}\xspace}
+\newcommand{\LTLtri}{{\sc Ltl}$_3$\xspace}
+\newcommand{\LTLk}{{\sc Ltl}$_K$\xspace}
+\newcommand{\RVLTL}{{\sc Rv-Ltl}\xspace}
+\newcommand{\FLTL}{{\sc Fltl}\xspace}
+\newcommand{\LTLfour}{\RVLTL}%{{\sc Ltl}$_4$\xspace}
+\newcommand{\zplus}{\mathbb{Z}_{\geq 0}}
+\newcommand{\prog}{\mathcal{D}}
+\newcommand{\AP}{\mathit{AP}}
+\newcommand{\ap}{\mathit{ap}}
+\newcommand{\F}{\mathbf{F}}
+\newcommand{\G}{\mathbf{G}}
+\newcommand{\X}{\mathbf{X}}
+\newcommand{\U}{\mathbf{U}}
+\newcommand{\udef}{\natural}
+\newcommand{\monitor}{\mathcal{M}}
+\newcommand{\trace}{\sigma}
+\newcommand{\alltrace}{\mathrm{\Xi}}
+\newcommand{\pred}{\mathcal{F}}
+\newcommand{\AN}{\mathit{AN}}
+
+
+\newcommand{\state}{s}
+
+
+
+
+
+\newcommand{\Exltl}{Extended \LTLtri monitor}
+\newcommand{\DSM}{decentralized synchronous monitoring}
+\newcommand{\intersection}{\mathcal{I}^\monstate}
+\newcommand{\verdict}{V}
+\newcommand{\valuation}{\nu}
+\newcommand{\pevent}{E}
+\newcommand{\events}{states}
+\newcommand{\event}{state}
+\newcommand{\monstate}{q}
+\newcommand{\correctverd}{\monstate_c}
+\newcommand{\correctverdict}{correct verdict}
+\newcommand{\truthvalue}{truth value}
+\newcommand{\abstate}{LS}
+\newcommand{\absfunc}{\mu}
+\newcommand{\indisting}{indisting?}
+\newcommand{\disting}{disting?}
+\newcommand{\dep}{covered?}
+\newcommand{\partition}{PARTITION}
+\newcommand{\partitionn}{partition}
+\newcommand{\splitt}{SPLIT}
+\newcommand{\splt}{split}
+%\newcommand{\snap}{Snap}
+\newcommand{\snap}{\mathit{Snap}}
+\newcommand{\indist}{indistinguishable}
+\newcommand{\dist}{distinguishable}
+\newcommand{\covered}{covered}
+\newcommand{\localreg}{local snapshot}
+
+\newcommand{\sample}{\mathcal{S}}
+\newcommand{\ps}{\sample}
+
+
+
+\tikzset{
+  invisible/.style={opacity=0},
+  visible on/.style={alt={#1{}{invisible}}},
+  alt/.code args={<#1>#2#3}{%
+    \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}} % \pgfkeysalso doesn't change the path
+  },
+}
+
+
+\iffalse
+\usepackage{pgfpages}
+\setbeamertemplate{note page}[plain]
+\setbeameroption{show notes on second screen=right}
+\fi
+
+\setbeamertemplate{footline}[frame number]
+
+
+\graphicspath{{figures/}}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\tikzset{
+  invisible/.style={opacity=0, text opacity=0},
+  visible on/.style={alt={#1{}{invisible}}},
+  alt/.code args={<#1>#2#3}{%
+    \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}} % \pgfkeysalso doesn't change 
+the path
+  },
+}
+
+
+\tikzstyle{place}=[circle,thick,draw=blue!75,fill=blue!20,minimum size=6mm]
+\tikzstyle{red place}=[place,draw=red!75,fill=red!20]
+\tikzstyle{transition}=[rectangle,thick,draw=black, fill=black, 
+minimum size=1mm]
+
+
+\setbeamercolor{block body}{bg=cyan!5,fg=black}
+
+
+\begin{document}
+
+%\input{style.tikz}
+
+\xdefinecolor{maincolor}{RGB}{0, 120, 140}
+\colorlet{alertedcolor}{purple}
+\colorlet{examplecolor}{green!50!black}
+
+\colorlet{Blue}{maincolor}
+\colorlet{Red}{alertedcolor}
+\colorlet{Green}{examplecolor}
+
+%\lstdefinestyle{long}{basicstyle=\scriptsize\ttfamily}
+
+\frame{\titlepage}
+\mode<article>{\printDocumentHeader}
+
+\iffalse
+  \begin{frame}
+  \frametitle<presentation>{Outline}
+  \tableofcontents
+  \end{frame}
+\fi
+
+
+\begin{frame}{Overview}
+\tableofcontents
+\end{frame}
+
+
+\input{motive}
+\input{LTL3}
+\input{PS}
+\input{RelWork}
+\input{Contribution}
+\input{synch}
+\input{asynch}
+\input{Conclusion}
+%\input{content/rv-ltl}
+%\input{content/dm}
+%\input{content/ltlk}
+%\input{content/concl}
+
+\end{document}

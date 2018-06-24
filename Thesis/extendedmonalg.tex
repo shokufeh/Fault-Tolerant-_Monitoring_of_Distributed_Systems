@@ -1,0 +1,185 @@
+
+
+%\newcommand\mycommfont[1]{\tiny\ttfamily\textcolor{black}{#1}}
+%\SetCommentSty{mycommfont}
+%\usepackage[skins]{tcolorbox}
+%\begin{tcolorbox}[blanker,width=(\linewidth-0.0cm)]
+
+
+\begin{algorithm}[H]
+\tiny
+\KwIn{$\monitor^\varphi = \{ \alphabet, Q, \monstate_0, \delta , \lambda\}$}
+\KwOut{$\monitor^\varphi_e = \{ \alphabet, Q_e, \monstate_0, \delta_e , \lambda_e\}$}           
+
+\DontPrintSemicolon
+$Q_e \leftarrow Q$ \\   \label{line:initExl}
+\For {every $\monstate_i \in Q$}{
+ \label{line:everystate}
+ Obtain the set of outgoing transitions $T_i $ from monitor state $\monstate_i$   \\
+ \label{line:outgoingtrans}
+% \While {$T_i \neq \emptyset$}   {
+   \For {every $t_j^i \in T_i$} {     
+  \label{line:everytrans}
+   \tcc*[r]{\it $t_j^i = \{s \in \alphabet ~|~  \delta(\monstate_i, s) = \monstate_j \}$}  
+  
+   \tcc*[r]{\it $N_j$ denotes the number of transitions from which $t_j^i$ is \indist, and $K_j$ denotes the number of transitions \indist~from $t_j^i$}
+      $N_j \leftarrow 0 ~,~  K_j \leftarrow 0$      \\ 
+    \label{line:initNK}
+     \For {every $t_k^i \in T_i \backslash \{t_j^i\}$ } {     \label{line:indisting}
+      \If{\indisting($t_j^i$, $t_k^i)$}{  \label{line:indistingfrom}
+       $N_j \leftarrow N_j + 1$}
+      \If{\indisting($t_k^i$, $t_j^i)$}{  \label{line:fromindisting}
+       $K_j \leftarrow K_j + 1$}   \label{line:indistingend}
+     }
+     \If{$N_j > 0$}{ \label{line:split0}
+      $\{t_{j1}^i, t_{j2}^i\}  \leftarrow \splitt(t_j^i, N_j, K_j, T_i) $  \label{line:split}
+      
+      $T_i \leftarrow \{ t_{j1}^i, t_{j2}^i\}  \cup T_i \backslash \{t_j^i\}$\\    \label{line:T-update}      
+      $Q_e \leftarrow \{\monstate_{j1}, \monstate_{j2}\} \cup (Q_e \backslash   \{\monstate_j\})$ \\  \label{line:monstate-update}
+      
+      \If{$i \neq j$}{     \label{line:delta-update0}
+         \For {every $t_k^i \in T_i$}{  \label{line:delta-oldtrans0}
+           $\delta(\monstate_i, \state) = \monstate_k$ for every $\state \in t_k^i$   
+         }
+         $\delta(\monstate_{j1}, \state) \leftarrow \delta(\monstate_i, \state)$ for every $\state \in \alphabet$ \\  \label{line:delta-newtrans01}
+         $\delta(\monstate_{j2}, \state) \leftarrow \delta(\monstate_i, \state)$ for every $\state \in \alphabet$       \label{line:delta-newtrans02}
+      }
+      \If{$i = j$}{   \label{line:delta-update1}  
+          \For {every $t_k^i \in T_i$}{ \label{line:delta-oldtrans1}
+           $\delta(\monstate_{j1}, \state) = \monstate_k$ for every $\state \in t_k^i$ 
+         }
+          $\delta(\monstate_{j2}, \state) \leftarrow \delta(\monstate_{j1}, \state)$ for every $\state \in \alphabet$         \label{line:delta-newtrans1}
+      }
+      
+      $\lambda_e(\monstate_{j1})\leftarrow \lambda(\monstate_j)$ \\ \label{line:lambda-update0}
+      $\lambda_e(\monstate_{j2})\leftarrow \lambda(\monstate_j)$ \\  \label{line:lambda-update1}
+     }  \Else {
+    
+    
+      $\delta_e(\monstate_i, s) \leftarrow \monstate_j$ for every $\state \in t_j^i$ \\  \label{line:delta-update2}
+      $\lambda_e(\monstate_j)\leftarrow \lambda(\monstate_j)$ \\   \label{line:lambda-update2}
+     }
+   }   
+% }      
+} 
+
+\caption{\Exltl~Construction}
+\label{alg:extendedmonalg}
+\end{algorithm}
+%\end{tcolorbox}
+
+%\begin{tcolorbox}[blanker,width=(\linewidth-0.1cm)]
+\begin{algorithm}[H]
+\DontPrintSemicolon
+%\SetNoFillComment
+  
+\begin{algorithmic}
+\tiny
+\Function{\textit{\splitt}}{transition $t_j^i, N_j, K_j$, set of transitions $T_i$} 
+\State $N_{j, min} \leftarrow N_j$   
+\State $K_{j, min} \leftarrow K_j$    %\tcc*[r]{\it$N_j$ and $K_j$ are calculated in Algorithm \ref{alg:extendedmonalg}}
+
+%\State $  \partition(t_j)$
+\State \For {every $\{t_{j1}^{i,l}, t_{j2}^{i,l}\} \in \partition(t_j^i)$ }{
+              
+    $N_{jl} \leftarrow 0 ~,~ K_{jl} \leftarrow 0$ \
+            
+    \For {every $t_k^i \in  (\{t_{j2}^{i,l}\} \cup T_i \backslash \{t_j^i\})$ } {    
+                  \If{\indisting($t_{j1}^{i,l}$, $t_k^i)$}{
+                   $N_{jl} \leftarrow N_{jl}+1$}                     
+                   \If{\indisting($t_k^i$, $t_{j1}^{i,l})$}{         
+                    $K_{jl} \leftarrow K_{jl}+1$}
+     }              
+     \For {every $t_k^i \in  (\{t_{j1}^{i,l}\} \cup T_i \backslash \{t_j^i\})$ } {    
+                  \If{\indisting($t_{j2}^{i,l}$, $t_k^i)$}{
+                   $N_{jl} \leftarrow N_{jl}+1$}
+                   \If{\indisting($t_k^i$, $t_{j2}^{i,l})$}{
+                    $K_{jl} \leftarrow K_{jl}+1$}
+                  
+    } 
+    \If {$(N_{jl}+K_{jl}) \leqslant (N_{j,min}+K_{j,min})$} {
+       $l_{min} = l$
+    }         
+}          
+
+
+  $  t_{j1}^i =  t_{j1}^{i,l_{min}},  t_{j2} ^i = t_{j2}^{i, l_{min}}$
+  
+
+\Return $\{t_{j1}^i, t_{j2}^i\}$
+\EndFunction
+\end{algorithmic}   
+
+\begin{algorithmic}
+\tiny
+\Function{\textit{\partition}}{transition $t_j^i$}
+  \State  compute all partitions $\{t_{j1}^{i,l} , t_{j2}^{i,l}\}$ of $t_j^i$ where $l \in [1 \cdots \frac{2^{| t_j^i|}-2}{2}]$, s.t.  
+ \State for every pair $\{t_{j1}^{i,l} , t_{j2}^{i,l}\}$: 
+  
+  \begin{itemize}
+  \item $t_{j1}^{i,l} \cup  t_{j2}^{i,l} = t_j^i$
+  \item $t_{j1}^{i,l} \cap  t_{j2}^{i,l} = \emptyset$
+  \end{itemize}
+ 
+ \Return $\{\{t_{j1}^{i,1} , t_{j2}^{i,1}\}, \{t_{j1}^{i2} , t_{j2}^{i2}\}, \cdots , \{t_{j1}^{i, 2^\frac{2^{| t_j^i|}-2}{2}} , t_{j2}^{i, \frac{2^{| t_j^i|}-2}{2}} \}  \}$
+
+\EndFunction
+\end{algorithmic}
+
+\caption{Functions \splitt~and \partition}
+\end{algorithm}
+%\end{tcolorbox} 
+ 
+ 
+ \iffalse
+ 
+\begin{algorithm}[H]   
+
+\begin{algorithmic}
+\tiny
+\Function{\textit{\partition}}{transition $t_j^i$}
+  \State  compute all partitions $\{t_{j1}^{i,l} , t_{j2}^{i,l}\}$ of $t_j^i$ where $l \in [1 \cdots \frac{2^{| t_j^i|}-2}{2}]$, s.t.  
+ \State for every pair $\{t_{j1}^{i,l} , t_{j2}^{i,l}\}$: 
+  
+  \begin{itemize}
+  \item $t_{j1}^{i,l} \cup  t_{j2}^{i,l} = t_j^i$
+  \item $t_{j1}^{i,l} \cap  t_{j2}^{i,l} = \emptyset$
+  \end{itemize}
+ 
+ \Return $\{\{t_{j1}^{i,1} , t_{j2}^{i,1}\}, \{t_{j1}^{i2} , t_{j2}^{i2}\}, \cdots , \{t_{j1}^{i, 2^\frac{2^{| t_j^i|}-2}{2}} , t_{j2}^{i, \frac{2^{| t_j^i|}-2}{2}} \}  \}$
+
+\EndFunction
+\end{algorithmic}
+
+
+ \begin{algorithmic}
+ \tiny
+\Function{\textit{\indisting}}{transition $t_1$, transition $t_2$}
+  \State \If {there exists $\state \in t_2$ s.t. $\dep(\state, t_1)$}{
+     \Return True} \Else {\Return False}
+\EndFunction
+\end{algorithmic}   
+
+\begin{algorithmic}
+\tiny
+\Function{\textit{\dep}}{\event~$\state$, transition $t$}
+  \State \If {$(\forall ap \in AP.~ \exists \state' \in t.~ (ap \in \state \Leftrightarrow ap \in \state' ))$}{
+     \Return True} \Else {\Return False}
+\EndFunction
+\end{algorithmic}
+
+
+\caption{Functions \partition, \indisting, and \dep}
+\end{algorithm}  \ \
+
+\fi
+
+
+
+
+
+
+
+
+
+

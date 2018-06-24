@@ -1,0 +1,70 @@
+
+\section{Motivation}
+
+%-------------------------------------------------------------------------
+\begin{frame}{Motivation}
+
+\begin{block}{Traditional Verification}
+ 
+\Def{Exhaustive verification} methods are extremely valuable to ensure 
+system-wide correctness.
+
+
+\note{RV complements exhaustive verification methods such as model checking and theorem proving, as well as incomplete solutions such as testing and debugging. Exhaustive verification often requires developing a rigorous abstract model of the system and suffers from the infamous state-explosion problem. Testing and debugging, on the other hand, provide us with under-approximated confidence about the correctness of a system as these methods only check for the presence of defects for a limited set of scenarios\\
+\Def{Traditionally}, one considers three main verification techniques: theorem proving [12], model checking [20], and testing [49,16]. Theorem proving, which is mostly applied manually, allows to show correctness of programs similarly as a proof in mathematics shows correctness of a theorem. Model checking, which is an automatic verification technique, is mainly applicable to finite-state systems. Testing covers a wide field of diverse, often ad hoc, and incomplete methods for showing correctness, or, more precisely, for finding bugs..}
+
+\ \\
+
+They often require developing an abstract model of the system and may suffer 
+from the 
+infamous \Def{state-explosion} problem.
+
+
+\end{block}
+
+\pause
+
+\begin{block}{Runtime Verification}
+ 
+\Def{Runtime verification} (RV) refers to a technique, where a monitor checks 
+at 
+run time whether or not the execution of a system under inspection satisfies a 
+given correctness property. 
+
+\ \\
+
+RV \Def{complements} exhaustive verification techniques as well as 
+underapproximated methods such as testing and tracing.
+
+\end{block}
+
+\end{frame}
+
+% ----------------------------------------------------------------------------
+\begin{frame}{Motivation}
+
+\begin{block}{RV in Distributed Systems}
+ 
+Designing a \Def{decentralized runtime monitor} for a \Def{distributed
+system} is an especially difficult task since it deals with
+
+\begin{itemize}
+ \item computing \Def{global snapshots} at run time, and 
+ \item estimating the \Def{total order} of events
+\end{itemize}
+
+in order for the monitor to reason about the temporal behavior of the system.
+
+\end{block}
+
+
+
+\note{Abstraction Function in Automata-Based Algorithm. Here we define the abstract local state LSi of a monitor Mi to be the verdict set Vi emitted by the monitor. Given the concrete local state Sis of a monitor Mi and the Ltl3 monitor Mφ of an Ltl formula φ, the abstraction function first computes the set of possible global states E(Sis) from viewpoint of monitor Mi, and then calculates the verdict set based on E(Sis). More formally
+}
+
+
+
+\end{frame}
+
+% ----------------------------------------------------------------------------
+

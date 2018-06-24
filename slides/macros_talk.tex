@@ -1,0 +1,125 @@
+
+
+\newcommand{\FLTL}{\textrm{FLTL}\xspace}
+\newcommand{\LTL}{\textrm{LTL}\xspace}
+
+\newcommand{\AP}{\mathrm{AP}}  %
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\lattice}{\cL}
+
+\newcommand{\logic}{\mathfrak{L}}
+\newcommand{\SemL}[2]{{[#1 \models #2]_{\logic}}}
+\newcommand{\Sem}[2]{{[#1 \models #2]}}
+\newcommand{\SemF}[2]{{[#1 \models #2]_F}}
+\newcommand{\SemFF}[2]{{[#1 \models #2]_4}}
+\newcommand{\SemT}[2]{{[#1 \models #2]_3}}
+\newcommand{\SemRV}[2]{{[#1 \models #2]_{RV}}}
+\newcommand{\SemFf}[3]{{[#1,#2 \models #3]_{F}}}
+\newcommand{\SemRVf}[3]{{[#1,#2 \models #3]_{RV}}}
+\newcommand{\SemTf}[3]{{[#1,#2 \models #3]_3}}
+\newcommand{\Semf}[3]{{[(#1,#2) \models #3]}}
+%
+\newcommand{\SemW}[2]{{[#1 \models #2]_{-}}}
+\newcommand{\SemS}[2]{{[#1 \models #2]_{+}}}
+\newcommand{\SemSW}[2]{{[#1 \models #2]_{\pm}}}
+\newcommand{\SemWS}[2]{{[#1 \models #2]_{\mp}}}
+\newcommand{\SemLTL}[2]{{[#1 \models #2]_{\omega}}}
+
+\newcommand{\semExp}[2]{{\mathtt{ftl4}(#1,#2)}}
+\newcommand{\fltlRew}[2]{{\mathtt{fltlRew}(#1,#2)}}
+
+
+\newcommand{\Def}[1]{\alert{#1}}
+
+\newcommand{\cA}{{\mathcal{A}}}
+\newcommand{\cF}{{\mathcal{F}}}
+
+\newcommand{\cM}{{\mathcal{M}}}
+\newcommand{\BA}{\mathrm{BA}}
+\newcommand{\NFA}{\mathrm{NFA}}
+\newcommand{\DFA}{\mathrm{DFA}}
+\renewcommand{\phi}{\varphi}
+
+\newcommand{\true}{\ensuremath{\mathit{true}}\xspace} 
+\newcommand{\false}{\ensuremath{\mathit{false}}\xspace}
+\newcommand{\X}{\mathit{X}}
+\newcommand{\nX}{\bar{\X}}    %
+\newcommand{\U}{\mathrel{\mathit{U}}} %
+\newcommand{\R}{\mathrel{\mathit{R}}} %
+
+\newcommand{\sem}[1]{\ensuremath[\![#1]\!]}
+\newcommand{\junit}{jUnit\xspace}
+\newcommand{\junitrv}{jUnit$^{\mathrm{RV}}$\xspace}
+\newcommand{\ltl}{\textrm{LTL}\xspace}
+
+\newcommand{\WX}{\ensuremath{\operatorname{\overline{X}}}\xspace}
+\newcommand{\G}{\ensuremath{\operatorname{G}}\xspace}
+\newcommand{\F}{\ensuremath{\operatorname{F}}\xspace}
+\renewcommand{\S}{\ensuremath{\operatorname{S}}\xspace}
+
+\newcommand{\Until}{\mathit{U}}
+\newcommand{\Release}{\mathit{R}}
+\renewcommand{\complement}[1]{{\overline{#1}}}
+
+\newcommand{\pbot}{{\bot^p}}
+\newcommand{\ptop}{{\top^p}}
+\newcommand{\meet}{\sqcap}
+\newcommand{\join}{\sqcup}
+
+\newcommand{\dual}[1]{\overline{#1}}
+
+
+\renewcommand{\phi}{\varphi}
+\newcommand{\nphi}{{\neg\phi}}
+
+\newcommand{\monitor}{\ensuremath{{\sf monitor}}\xspace}
+\newcommand{\step}{\ensuremath{{\sf step}}\xspace}
+\newcommand{\decide}{\ensuremath{{\sf decide}}\xspace}
+
+\newcommand{\emptiness}{\ensuremath{\text{\sf non-empty}}\xspace}
+
+\newcommand{\extrapolate}{\ensuremath{{\sf extrapolate}}\xspace}
+\newcommand{\abstractfct}{\ensuremath{\alpha}}
+
+\lstdefinelanguage{forLTL}
+{morekeywords={
+  let, in, true, false,
+  always, historically, alwaysinpast,
+  between, betweeninpast,
+  eventually, once, eventuallyinpast,
+  from, after, frominpast,
+  holding, holdinginpast,
+  never, neverinpast,
+  next, previous, nextinpast,
+  nextn, previousn, nextninpast,
+  occurring, occurringinpast,
+  releases, triggered, releasesinpast,
+  until, since, untilinpast,
+  upto, before, uptoinpast,
+  required, req, optional, opt, weak,
+  inclusive, incl, exclusive, excl,
+  and, or, implies, equals, not,
+  if, then, else,
+  rejecton, accepton,
+  assert, declare, define,
+  allof, someof, noneof, exactlyoneof,
+  enumerate, list, as, in,
+  with, without,
+  timed,
+  alw, even  %
+},
+sensitive=true,
+morecomment=[l]{--},
+morestring=[b]"
+}
+
+\lstset{frame=none, 
+        basicstyle=\ttfamily, 
+        keywordstyle=\bfseries, 
+        mathescape=true,
+        commentstyle=\color[gray]{0.5}, 
+        breaklines=true, 
+        breakatwhitespace=true,
+        showstringspaces=false,
+        xleftmargin=3ex
+}

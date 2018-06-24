@@ -1,0 +1,65 @@
+\section{Related Work}
+\begin{frame}{Related Work}
+ 
+\begin{block}{Central Monitor}
+
+\begin{itemize}
+\item  H. Chauhan and V. K. Garg and A. Natarajan and N. 
+Mittal. \Def{A Distributed Abstraction Algorithm for Online Predicate 
+Detection} (SRDS 2013).
+
+\ \\
+
+\item N Mittal and V. K. Garg. \Def{Techniques and applications of computation slicing} (Distributed Computing 2005).
+
+\ \\
+
+\item V. A. Ogale and V. K. Garg. \Def{Detecting Temporal Logic Predicates on Distributed Computations} (DISC 2007).
+
+\end{itemize}
+\end{block}
+
+\note{Most existing RV methods employ a central monitor that collects the executions of all components and then checks the system’s global behaviour in terms of a linear- time temporal logic (LTL) formula. The existing work on RV techniques where the monitor consists of a set of components, each having a partial view of the system, is limited to the following}
+
+
+\end{frame}
+
+% ----------------------------------------------------------------------------
+\begin{frame}{Related Work}
+ 
+\begin{block}{Fault-free Setting}
+
+\begin{itemize}
+
+
+\item A. Bauer and Y. Falcone. \Def{Decentralised {LTL} monitoring} (FMSD 2016).
+
+\ \\
+
+\item C. Colombo and Y. Falcone. \Def{Organising {LTL} monitors over distributed systems with a global clock} (FMSD 2016).
+
+\ \\
+
+\item  M. Mostafa, B. Bonakdarpour. \Def{Decentralized Runtime Verification of 
+LTL Specifications in Distributed Systems.} (IPDPS 2015).
+
+%\item Koushik Sen, Abhay Vardhan, Gul Agha, Grigore Rosu:
+%\Def{Efficient Decentralized Monitoring of Safety in Distributed Systems.} (ICSE 
+%2004)
+
+\end{itemize}
+\end{block}
+
+\begin{block}{Fault-tolerant Distributed Monitoring}
+
+B. Bonakdarpour, P. Fraigniaud, S. Rajsbaum, D. A. Rosenblueth, C. Travers. \Def{Decentralized Asynchronous Crash-Resilient Runtime Verification} (CONCUR 2016).
+
+\end{block}
+
+
+\note{Another short coming of existing RV methods is that they assume a fault-free set- ting, where each individual monitor is resilient to failures. In fact, handling monitors subject to failures, creates significant challenges specially in asynchronous monitoring, as local monitors would not be able to agree on the same perspective of the global system state, due to the impossibility of consensus Fischer et al. (1985). Therefore, it is inevitable that local monitors emit different local verdicts about the current run, and a consistent global verdict with respect to a correctness specification must be constructed from these verdicts. In this area, the work in the literature is limited to Bonakdarpour et al. (2016), where the authors propose a crash-resilient decentral- ized algorithm for monitoring LTL formulas in a wait-free setting.}
+
+
+\end{frame}
+
+

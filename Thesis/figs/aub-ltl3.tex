@@ -1,0 +1,16 @@
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+semithick, scale=0.8, every node/.style={scale=0.8}, initial text={},
+font=\normalsize]
+   \tikzstyle{state}=[circle,thick,draw=black,fill=none,minimum size=10mm]
+\node[state, accepting] (A)                    {$q_\bot$};
+  \node[initial,state]         (B) [above right of=A, xshift= -6mm] {$q_0$};
+  \node[state, accepting]         (C) [below right of=B, xshift= -6mm]
+{$q_\top$};
+
+ \path  (B) edge [loop above] node  {$a \wedge \neg b$} (B)
+        (B) edge node [left, yshift=2mm] {$\neg a \wedge \neg b$}
+(A)
+        (B) edge node [right, yshift=2mm] {$b$} (C)
+        (A) edge [loop below] node  {$\mathit{true}$} (A)
+        (C) edge [loop below] node  {$\mathit{true}$} (C);
+\end{tikzpicture} 

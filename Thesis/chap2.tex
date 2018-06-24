@@ -1,0 +1,141 @@
+\chapter{Literature Review}
+\label{chap:RW}
+
+Runtime verification is now an established area of research with many 
+applications. Research efforts in the literature of runtime verification 
+expands on many different areas including theory and system development 
+with even annual competition dedicated for efficient tool 
+development~\cite{sttt-rv}. The literature, however, is mainly focused on 
+centralized systems or at least centralized monitors:
+
+\begin{itemize}
+ \item The seminal technique on runtime 
+verification~\cite{hr01,hr01a,hr04,ar05,cr07,hr02} uses formula rewriting. In 
+particular, the monitor observes the incoming states of the system produced at 
+run time and rewrites the formula using the newly observed events. As long as 
+the formula does not result in logical $\tru$ or $\fals$, the valuation of the 
+formula can go either way in the future.
+
+\item Automata-based monitoring was first proposed in~\cite{bls11}. The idea 
+here is to synthesize an automaton from a given LTL formula that acts as a 
+monitor. The work in~\cite{bls11} employs three truth values $\{\top, \bot, 
+?\}$, where $\top$ (respectively, $\bot$) means that the formula is permanently 
+satisfied (respectively, violated), and truth value `?' means that the 
+valuation is currently unknown (i.e., both $\top$ and $\bot$ are possible for 
+future extensions).
+
+\item More domain specific techniques have also been proposed. For example, 
+in~\cite{bnf11,nwbf11,nbf15,bnf13}, the authors propose {\em time-triggered} RV 
+techniques for monitoring real-time systems, where schedulability is required. 
+Monitoring security policies have always been an area of interest. The notion 
+of security automata was first introduced in~\cite{s00} and revisited 
+in~\cite{bjkz13}. Other efforts in the area of RV for security policies include 
+the work on monitoring hyperproperties~\cite{ab16,bsb17,fhst17} and on 
+monitoring compliance policies~\cite{DBLP:journals/fmsd/BasinCEHKM16}. Finally, 
+monitoring cyber-physical systems, where computing systems interact with 
+physical environments has been studied 
+in~\cite{nkjdj17,DBLP:conf/rv/DeshmukhDGJJS15}, by monitoring formulas in 
+the signal temporal logic (STL) and its variants, and in~\cite{mbfk15} by 
+monitoring under resource constraints.
+
+\end{itemize}
+
+In the sequel, we only focus on reviewing the work on monitoring distributed 
+systems and distributed monitors.
+
+\section{Lattice-based Distributed Monitoring}
+
+Lattice theory has been an important tool for design and analysis of 
+distributed algorithms~\cite{g02}. The notion of {\em happened before} by 
+Lamport~\cite{lamport} basically defines a partial order of events, which 
+essentially constructs a distributive lattice. Such a lattice is often called a 
+{\em computation}. Each node in the lattice is essentially a possible state of 
+the distributed system.
+
+{\em Predicate detection} is the problem of identifying states of a distributed 
+computation that satisfy a predicate. Detecting a predicate in a computation is 
+a challenging problem \cite{g02,ss95}. The reason is the combinatorial blow up 
+in the number of possible states. Given $n$ processes each with $k$ local 
+states, the number of possible global states in the computation could be as 
+large as $O(k^n)$. Determining whether a global state satisfies the given predicate may,
+therefore, require looking at a large number of consistent cuts. In fact, it is shown that the problem is in general NP-complete~\cite{mg01}. {\em Computation slicing}~\cite{mg05} is a technique for reducing the size of the computation and, hence, the
+number of global states to be analyzed for detecting a predicate. The slice of a computation with respect to a predicate is the (sub)computation satisfying the following two conditions. First, it contains all global states for which the predicate evaluates to true. Second, among all computations that satisfy the first condition, it contains the least number of consistent cuts. Intuitively, slice is a concise representation of consistent cuts satisfying a given property. In~\cite{mg05}, the authors propose an algorithm for detecting regular predicates. This idea was then extended to full blown distributed algorithm for distributed monitoring~\cite{cgnm13}. One shortcoming of this line work is that it does not address monitoring properties with temporal requirements. This shortcoming is addressed in \cite{og07} for a fragment of temporal operators. In~\cite{mb15}, the authors propose the first sound and complete method for runtime verification of asynchronous distributed programs for the 3-valued semantics of LTL specifications defined over the global state of the program. The technique for evaluating LTL properties is inspired by distributed computation slicing described above. The monitoring technique is fully decentralized in that each process in the distributed program under inspection maintains a replica of the
+monitor automaton. Each monitor may maintain a set of possible verification verdicts based upon existence of concurrent events. LTL formulas in this work are in terms of conjunctive predicates; i.e., predicates that are conjunctions are local propositions of processes.
+
+One of the problems with lattice-based techniques, especially when it comes to 
+temporal properties in distributed LTL monitoring, is that if processes 
+communicate rarely, then the computation will include many 
+concurrent global states and the lattice will become very wide. To tackle this 
+problem in~\cite{ynvkd16}, the authors proposed an algorithm and analytical 
+bounds if a combination of logical and physical clocks (called {\em hybrid} 
+clocks) are used. This method is enriched with SAT solving techniques 
+in~\cite{vyktd17}.
+
+\section{Distributed Monitoring for Past-time LTL}
+
+In~\cite{svar04}, the authors propose a decentralized monitoring algorithm
+that 
+monitors a distributed program with respect to safety properties in PT-DTL, a 
+variant of past
+time linear temporal logic. PT-DTL is designed in~\cite{svar04} 
+to express temporal properties of distributed systems by drawing relation to 
+particular process and their knowledge of the local state of other processes 
+at any point in time. In the monitoring algorithm, monitors gain knowledge 
+about the state of the system by piggybacking on the existing communication 
+among processes. In such a framework, the valuation of some predicates and 
+properties may be overlooked. That is, if processes rarely communicate, then 
+monitors exchange little information and, hence, some violations of properties 
+may remain undetected. This method was then used to design an algorithm for 
+monitoring multi-threaded programs~\cite{svar06}.
+
+\section{Synchronous Distributed Monitoring}
+
+The most relevant work to this thesis is arguably the algorithms proposed 
+in~\cite{bf16,cf16}. The algorithm in~\cite{bf16} for monitoring synchronous 
+distributed systems with respect to LTL formulas is designed such that 
+satisfaction or violation of specifications can be detected by local monitors 
+alone. The framework employs a different alphabet for each process in the 
+system. When a local monitor has a part of the formula that it cannot evaluate, 
+it sends a message to the monitor that hosts the subformula. The subformula is 
+then progressed over synchronous rounds and the monitor generates a 
+suformula that represents the evaluation of the monitor in the respective round 
+number. The authors also present an implementation and show that our algorithm 
+introduces only a negligible delay in detecting satisfaction/violation of a 
+specification. Moreover, the practical results show that the communication 
+overhead introduced by the local monitors is generally  lower than the number of 
+messages that would need to be sent to a central data collection point. 
+
+In~\cite{cf16}, the authors introduce a way of organizing submonitors for 
+LTL subformulas in a synchronous distributed system, called {\em 
+choreography}. In particular, the monitors are
+organized as a tree across 
+the distributed system, and each child feeds intermediate results
+to its parent 
+in a manner similar to diffusing computation. They formalize 
+choreography-based decentralized monitoring by showing how
+to synthesize a 
+network from an LTL formula, and give a decentralized monitoring algorithm
+working on top of an LTL network.
+
+These articles are different from this thesis in the following ways: (1) the 
+framework in in~\cite{bf16,cf16} is fault-free, and (2) in this thesis we do 
+not assume that components have disjoint propositions.
+
+\section{Fault-tolerant Distributed Monitoring}
+
+In~\cite{frt13}, the authors consider the problem of whether in a distributed 
+task, one can determine the set of inputs and outputs satisfy their intended 
+specification in a wait-free setting subject to crash faults. They call this 
+problem {\em checkability} which is a special instance of runtime monitoring for 
+simple safety specifications. They show that this problem is as hard as solving 
+consensus. They extend their results in~\cite{frt14,frrt14} and show that if 
+runtime monitors employ multiple {\em opinions} (instead of the conventional 
+false/true valuations), then it is possible to monitor distributed tasks in 
+a consistent manner. 
+
+Building on the work in~\cite{frt13,frt14,frrt14}, the authors 
+in~\cite{bfrrt16} show that employing the LTL four-valued logic~\cite{bls10} 
+will result in inconsistent distributed monitoring for some formulas. The first 
+main contribution of this work is a family of logics, called LTL$_{2k+4}$, that 
+refines the 4-valued LTL incorporating $2k +4$ truth values, for each $k \geq 
+0$. The truth values of LTL$_{2k+4}$ can be effectively used by each monitor to reach a consistent global set of verdicts for each given formula, provided $k$ is sufficiently large. The second contribution of this work is an algorithm for monitor construction enabling fault tolerant distributed monitoring based on the aggregation of the individual verdicts by each monitor.

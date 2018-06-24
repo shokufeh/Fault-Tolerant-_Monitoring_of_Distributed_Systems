@@ -1,0 +1,32 @@
+\prefacesection{Abstract}
+
+
+
+Runtime Verification is a technique to extract information from a running 
+system in order to detect executions violating a given correctness 
+specification. In this thesis, we study distributed synchronous/asynchronous 
+runtime verification of systems. In our setting, there is a set of distributed 
+monitors that have only partial views of a large system and are subject to 
+failures. In this context, it is unavoidable that monitors may have different 
+views of the underlying system, and therefore may have different valuations of 
+the correctness property. In this thesis, we propose an automata-based 
+synchronous monitoring algorithm that copes with $f$ crash failures in a 
+distrbuted setting. The algorithm solves the synchronous monitoring problem in 
+$f+1$ rounds of communication, and significantly reduces the message size 
+overhead. We also propose an algorithm for distributed crash-resilient 
+asynchronous monitoring that consistently monitors the system under inspection 
+without any communication between monitors. Each local monitor emits a verdict 
+set solely based on its own partial observation, and the intersection of the 
+verdict sets will be the same as the verdict computed by a centralized monitor 
+that has full view of the system.     
+
+
+
+
+
+
+
+
+
+
+

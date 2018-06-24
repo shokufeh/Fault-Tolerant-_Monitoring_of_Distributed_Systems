@@ -1,0 +1,37 @@
+
+
+\begin{algorithm}[H]
+
+\small
+\KwData{\LTLtri monitor $\monitor^\varphi$ and state $\state_j$}
+\KwResult{a verdict from $\mathbb{B}_3$}
+\DontPrintSemicolon
+%$j = 0$\;
+%\While{\rm there is a new state $s_j$}{
+Let $\sample_i^{s_j}$ be the initial concrete local state of the monitor  \label{line:init2}
+
+$LS_i^1 \gets$ $\mu_2 (  \mu_1(\sample_i^{s_j}, \monitor_\varphi)) = \verdict_i^1$  \tcc*[r]{\it computes the initial abstract local state based on the initial concrete local state. $\verdict_i^r$ denotes the verdict set emitted by monitor $M_i$ to be broadcasted at round $r$}   \label{line:abst2}
+
+\For{\rm $r = 1, \cdots , f +1 $  }  {   \tcc*[r]{\it $f$ is the maximum number of crash failures tolerated}
+{\em \textbf{Send:}}  broadcasts its current abstract local state $LS_i^r = \verdict_i^r$ \tcc*[r]{\it $r$ is the round number}
+\label{line:send2} 
+{\em \textbf{Receive:}} let $\Pi_i^r =$ $\{ \verdict_j^r\}_{j \in [1, n]}$ be the set of all messages received at round $r$. \label{line:rec2}
+
+{\it \textbf{Computation:}}  $LS_i^{r+1} \gets LC_i(\Pi_i^r) = \bigcap_{j \in [1, n]} \{\verdict_j^r\}$ \tcc*[r]{\it calculates a new abstract local state} \label{line:computation2} 
+
+}
+emit $\lambda_e(v_i)$  \tcc*[r]{\it where $ \{v_i\} = LS_i^{f +2}$}
+\label{line:emit2}
+\caption{Behavior of Monitor $M_i$, for $i\in [1, n]$}
+\label{alg:localmonalgo2}
+\end{algorithm}
+
+
+
+
+
+
+
+
+
+

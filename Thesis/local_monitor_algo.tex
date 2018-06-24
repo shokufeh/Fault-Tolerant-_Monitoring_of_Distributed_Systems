@@ -1,0 +1,37 @@
+
+
+\begin{algorithm}[H]
+
+\small
+\KwData{\LTL formula $\varphi$ and state $\state_j$}
+\KwResult{a verdict from $\mathbb{B}_3$}
+%$j = 0$\;
+%\While{\rm there is a new state $s_j$}{
+Let $\sample_i^{s_j}$ be the initial concrete local state of the monitor  
+
+$LS_i^1 \gets$ $\mu (\sample_i^{s_j}, \varphi)$  \tcc*[r]{\it computes the initial abstract local state based on the initial concrete local state}
+
+\For{\rm $r = 1,2, \cdots$ }  {  
+{\em \textbf{Send:}}  broadcasts its current abstract local state $LS_i^r$ \tcc*[r]{\it $r$ is the round number}
+\label{line:send} 
+{\em \textbf{Receive:}} let $\Pi_i^r =$ $\{ LS_j^r\}_{j \in [1, n]}$ be the set of all messages received at round $r$. 
+
+
+{\it \textbf{Computation:}}  $LS_i^{r+1} \gets$   $LC(\Pi_i^r)$ \tcc*[r]{\it calculates a new abstract local state} \label{line:computation} 
+
+}
+emits a verdict from $\mathbb{B}_3$ \tcc*[r]{\it evaluates $\varphi$ according to the final abstract local state}
+\label{line:emit}
+\caption{Behavior of Monitor $M_i$, for $i\in [1, n]$}
+\label{alg:localmonalgo}
+ \end{algorithm}
+
+
+
+
+
+
+
+
+
+

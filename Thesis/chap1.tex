@@ -1,0 +1,265 @@
+\chapter{Introduction}
+\label{chap:introduction}
+
+In a computing system, {\em correctness} refers to the assertion that a system
+satisfies its specification. Software errors are an everyday problem. They 
+occur for a variety of reasons like coding, hardware or network errors. There 
+exist many techniques to ensure correctness in computing systems, most 
+notably:
+
+\begin{itemize}
+
+
+\item Model checking is a fully automated push-button method to check 
+that every execution path of the system under scrutiny satisfies its 
+specification, usually given in some temporal logic formula.
+
+
+\item Theorem proving as a semi-automated way to rigorously demonstrate that 
+the system under inspection complies with its specification usually defined in 
+higher-order logic.
+
+
+ \item Testing is a way to detect such failures by checking for the presence of faults for a set of executions.
+ 
+
+\end{itemize}
+
+Recently, there has been an emerging interest on monitoring a software 
+system to discover bugs in obscure corner cases that can only be observed 
+during online execution. Runtime verification (RV) refers to a technique,  
+where a monitor checks at run time whether or not the execution of a system 
+under inspection satisfies a given correctness property. RV complements  
+exhaustive verification methods such as model checking and theorem proving, as
+well as incomplete solutions such as testing and debugging. Exhaustive 
+verification often requires developing a rigorous abstract model of the 
+system and suffers from the infamous {\em state-explosion problem}. Testing  
+and debugging, on the other hand, provide us with under-approximated confidence 
+about the correctness of a system as these methods only check for the presence 
+of defects for a limited set of scenarios.
+
+\section{Decentralized Runtime Verification}
+
+Most existing RV methods employ a central monitor that collects the executions 
+of all components and then checks the system's global behaviour in terms of a 
+linear-time temporal logic (LTL) formula. The existing work on RV techniques 
+where the monitor consists of a set of components, each having a partial view 
+of the system, is limited to the following:
+
+\begin{itemize}
+ \item Lattice-theoretic centralized and decentralized online
+predicate 
+detection in distributed systems has been studied
+in \cite{cgnm13,mg05}. 
+However, this line of work does not address
+monitoring properties with temporal 
+requirements.
+This shortcoming is addressed in \cite{og07} for a fragment of
+temporal operators, but for offline monitoring and in~\cite{mb15} for 
+distributed monitoring of LTL specifications.
+
+\item In~\cite{svar04}, the authors design a method for monitoring safety
+properties in distributed systems using the past-time linear
+temporal logic 
+(PLTL). This work, however, is not sound,
+meaning that valuation of some 
+predicates and properties
+ may be overlooked. This is because monitors gain 
+knowledge
+about the state of the system by piggybacking on
+the existing 
+communication among processes. That is, if
+processes rarely communicate, then 
+monitors exchange
+very little information and, hence, some violations of
+properties may remain undetected.
+
+\item Runtime verification of LTL for synchronous distributed
+systems, where 
+processes share a single global clock, has
+been studied in~\cite{bf16,cf16}.
+
+\end{itemize}
+
+Another short coming of existing RV methods is that they assume a fault-free 
+setting, where each individual monitor is resilient to failures. In fact, 
+handling monitors subject to failures, creates significant challenges specially 
+in asynchronous monitoring, as local monitors would not be able to agree on the 
+same perspective of the global system state, due to the impossibility of 
+consensus~\cite{flp}. Therefore, it is inevitable that local monitors 
+emit different local verdicts about the current run, and a consistent global 
+verdict with respect to a correctness specification must be constructed from 
+these verdicts. In this area, the work in the literature is limited 
+to~\cite{bfrrt16}, where the authors propose a crash-resilient decentralized 
+algorithm for monitoring LTL formulas in a wait-free setting.
+
+
+This thesis studies the decentralized synchronous/asynchronous monitoring in a 
+failure-prone environment, i.e., a faulty monitor stops executing prematurely. 
+After it has crashed, a monitor does nothing. Before crashing, a monitor 
+behaves correctly. In our synchronous setting, we do not employ a centralized 
+monitor to check the system's global behaviour. Rather, the satisfaction or 
+violation of specifications can be detected by local monitors alone. We show 
+that in a framework of several synchronous or asynchronous {\em unreliable} 
+monitors, naive local monitoring may lead to inconsistent global verdicts for 
+$\varphi$. More specifically, the set of verdicts emitted by the monitors may 
+not be sufficient to distinguish executions that violate the formula from those 
+that satisfy it. Intuitively, this is because each monitor has only a partial 
+view of the system under inspection, and after a finite number of rounds of 
+communication among monitors, still many different perspectives about the global 
+system state remain.
+
+\section{Decentralized Synchronous Monitoring}
+\label{sec:introDSM}
+
+In the decentralized synchronous setting, we assume the system under scrutiny 
+generates a finite trace $\alpha = s_0 s_1 \cdots s_k$ and is inspected by a set 
+of synchronous monitors $\monitor =\{M_1, M_2, \cdots , M_n\}$ with respect to 
+a correctness property expressed by an \LTL formula $\varphi$. The monitors 
+communicate with each other by sending and receiving messages in 
+{\em synchronous rounds}, and through point-to-point bidirectional reliable 
+communication links. The decentralized crash-resilient synchronous monitoring 
+can be reduced to the uniform consensus problem in the crash failure 
+model.
+
+\subparagraph{Uniform Consensus in the Crash Failure Model}
+
+In the consensus problem, each process proposes a value, and the processes 
+have to collectively agree on the same value. Of course, a process can crash 
+before deciding a value. Moreover, in order to be meaningful, the value that is 
+decided has to be related to the values that are proposed. This is captured by 
+the following specification.
+
+\begin{itemize}
+\item {\bf Validity:} \ A decided value is a proposed value.
+
+\item {\bf Agreement:} \ No two processes decide different values.
+
+\item {\bf Termination:} \ Every correct process decides.
+\end{itemize}
+
+The validity and agreement properties define the safety property of the 
+consensus problem. Validity relates the output to the inputs, while agreement 
+captures the difficulty of the problem. Termination is the liveness property of 
+the consensus problem. It states that at least the processes that do not crash 
+have to decide. In a synchronous setting and in the presence of faults, 
+consensus is solvable in $f+1$ rounds, where $f$ is the maximum number of 
+processes than can crash.
+
+In the synchronous monitoring problem, the validity specification is that the 
+decided value must be the same value that a centralized monitor that has full 
+view of the system would compute.
+
+\section{Decentralized Asynchronous Monitoring}
+
+In a decentralized asynchronous setting, there is a set of monitors 
+\linebreak $\monitor =\{M_1, M_2, \cdots , M_n\}$ that verify a finite trace 
+$\alpha = s_0 s_1 \cdots s_k$ produced by the system under inspection, with 
+respect to a correctness property $\varphi$. The monitors can communicate with 
+each other via a read/write shared memory, they are asynchronous wait-free 
+processes, and any of them can fail by crashing.
+
+We work in the shared memory model because we can consider runs composed 
+of any interleaving of monitor operations, facilitating analysis. Also to 
+including the extreme case where any number of monitors may fail. In message 
+passing partitions may happen if half of the monitors can fail. Given that in 
+a wait-free distributed monitoring system it is impossible for the monitors to 
+solve consensus, it is unavoidable that different verdicts are emitted. We show 
+how, given any \LTL formula, a set of verdicts collectively provided by the 
+local monitors can be used to compute the verdict computed by a centralized 
+monitor that has full view of the system under scrutiny.
+
+Decentralized asynchronous monitoring can also be reduced to consensus in the 
+asynchronous setting with the three properties mentioned in 
+Section~\ref{sec:introDSM}.
+
+% \item \textit{Omission failure models.}
+% \begin{itemize}
+% \item Send omission failure model. In this case, a faulty monitor 
+% intermittently omits to send messages it was supposed to send, or crashes, or 
+% both.
+% 
+% \item Receive omission failure model. In this case, a monitor intermittently 
+% omits to receive messages sent to it, or crashes, or both.
+% 
+% \item General omission failure model. In this case, a faulty monitor is subject 
+% to send or receive omission failures, or both.
+% \end{itemize}
+% 
+% \item \textit{Byzantine failure model.}
+% 
+% In this case, a faulty monitor can exhibit any behavior. As an example, a 
+% faulty monitor can change its state arbitrarily, send messages with erroneous 
+% content, or send different messages to distinct monitors and no message to 
+% others when it should send the same message to all.
+% \end{itemize}
+
+
+% In our setting, we consider crash failure model in both synchronous and 
+% asynchronous monitoring problems.
+
+\section{Thesis Statement}
+
+The main difficulty created by the crash failure model is the following. 
+Suppose $M$ is a monitor that crashes during a round $r$ while it is 
+broadcasting a message $m$. Since the broadcast operation by $M$ is not atomic, 
+and there is no predetermined sending order with respect to the destination 
+monitors, a message $m$ can be received by any subset of monitors. This subset 
+is completely arbitrary, and can be the empty set. This means that the crash of 
+a monitor in a send phase of a round generates non-determinism, as it is 
+impossible to know what are the monitors that will receive message $m$. This 
+uncertainty is the main challenge in designing a distributed monitoring 
+algorithm in the presence of crash failure.
+
+Our research hypothesis is that synchronous/asynchronous monitoring in 
+fault-tolerant distributed environment can be performed efficiently. More 
+specifically, we can design distributed algorithms that can solve the 
+synchronous monitoring problem with relatively small message size overhead, and 
+solve the asynchrnous monitoring problem with little communication between the 
+monitors.
+
+\section{Contributions}
+
+We validate our research hypothesis by proposing an automata-based distributed 
+LTL monitoring algorithm for the decentralized crash-resilient synchronous 
+monitoring problem, where monitors are processes that communicate by message 
+passing and can crash. Our monitoring algorithm reduces the message size 
+overhead from $|\AP|$ per message, where $\AP$ is a set of atomic propositions, 
+to $\log(m_\monstate)$, where $m_\monstate$ is the number of outgoing 
+transitions from the current monitor state in each local monitor's automaton. 
+Our main contribution is to construct an automaton that is employed in each 
+local monitor's algorithm. This automaton, which is called an \Exltl, is a 
+deterministic finite state machine that is constructed based on the \LTLtri 
+monitor~\cite{bls11} of a given \LTL formula. The intuition behind constructing 
+an \Exltl~is the idea of calculating the intersection of the verdict sets 
+emitted by a set of distributed monitors that have partial view of the global 
+system state. The extension ensures that monitors share enough detail about 
+their local state, so that crash failures do not compromise their soundness. 
+
+Our second contribution is an algorithm for distributed crash-resilient 
+asynchronous RV that can consistently monitor the system under inspection 
+without any round of communication between asynchronous monitors. Each local 
+monitor emits a verdict set solely based on its own partial observation, and 
+the intersection of the verdict sets will be the same as the verdict computed by 
+a centralized monitor that has full view of the system.
+
+
+
+\section{Thesis Organization}
+
+The rest of this thesis is organized as follows: Chapter \ref{chap:RW} presents 
+the related work and Chapter \ref{chap:Preliminaries} provides the 
+preliminary concepts. Chapter \ref{chap:extended monitor} discusses the 
+synchronous monitoring in crash-resilient distributed environment and presents 
+an algorithm to construct an \Exltl~which is the main contribution of this 
+thesis. In Chapter \ref{chap:DAM} the decentralized crash-resilient 
+asynchronous monitoring is introduced. Finally, in Chapter 
+\ref{chap:Conclusion}, we make concluding remarks and discuss future work.  
+
+
+
+
+
+
+
+

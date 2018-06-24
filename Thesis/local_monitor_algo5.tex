@@ -1,0 +1,23 @@
+% !TEX root = main.tex
+\begin{algorithm}[H]
+\small
+\KwData{\LTLtri monitor $\monitor^\varphi = 
+\{ \alphabet, Q, \monstate_0, \delta , \lambda\}$ and state $\state_j$}
+\KwResult{a set of monitor states}
+%$j = 0$\;
+%\While{\rm there is a new state $s_j$}{
+Let $\sample_i^{s_j}$ be the initial concrete local state of the monitor    \;  %\label{line:init}
+$\LS_i^{\state_j} \gets$ $\sample_i^{s_j}$\tcc*[r]{\it take sample from state $s_j$}
+%\label{line:sample} 
+\For{\rm some fixed number of rounds $r \geqslant 1$}{   \label{line:round5}
+$\SM_i^{\state_j} \gets \pred(\LS_i^{\state_j})$\tcc*[r]{\it write current knowledge in shared memory}%\label{line:write} 
+$\LS_i^{\state_j} \gets$ $\SM^{\state_j}$\tcc*[r]{\it take a snapshot of the shared memory}
+}%\label{line:snapshot}
+emit $\verdict_i^{\state_j}= \absfunc_2(\absfunc_1(\LS_i^{\state_j}, \monitor^\varphi)) $           \tcc*[r]{\it emit a set of monitor states according to $\monitor_\varphi$ } 
+\label{line:emit5}
+%\label{line:emit}
+%$j \gets j + 1$\;}
+\caption{Behavior of Monitor $M_i$, for $i\in [1, n]$}
+\label{alg:localmonalgo5}
+ \end{algorithm}
+

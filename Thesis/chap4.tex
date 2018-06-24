@@ -1,0 +1,1130 @@
+
+\chapter{Decentralized Automata-Based Monitoring}
+\label{chap:extended monitor}
+
+An \LTLtri monitor can evaluate an \LTL formula $\varphi$ in a centralized 
+setting where each proposition represents the global state of the system. We 
+show in Section \ref{sec:DSM} and Chapter \ref{chap:DAM} that in a framework of several synchronous or asynchronous 
+{\em unreliable} monitors, naive local monitoring may lead to inconsistent 
+global verdicts for $\varphi$. More specifically, the set of verdicts emitted by 
+the monitors may not be sufficient to distinguish executions that violate the 
+formula from those that satisfy it. Intuitively, this is because each monitor 
+has only a partial view of the system under inspection, and after a finite 
+number of rounds of communication among monitors, still many different 
+perspectives about the global system state remain. We use the \LTL formula 
+$\varphi = \F (a \wedge b)$ throughout this Chapter to explain the concepts.
+
+This Chapter is organized as follows: We discuss the synchronous monitoring problem in a failure-prone distributed environment in Section \ref{sec:DSM}. The model of computation and terminology are discussed in Section \ref{sec:modelterm}. The problem statement is given in Section \ref{sec:PS}, and in Section \ref{sec:challenge} we discuss the challenges in synchronous monitoring. The synchronous automata-based monitoring is discussed in Section \ref{sec:SAM} where we introduce our automata-based monitoring algorithm, and present the algorithm to construct an \Exltl.
+
+
+
+\section{Synchronous Monitoring Algorithm Sketch}
+\label{sec:DSM}
+
+In this section, we propose a framework for synchronous distributed 
+fault-tolerant runtime verification (RV). To this end, we make a link between 
+RV and consensus in a failure-prone distributed environment by 
+proposing an automata-based algorithm.
+
+We consider a distributed monitoring system made up of a fixed number $n$ of 
+monitors $\monitor = \{M_1, M_2, \dots, M_n\}$ that communicate by sending and 
+receiving messages through point-to-point bidirectional communication links. 
+Each communication link is reliable, that is, we assume no loss or alteration 
+of messages. Each monitor locally executes an identical sequential algorithm. 
+Each run of a monitor consists of a sequence of rounds that are identified by 
+the successive integers 1, 2, etc. The round number is a global variable and 
+its progress is ensured by the synchrony assumption. Each round is made up of 
+three consecutive steps: {\em send}, {\em receive}, and {\em local 
+computation}. The principle property of the round-based synchronous model is the 
+fact that a message sent by a monitor $M_i$ to another monitor $M_j$ during a 
+round $r$ is received by $M_j$ at the very same round $r$.
+
+Throughout this chapter, the system under inspection produces a finite trace 
+$\fintrace = \state_0\state_1\cdots \state_k$, and is inspected with respect to 
+an \LTL formula $\varphi$ by a set of synchronous distributed monitors. 
+
+\subparagraph{Algorithm sketch:} For every $j\in [0,k-1]$, between each 
+$\state_j$ and $\state_{j+1}$, each monitor:
+
+\begin{enumerate}
+\item reads the value of a subset of propositions in $\state_j$, which may 
+result in a {\em partial} observation of $\state_j$; 
+
+\item at every synchronous round, {\em broadcasts} a message containing its 
+current observation of the underlying system, and then waits for messages from 
+other monitors;
+
+\item based on the messages received at each round, executes a local 
+computation, updates its current observation by incorporating observations of 
+other monitors, and composing the message to be sent at next round, and
+
+\item finally evaluates $\varphi$ at the end of communication rounds and 
+subsequently emits a \truthvalue~from $\mathbb{B}_3$. 
+\end{enumerate}
+
+The skeleton of the algorithm is shown in Algorithm~\ref{alg:localmonalgo}.
+\input{local_monitor_algo}
+
+\section{Model of Computation and Terminology}
+\label{sec:modelterm}
+We now present our computation model, notation, and terminology.
+
+\begin{definition}
+\label{def:concretestate}
+A `concrete local state' $\sample_i^{s_j}$ of a monitor $M_i$ at global 
+state $s_j$ is a mapping from the set $\AP$ of atomic propositions to the set 
+$\{\tru, \fals, \udef\}$, where $\udef$ denotes an unknown value, and for all 
+$\ap \in \AP$, we have:
+$$(\sample_i^{s_j}(\ap) = \tru \, \rightarrow \, ap \in s^j) \; \wedge \; 
+(\sample_i^{s_j}(\ap) = \fals \, \rightarrow \, ap \not \in s_j)$$ 
+\end{definition}
+
+When a state $s_j$ is reached in a finite trace $\fintrace 
+=\state_0\state_1\cdots \state_k$, each monitor $M_i \in \monitor$, for $1 \leq 
+i \leq n$, takes a sample from $s_j$, which results in obtaining a concrete 
+local state $\sample_i^{s_j}$. Hence, in the concrete local state of a monitor, 
+if the value of an atomic proposition is not unknown, then its value is 
+consistent with state $s_j$. Thus, two monitors $M_i$ and $M_l$ cannot have 
+inconsistent concrete local states. That is, for any state $s_j$ and concrete 
+local states $\sample_i^{s_j}$, $\sample_l^{s_j}$, and for every $\ap \in \AP$, 
+we have:
+$$(\sample_i^{s_j}(\ap) \neq \sample_l^{s_j}(\ap) \;  \rightarrow \; 
+(\sample_i^{s_j}(\ap) = \udef \, \vee \, \sample_l^{s_j}(\ap) = \udef)$$
+
+\begin{definition}
+\label{def:abs}
+An `abstract local state' $\abstate_i$ is a symbolic representation of a 
+monitor $M_i$'s concrete local state $\sample_i^{\state_j}$ with respect to an \LTL formula 
+$\varphi$ computed by an `abstraction function' $\mu$, where $\abstate_i = \mu 
+(\sample_i^{\state_j}, \varphi)$.
+\end{definition}
+
+Note that Definition~\ref{def:abs} does not prescribe a specific symbolic 
+representation or abstraction function. We will present a choice for this 
+function in Section ~\ref{sec:SAM}. The idea here is that monitors communicate 
+their abstract local states rather than concrete local states for space and 
+communication efficiency. During the computation step, the monitor computes the 
+message that it will to broadcast during the next round. Let $\abstate_i^r$ 
+denote the abstract local state of $M_i$ at the beginning of round $r$. In the 
+local computation step, a monitor $M_i$ modifies its abstract local state 
+according to the messages it has received from other monitors (including its own 
+message). Let
+$$\Pi_i^r = \big\{ \abstate_l^r\big\}_{l \in [1, n]}$$
+be the set of all messages received by monitor $M_i$ during round $r$. 
+
+\begin{definition}
+The `local computation function' of a monitor $M_i$ is a function $\LC$ 
+that computes $M_i$'s new abstract local state in each round $r$, given the set 
+of messages $\Pi_i^r$ received in round $r$. Formally,
+$$\abstate_i^{r+1} = LC(\Pi_i^r)$$
+\end{definition}
+
+Similar to abstraction function, we will describe local computation 
+function in Section ~\ref{sec:SAM}. 
+
+\subparagraph{State Coverage:}  We say that a set of monitors \emph{cover} a 
+global state if and only if the collection of concrete local states of these 
+monitors covers the value of all atomic propositions. The formal definition 
+is given below.
+
+\begin{definition}
+\label{def:state coverage}
+A set $\monitor = \{M_1, M_2, \dots, M_n\}$ satisfies `state coverage' for 
+a state $\state$ if and only if for every $\ap \in \AP$, there exists $M_i\in 
+\monitor$ such that $\sample_i^\state(\ap) \neq \udef$.
+\end{definition}
+
+\begin{definition}
+We say monitor $M_i$ is `aware' of proposition $ap$ at round $r$, if: 
+
+\begin{itemize}
+\item $\sample_i^\state(\ap) \neq \udef$, or 
+\item $M_i$ receives a message from a monitor $M_j$ at round $r' \in [1,r)$, 
+where $M_j$ is aware of $ap$ at round $r'$. 
+\end{itemize}
+
+\end{definition}
+
+
+\subparagraph{Fault Model:} In our setting, the fault model specifies that each 
+monitor may fail by {\em crashing} (i.e., halt and never recover). We assume 
+that up to $n-1$ monitors can crash, where $n = |\monitor|$. A monitor may 
+crash at any round. To ensure the state coverage, we assume that, if there is a 
+proposition $ap \in \AP$, such that at round $r$ monitor $M_i$ is the only 
+monitor aware of $ap$, then the message sent by $M_i$ at round $r$, must be 
+received by at least one non-faulty monitor in round $r$. 
+
+Note that in order to weaken the latter condition, one might assume that each proposition $\ap \in \AP$ is read by sufficiently large number of local monitors such that it is ensured that at least one monitor which is aware of $\ap$ does not crash, e.g., by assuming that each proposition is read by at least $f+1$ monitors.
+
+
+\section{Problem Statement}
+\label{sec:PS}
+
+Suppose $\fintrace = \state_0\state_1\cdots \state_k$ is a finite trace 
+generated by the system under inspection, and $\varphi$ is an \LTL formula with 
+respect to which we monitor the system. Each monitor $M_i \in \monitor$, $i \in 
+[1, n]$, runs Algorithm \ref{alg:localmonalgo} as follows. For any given new 
+state $s_j$, monitor $M_i$ first obtains an initial concrete local state by 
+taking a sample from $s_j$ (cf. Line 1). Recall from Definition 
+\ref{def:concretestate} that the value of an atomic proposition in a 
+concrete local state is either $\tru$, $\fals$, or $\natural$. After obtaining 
+the initial concrete local state, monitor $M_i$ computes the initial local 
+state based on the initial concrete local state (cf. Line 2). After 
+intialization, each monitor $M_i$ executes a sequence of send, receive, and 
+computation actions (cf. Lines 4-6) for some a priori known number of rounds.  
+In Line 4, monitor $M_i$ sends its current abstract local state to all other 
+monitors in $\monitor$. In Line 5, it receives messages from other monitors and 
+stores them (along with its own message) in a set $\Pi_i^r$. In line 6, which is 
+the computation step, monitor $M_i$ computes and updates its abstract local 
+state based on messages in $\Pi_i^r$. Finally, after a certain number of rounds, 
+the for-loop ends, and $M_i$ evaluates $\varphi$ and emits a \truthvalue~from 
+$\mathbb{B}_3$ based on its final abstract local state (cf. Line 7). Note that 
+Algorithm \ref{alg:localmonalgo} is executed whenever a new global state is 
+reached in $\fintrace$. 
+
+Our formal problem statement is the termination requirement for Algorithm 
+\ref{alg:localmonalgo}. Roughly speaking, we require that when a 
+non-faulty monitor runs Algorithm~\ref{alg:localmonalgo} to the end, it should 
+compute and emit a verdict that a centralized monitor that has global view of 
+the system would compute. This termination condition is formally, the following
+$$\forall i \in [1, n] : M_i~ \text{is non-faulty} \; \rightarrow \valuation_i 
+= [\alpha \models_3 \varphi]$$ 
+where $\valuation_i$ is the \truthvalue~emitted by monitor $M_i$ at the end of 
+running Algorithm~\ref{alg:localmonalgo}.
+
+\section{Challenges in Synchronous Monitoring}
+\label{sec:challenge}
+
+It is easy to see that our decentralized synchronous monitoring problem, 
+described in Section~\ref{sec:PS}, is similar to the uniform consesus problem that was described in Section \ref{sec:introDSM}. It is also straightforward to verify that the lower bound on the number of rounds required to consistently monitor the system is $f+1$, where $f$ is the total number of crashes the system can tolerate. The proof would be similar to 
+the proof of the lower bound on the number of rounds required for the consensus 
+algorithm that copes with $f$ process crashes.
+
+
+
+
+
+Compared to the processing capacity of monitors, the communication links are low 
+bandwidth, and hence, the communication costs are of concern. The communication 
+cost depends on the number of messages transmitted by monitors, and 
+the size of these messages. An increase in the message size enforced by the 
+algorithm is referred to as the message size overhead. And an increase in the 
+number of messages that must be transmitted is called the network traffic 
+overhead. 
+
+The following example illustrates the worst case scenario in which $f+1$ rounds 
+are required to distributedly monitor the system, where $f$ is the total number 
+of faults tolerated. It also shows how message size can dramatically increase with the state space of the system under inspection. 
+
+\subparagraph{Example:}
+
+Let $\varphi = \F (a \, \wedge \, b)$, $\AP=\{a, b\}$, and $\monitor =\{M_1, 
+M_2, M_3, M_4\}$. Suppose $s=\{a,b\}$ is the current global state of the 
+system, and the initial concrete local states of the monitors are as follows:
+\begin{alignat*}{2}
+& \sample^s_1[1](a)= \tru ~~~~~~~~~& \sample^s_1[1](b)=\natural\\
+& \sample^s_2[1](a)= \natural & \sample^s_2[1](b) = \tru \\
+& \sample^s_3[1](a) = \natural & \sample^s_3[1](b) =\natural \\ 
+& \sample^s_4[1](a) = \natural & \sample^s_4[1](b) =\natural
+%$\sample^s_5[1](a) =\natural$, $\sample^s_5[1](b) =\natural$ \\
+\end{alignat*}
+where $\sample^s_i[r]$ represents the concrete local state of monitor 
+$M_i$ at the begining of round $r$. Let $f = 2$, i.e., at most $2$ 
+monitors may crash, and suppose $M_1$ and $M_2$ are faulty monitors. The 
+worst case scenario is when one and only one monitor crashes at each round. 
+Suppose $M_1$ crashes at round $1$ and $M_2$ crashes at round $2$. Since $M_1$ 
+is the only monitor that is aware of proposition $a$, according to our failure 
+model assumption (in order to preserve the state coverage), at least one 
+non-faulty monitor must receive a message from $M_1$ at round $1$. Let $M_2$ be 
+the monitor that receives $M_1$'s message at round $1$.
+
+According to Algorithm \ref{alg:localmonalgo}, the monitors are to broadcast 
+their current abstract local states at each round. In this case, let the 
+abstract local state of each monitor be the same as its concrete local state, 
+i.e.,  $LS^r_i = \mu (\sample^s_i[r], \varphi) = \sample^s_i[r]$ where  
+$\sample^s_i[r]$ is the concrete local state of monitor $M_i$ at round $r$. 
+In this case, each message sent by a monitor is a {\em register} that consists 
+of $|\AP|$ elements, one for each atomic proposition in $\AP$. At the end of 
+each round, each monitor $M_i$ reads the values of all received messages and 
+copies them into its local register as follows:
+$$\forall p \in AP: (   (\sample_i^s[r](p) = \natural) \, \wedge \, (\exists j 
+\in[1,n]:  \sample_j^s[r](p) \neq \natural) ) \; \rightarrow \;
+(\sample_i^s[r](p) \gets \sample_j^s[r](p))$$
+Hence, at the end of round $1$ (i.e., begining of round $2$), the concrete 
+local states are as follows:
+\begin{alignat*}{2}
+&\sample^s_2[2](a)=\tru ~~~~~~~~~& \sample^s_2[2](b) = \tru \\
+&\sample^s_3[2](a) =\natural & \sample^s_3[2](b) = \tru \\
+&\sample^s_4[2](a) =\natural & \sample^s_4[2](b) =\tru
+%$\sample^s_5[2](a) =\natural$, $\sample^s_5[2](b) =true$ \\ 
+\end{alignat*}
+
+Suppose monitor $M_2$ crashes at round $2$ and since it is the only monitor 
+that is currently aware of proposition $a$, at least one non-faulty monitor 
+must receive a message from $M_2$ at round $2$, suppose $M_3$ is the monitor 
+which receives the message.  Thus, the new concrete local states at the end of 
+round $2$ are as follows:
+\begin{alignat*}{2}
+&\sample^s_3[3](a) = \tru ~~~~~~~~~~& \sample^s_3[3](b) = \tru \\ 
+&\sample^s_4[3](a) = \natural & \sample^s_4[3](b) = \tru
+%$\sample^s_5[3](a) =\natural$, $\sample^s_5[3](b) =true$ \\
+\end{alignat*}
+
+Finally, at round $3$, since there is no faulty monitor, each monitor receives 
+messages from all other monitors, and the concrete local states at the end of 
+this round will be as follows:
+\begin{alignat*}{2}
+&\sample^s_3[4](a) = \tru ~~~~~~~& \sample^s_3[4](b) = \tru \\ 
+&\sample^s_4[4](a) = \tru & \sample^s_4[4](b) = \tru
+%$\sample^s_5[4](a) =true$, $\sample^s_5[4](b) =true$ \\
+\end{alignat*}
+Hence, at the end of round $3$ (namely., round $f+1$) all non-faulty monitors are aware 
+of all propositions in $\AP$, and they emit the correct \truthvalue:
+
+$$\valuation_3 = \valuation_4 = [\{a,b\} \models_3 \varphi] = \top$$
+The following tables summarize the scenario: \\
+
+\begin{tabular}{| c |c |c|}
+\multicolumn{3}{c}{sample} \\
+\hline
+&$a$&$b$\\
+\hline
+$M_1$ & $\tru$  & $\natural$\\
+$M_2$ & $\natural$ & $\tru$\\
+$M_3$ & $\natural$ & $\tru$ \\
+$M_4$ & $\natural$ & $\tru$ \\
+%$M_5$ & $\natural$ & $true$ \\
+\hline
+\end{tabular}
+\quad
+\begin{tabular}{| c |c |c|}
+\multicolumn{3}{c}{round 1} \\
+\hline
+&$a$&$b$\\
+\hline
+$M_1$ & crashed & crashed\\
+$M_2$ & $\tru$ & $\tru$\\
+$M_3$ & $\natural$ & $\tru$ \\
+$M_4$ & $\natural$ & $\tru$ \\
+%$M_5$ & $\natural$ & $true$ \\
+\hline
+\end{tabular}
+\quad
+\begin{tabular}{|c |c |c|}
+\multicolumn{3}{c}{round 2} \\
+\hline
+&$a$&$b$\\
+\hline
+$M_1$ & crashed & crashed\\
+$M_2$ & crashed & crashed\\
+$M_3$ & $\tru$ & $\tru$ \\
+$M_4$ & $\natural$ & $\tru$ \\
+%$M_5$ & $\natural$ & $true$ \\
+\hline
+\end{tabular}
+
+\begin{tabular}{| c |c |c|}
+\multicolumn{3}{c}{round 3} \\
+\hline
+&$a$&$b$\\
+\hline
+$M_1$ & crashed & crashed\\
+$M_2$ & crashed & crashed\\
+$M_3$ & $\tru$ & $\tru$  \\
+$M_4$ & $\tru$ & $\tru$  \\
+%$M_5$ & $true$ & $true$  \\
+\hline
+\end{tabular}   
+
+\ \\
+
+%\todo{Please check $\valuation$ and $\verdict$}
+%here talk about the message size in case of sending concrete local state.
+
+One can see in the above example, in case each monitor broadcasts its concrete 
+local state, namely, if the abstract local state is the same as the concrete 
+local state, then each message sent by a monitor is a register that consists of 
+$|\AP|$ elements, one for each atomic proposition in $\AP$. Our goal is to 
+decrease the message size overhead, hence we introduce an algorithm that 
+decreases the message size from $|\AP|$ bits to something 
+significantly lower. In Section \ref{sec:SAM}, we introduce an algorithm which 
+decreases the message size overhead in synchronous distributed monitoring. The 
+algorithm solves the synchronous distributed monitoring problem in $f +1$ 
+rounds of communication with message size of $\log(m_\monstate)$, where $m_\monstate$ is the number of outgoing transitions from monitor state $\monstate$ in an \Exltl~that will be introduced in Section \ref{sec:SAMExltl}.
+
+
+\section{Synchronous Automata-based Monitoring}
+\label{sec:SAM}
+
+In this section, we introduce an automata-based algorithm that solves the 
+decentralized synchronous monitoring problem in $f+1$ rounds of communication, 
+where $f$ is the maximum number of crash failures tolerated. To this end, 
+first, in Section~\ref{sec:SAMltl3}, we introduce an algorithm that is used by 
+each local monitor to synchronously monitor the system under inspection. The 
+general idea is that each local monitor evaluates the input formula and 
+computes a {\em possible} set of verdicts, as a monitor may not know the 
+value of all propositions. Then, through synchronous communication, the 
+monitors share their verdict sets with each other. Finally, applying some 
+function on the verdicts sets (e.g., computing their intersection) computes 
+the verdict that a centralized monitor that has the global view of the system 
+would compute.
+
+Our algorithm uses \LTLtri monitor $\monitor^\varphi$ for a formula $\varphi$ in 
+order to generate the set of possible verdicts. Thus, in our first attempt, in 
+Section~\ref{sec:SAMltl3}, we use the \LTLtri monitors in our algorithm, but we 
+also show that $\monitor^\varphi$, as defined in Section~\ref{sec:ltl3}, is 
+not sufficient to consistently monitor the system for \LTL formulas. Then, 
+in Section~\ref{sec:SAMExltl}, we introduce an `\Exltl' which we will use in 
+each local monitor's algorithm to consistently monitor the global state of the 
+system with respect to any \LTL formula. 
+
+
+
+Note that in this work, we only consider monitoring of properties that are 
+specified as \LTL formulas, as Pnueli’s \LTL \cite{p77} is a well-accepted 
+linear-time temporal logic for specifying properties of infinite traces. 
+However, In runtime verification, our goal is to check \LTL properties given 
+finite prefixes of infinite traces. Therefore, one has to interpret their 
+semantics with respect to finite prefixes as they arise in observing actual 
+systems. Although it is possible to use infinite semantics of \LTL, namely by 
+using nondeterministic B\"uchi automata as monitors and explore all 
+nondeterministic choices, it is more convenient to use the finite semantics of 
+\LTL to monitor \LTL formulas at run time. To this end, in \cite{bls11} 
+introduced \LTLtri as a linear-time temporal logic which has the same syntax as 
+in \LTL but deviates in its semantics for finite traces. To implement the idea 
+that, for a given \LTLtri formula, its meaning for a prefix of an infinite trace 
+must correspond to its meaning considered as an \LTL formula for the full 
+infinite trace, they use three truth values: true, false, and inconclusive, 
+denoted respectively by $\top$, $\bot$, and $?$.
+
+
+
+\subsection{Synchronous Monitoring Using \LTLtri Monitors}
+\label{sec:SAMltl3}
+
+Recall that an \LTLtri monitor $\monitor^\varphi$ for \LTL formula $\varphi$ is 
+a deterministic finite state machine (FSM) represented as $\monitor^\varphi = 
+\{ \alphabet, Q, \monstate_0, \delta , \lambda \}$, where $\alphabet$ 
+is a finite alphabet, $Q$ is a finite non-empty set of states (we refer to them 
+as monitor states), $\monstate_0$ is the initial monitor state, $\delta: Q 
+\times \alphabet \rightarrow 2^Q $ is a transition function, and $\lambda : Q 
+\rightarrow \mathbb{B}_3 $ is a mapping function which maps each monitor state 
+to a truth value in $\mathbb{B}_3=\{\top,\bot, ?\}$.
+
+Observe that a transition $t_j^i$ from monitor state $\monstate_i$ to monitor 
+state $\monstate_j$ is the set of all \events~$\state \in \alphabet $ such that 
+$\delta (\monstate_i, \state) = \monstate_j$. More formally
+$$ t_j^i = \{ \state \in \alphabet ~ | ~ \delta (\monstate_i, \state) = 
+\monstate_j\}$$
+Now, let $\monitor^\varphi$ be the \LTLtri monitor for an \LTL 
+formula $\varphi$. We denote by $T_\monstate$ the set of all outgoing 
+transitions from monitor state $\monstate$.  Formally, $T_\monstate =\{ 
+t_1^\monstate, \cdots , t_{m_\monstate}^\monstate\}$ where $m_\monstate$ is the 
+total number of outgoing transitions from monitor state $\monstate$ and each 
+$t_j^\monstate$ is an outgoing transition from monitor state $\monstate$. Given 
+that an \LTLtri monitor is a deterministic FSM, the followings hold 
+
+\begin{itemize}
+ \item $\forall j \in [1 \cdots m_\monstate]: t_j^\monstate \subseteq 
+\alphabet$,
+  \item $\forall j,k \in [1 \cdots 
+m_\monstate]: j \neq k \Rightarrow  ~  t_j^\monstate \cap t_k^q = \emptyset$, and
+  \item $t_1^\monstate \cup \cdots \cup t_{m_\monstate}^\monstate = \alphabet$.
+\end{itemize}
+%\renewcommand\labelitemi{-}
+
+
+Let $\sample_i^s$ be the concrete local state of a monitor $M_i$ at global 
+state $s$. We denote the set of all possible global \events~from the viewpoint 
+of monitor $M_i$ by $\pevent(\sample_i^s)$:
+\begin{center}
+$\pevent(\sample_i^s) = \big\{ \state' \in \alphabet ~|~ \forall ap \in \AP: 
+(\sample_i^s(ap) \neq \natural) \rightarrow ( (\sample_i^s(ap) = \tru 
+\rightarrow ap \in \state') \wedge  (\sample_i^s(ap) = \fals \rightarrow ap 
+\notin \state') ) \big\} $
+\end{center}
+
+Informally, $\pevent(\sample_i^s)$ is the set of all states $\state' \in 
+\alphabet$ that are possible to be the global state $\state$, from viewpoint of 
+monitor $M_i$. Obviously, for any global state $s$, we have: 
+$$\forall i \in [1, n].~ s \in \pevent(\sample_i^s)$$
+
+Now, suppose \LTLtri monitor $M_i$ is at state \monstate, and 
+$\sample_i^s$ is $M_i$'s concrete local state. We denote the set of {\em 
+possible verdicts} by monitor $M_i$ as follows
+$$\verdict_i = \{\delta(\monstate, \state') \mid \state' \in 
+\pevent(\sample_i^\state)\}$$
+It should be noted that each verdict $v_j$ from a verdict set $\verdict_i$ is a 
+monitor state. The mapping function $\lambda$ shall be applied to obtain the 
+truth value of a verdict, i.e., $\lambda(v_j) \in \mathbb{B}_3$. Moreover, note 
+that due to the synchrony assumption, all monitors always are at the same 
+monitor state. Obviously, if all monitors are at monitor state $\monstate$ and 
+the new global state of the system is $\state$, then we have
+$$\forall i \in [1, n].~ \delta(\monstate, \state) \in \verdict_i$$
+
+\subparagraph{Notation:} Let $\monstate$ be the current monitor state. We 
+denote by $\intersection$ the intersection of all verdict sets emitted by 
+all monitors in $\monitor$. Formally
+$$ \intersection = \bigcap_{i = 1}^n  \verdict_i$$ 
+
+Obviously, at every monitor state $\monstate \in Q$, we have $\delta(\monstate, 
+\state) \in \intersection$, where $\state$ is a global state of the system. If
+$|\intersection| =1$, then we have $\intersection = \{\delta(\monstate, 
+\state)\}$. This case happens, when the set of all possible states of at least 
+one monitor consists of only one state. In this case, the intersection 
+represents the verdict of a centralized monitor that has global view of the 
+system. This is formalized in the following lemma.
+
+\begin{lemma} 
+\label{lem:fullinfo}
+Let $\state$ be a global state of the system and $\monstate$ be the current 
+monitor state. If there is at least one monitor $M_i$ such that $\forall p \in 
+\AP. ~ \sample_i^\state(ap) \neq \natural$, then we have $|\intersection| = 1$.
+\end{lemma}
+
+\begin{proof} 
+It is easy to verify that if there is a monitor $M_i$ such that $\forall p \in 
+\AP. \sample_i^\state(ap) \neq \natural$, then according to our definition, we 
+have $\pevent(\sample_i^\state) = \{\state\}$. Consequently, we have 
+$\verdict_i =  \{\delta(q, \state)\}$ and it follows that $|\intersection| = 
+1$.
+\end{proof}
+
+
+\subparagraph{Abstraction Function in Automata-Based Algorithm.} Here we define 
+the abstract local state $\abstate_i$ of a monitor $M_i$ to be the verdict set 
+$\verdict_i$ emitted by the monitor. Given the concrete local state 
+$\sample_i^\state $ of a monitor $M_i $ and the \LTLtri monitor 
+$\monitor^\varphi$ of an \LTL formula $\varphi$, the abstraction function first 
+computes the set of possible global states $\pevent(\sample_i^\state)$ from 
+viewpoint of monitor $M_i$, and then calculates the verdict set based on 
+$\pevent(\sample_i^\state)$. More formally
+
+\begin{tabbing}
+\= $\abstate_i = \absfunc_2(\pevent(\sample_i^\state), \monitor^\varphi) = \{\delta(\monstate, 
+\state')\}_{\state' \in \pevent(\sample_i^\state)} = \verdict_i$ \\
+\> $\pevent(\sample_i^\state) = \absfunc_1(\sample_i^\state) = $ \= $\{ \state' \in \alphabet \mid \forall ap \in \AP: 
+(\sample_i^s(ap) \neq \natural) \rightarrow$\\
+\>\> $( (\sample_i^s(ap) = \tru \rightarrow ap \in \state') \wedge  
+(\sample_i^s(ap) = \fals \rightarrow ap \notin \state') ) \}$
+\end{tabbing}
+where $\absfunc_1$ and $\absfunc_2$ are the abstraction functions. $\absfunc_1$ receives as input a concrete local state $\sample_i^\state$ and computes the set of all possible global states $\pevent(\sample_i^\state)$, and $\absfunc_2$ receives as input a set of global states and a monitor $\monitor_\varphi$, and returns the set of all monitor states in $\monitor_\varphi$ that can be reached by the given global states.
+
+
+\subparagraph{Local Computation Function in Automata-Based Algorithm.}The 
+local computation function $LC$ of a monitor $M_i$ calculates the intersection 
+of the messages (which are the verdict sets emitted by nonfaulty monitors) 
+received in $\Pi_i^r$, at each round $r$. Formally,
+$$\abstate_i^{r+1} = LC(\Pi_i^r) = \bigcap_{j \in [1, n]} \{ \abstate_j^r\} = 
+\bigcap_{j \in [1, n]} \{\verdict_j^r\}$$
+
+\subsection{Detailed Description of The Algorithm}
+
+Each local monitor $M_i \in \monitor$, $i \in [1, n]$, runs Algorithm 
+\ref{alg:localmonalgo2} that we shall describe in detail. For any given new 
+state $s_j$, monitor $M_i$ first obtains an initial concrete local state by 
+taking a sample from $s_j$ (cf. Line \ref{line:init2}). Recall 
+from Definition \ref{def:concretestate} that the value of an atomic proposition 
+in a concrete local state is either $\tru$, $\fals$, or $\natural$. After 
+obtaining the initial concrete local state, monitor $M_i$ computes the initial 
+abstract local state based on the initial concrete local state, by applying the 
+abstraction functions $\mu_1$ and $\mu_2$ (cf. Line 
+\ref{line:abst2}). After initialization, each 
+monitor $M_i$ executes a sequence of send, receive, and computation actions (cf. 
+Lines \ref{line:send2}-\ref{line:computation2}) for $f +1$ number of rounds.  In 
+Line \ref{line:send2}, monitor $M_i$ sends its current local state to all other 
+monitors in $\monitor$. In Line \ref{line:rec2}, it receives messages from other 
+monitors and stores them, along with its own message, in a set $\Pi_i^r$. In 
+line \ref{line:computation2}, which is the computation step, monitor $M_i$ 
+computes and updates its abstract local state based on the messages in 
+$\Pi_i^r$, by applying the local computation function $LC$ which simply 
+calculates the intersection of the verdict sets in  $\Pi_i^r$. Finally, after 
+$f+1$ rounds, the for-loop ends, and $M_i$ emits $\lambda(v_i) \in 
+\mathbb{B}_3$, where $\{v_i\} = LS_i^{f+2}$(cf. Line \ref{line:emit2}). \\
+
+\input{local_monitor_algo2} \ \ \ \
+
+Now let us look at the following example to see how each local monitor 
+implements Algorithm \ref{alg:localmonalgo2} to emit a verdict. In the following 
+example each monitor employs \LTLtri monitor $\monitor^\varphi$ of a given \LTL 
+formula $\varphi$, in order to compute an abstract local state based on its 
+concrete local state. 
+
+\textbf{Example:} Let $\varphi = \F (a \wedge b)$ 
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=4.8cm,
+                    semithick, initial text={}, initial where=right]
+  \tikzstyle{every state}=[scale=0.65, every node/.style={scale=0.65}]
+
+  \node[initial,state] (A)                {$\monstate_0$};
+  \node[state, accepting]         (B) [left of  = A] {$\monstate_\top$};
+
+  \path (A) edge              node {$ \{a,b\}$} (B)
+ 
+            edge [loop above] node {$\{a\}, \{b\}, \emptyset$} (A) ;
+        
+\end{tikzpicture}    
+\caption{\LTLtri monitor of $\varphi = \F(a \wedge b)$.}
+\end{figure}
+
+Consider $\monitor=\{M_1, M_2, M_3, M_4\}$, $s=\{a,b\}$, $S^s_1(a)=\tru$, 
+$S^s_1(b)=\natural$, $S^s_2(a)=\natural$, $S^s_2(b)=\tru$, $S^s_3(a) 
+=\natural$, $S^s_3(b) =\natural$,  $S^s_4(a) =\natural$, $S^s_4(b) =\natural$, 
+and let $f=2$. According to Algorithm \ref{alg:localmonalgo2}, each local 
+monitor $M_i$ computes an abstract local state $\abstate_i^1$ based on its 
+concrete local state using abstraction functions $\mu_1$ and $\mu_2$ (cf. Line 
+\ref{line:init2}). The initial abstract local states are given in Table below (sample).\\
+
+
+\begin{tabular}{| c |c |c |c|}
+\multicolumn{3}{c}{sample} \\
+\hline
+&$a$&$b$&$\abstate_i^1$\\
+\hline
+$M_1$ & $\tru$  & $\natural$ & $\{\monstate_0, \monstate_\top\}$\\
+$M_2$ & $\natural$ & $\tru$ &  $\{\monstate_0, \monstate_\top\}$\\
+$M_3$ & $\natural$ & $\natural$ &  $\{\monstate_0, \monstate_\top\}$ \\
+$M_4$ & $\natural$ & $\natural$ &  $\{\monstate_0, \monstate_\top\}$\\
+%$M_5$ & $\natural$ & $true$ \\
+\hline
+\end{tabular} 
+\quad
+\begin{tabular}{| c |c|}
+\multicolumn{2}{c}{round 1} \\
+\hline
+&$\abstate_i^2$\\
+\hline
+$M_1$ & crashed\\
+$M_2$ & $\{\monstate_0, \monstate_\top\}$\\
+$M_3$ & $\{\monstate_0, \monstate_\top\}$ \\
+$M_4$ & $\{\monstate_0, \monstate_\top\}$ \\
+%$M_5$ & $\natural$ & $true$ \\
+\hline
+\end{tabular}
+\quad
+\begin{tabular}{| c |c|}
+\multicolumn{2}{c}{round 2} \\
+\hline
+&$\abstate_i^3$\\
+\hline
+$M_1$ & crashed\\
+$M_2$ & crashed\\
+$M_3$ & $\{\monstate_0, \monstate_\top\}$ \\
+$M_4$ & $\{\monstate_0, \monstate_\top\}$ \\
+%$M_5$ & $\natural$ & $true$ \\
+\hline
+\end{tabular}
+\quad
+\begin{tabular}{| c |c|}
+\multicolumn{2}{c}{round 3} \\
+\hline
+&$\abstate_i^4$\\
+\hline
+$M_1$ & crashed\\
+$M_2$ & crashed\\
+$M_3$ & $\{\monstate_0, \monstate_\top\}$ \\
+$M_4$ & $\{\monstate_0, \monstate_\top\}$ \\
+%$M_5$ & $\natural$ & $true$ \\
+\hline
+\end{tabular} \\ \\
+
+$M_1$ knows that the value of proposition $a$ is true in \event~$\state$, but it 
+does not know the value of proposition $b$ in $\state$. Therefore, from its 
+viewpoint \event~$\state$ can be either $\{a\}$ or $\{a,b\}$. We say $\{a\}$ and 
+$\{a,b\}$ are possible global \events~from veiwpoint of $M_1$. Thus $M_1$'s 
+initial abstract local state is the verdict set $\abstate_1^1=\{\monstate_0, 
+\monstate_\top \}$ which includes the monitor states that can be reached by 
+\events~$\{a\}$ and $\{a,b\}$, as $\delta(\monstate_0, \{a\})=\monstate_0$ and 
+$\delta(\monstate_0, \{a,b\})=\monstate_\top$. Similarly, the possible global 
+\events~from viewpoint of monitor $M_2$ are $\{b\}$ and $\{a,b\}$, therfore its 
+initial abstract local state is the verdict set $\abstate_2^1=\{\monstate_0, 
+\monstate_\top \}$, which are the monitor states that can be reached by 
+\events~$\{b\}$ and $\{a,b\}$. $M_3$ and $M_4$ do not know the value of any 
+proposition in $\state$, thus from their viewpoint, all global states 
+$\emptyset$, $\{a\}$, $\{b\}$, and $\{a,b\}$ are possible to be the global state 
+$\state$, hence $\abstate_3^1= \abstate_4^1=\{\monstate_0, \monstate_\top\}$.
+
+Suppose monitor $M_1$ crashes at round $1$ and since it is the only monitor 
+which knows the value of proposition $a$, we assume its message is received by 
+at least one nonfaulty monitor, e.g. $M_2$. Therefore, after one round of 
+communication, each monitor updates its abstract local state by calculating the 
+intersection of its own verdict set with the verdict sets received from other 
+monitors (cf. Line \ref{line:computation2}): 
+
+ $\abstate_2^2 = \{\monstate_0, \monstate_\top\}$,
+ $\abstate_3^2 = \{\monstate_0, \monstate_\top\}$,
+ $\abstate_4^2 = \{\monstate_0, \monstate_\top\}$ 
+ 
+\noindent In round $2$, monitor $M_2$ crashes, and again, since it is the only 
+monitor whose abstract local state encapsualtes proposition $a$, its message 
+must be received by at least one monitor, e.g. $M_3$, at this round. The 
+abstract local states at the end of round $2$ will be updated as follows: 
+
+ $\abstate_3^3 = \{\monstate_0, \monstate_\top\}$,
+ $\abstate_4^3 = \{\monstate_0, \monstate_\top\}$ 
+
+
+\noindent Finally at round $3$, no monitor crashes and $M_4$ and $M_3$ receive 
+messages from each other and update their abstract local states:
+
+ $\abstate_3^4 = \{\monstate_0, \monstate_\top\}$,
+ $\abstate_4^4 = \{\monstate_0, \monstate_\top\}$ \\
+
+As we observe, at the end of round $3$ (namely, $f+1$), the local monitors still 
+cannot decide a single verdict since $|\abstate_i^4| > 1$. This is because the 
+\LTLtri monitor of $\varphi = \F (a \wedge b)$ is not sufficient to distinguish 
+the correct verdict when local monitors have partial view of the system. In 
+particular, monitors $M_3$ and $M_4$ both have $\{\monstate_0, 
+\monstate_\top\}$ as their verdicts, while $[\{a, b\} \models_3 \F(a 
+\wedge b)] = \top$. That is, the monitors cannot map their collective verdicts 
+to the verdict of a monitor that has the global view of the system. 
+
+
+In order to resolve this insufficiency, we introduce an algorithm that 
+constructs an `\Exltl'. The algorithm receives as input an \LTLtri monitor and 
+solely based on the structure of the input monitor, it determines whether to add 
+new monitor states to the original \LTLtri monitor. The \Exltl~then is used in 
+each local monitor $M_i$'s algorithm (Algorithm \ref{alg:localmonalgo2}) to 
+consistently solve the decentralized synchronous monitoring problem. As 
+described earlier, the intuition behind this algorithm is to monitor the system 
+under inspection by taking the intersection of the sets of verdicts emitted by a 
+set of distributed monitors. 
+
+\subsection{Synchronous Automata-Based Monitoring Using Extended \LTLtri 
+Monitor}
+\label{sec:SAMExltl}
+
+In this Section, first we present an algorithm to construct an 
+\Exltl~$\monitor_e^\varphi$ which can be used in Algorithm 
+\ref{alg:localmonalgo2} to solve the synchronous monitoring problem that was 
+described in Section \ref{sec:PS}, for any given \LTL formula $\varphi$. Then 
+we provide an example to show how $\monitor_e^\varphi$ is used in each local 
+monitor's algorithm to emit their verdicts and consistently monitor the system.
+
+\subsubsection{Extended \LTLtri Monitor Construction}
+\label{sec:ExltlConst}
+
+Let $\monitor^\varphi=\{\Sigma, Q, \delta, \monstate_0, F\}$ be the \LTLtri 
+monitor for \LTL formula $\varphi$. Our goal is to construct an 
+\Exltl~$\monitor_e^\varphi =  \{ \alphabet, Q_e, \monstate_0, \delta_e , 
+\lambda_e\}$ such that $|\intersection|=1$ at every monitor state $\monstate \in 
+Q_e$, where $\intersection$ is the intersection of the verdict sets emitted by a 
+set of distributed monitors whose partial views (namely, concrete local states) 
+cover the global state of the system under inspection (see Definition 
+\ref{def:state coverage}).
+
+\begin{definition}
+\label{def:Exltl}
+Let $\monitor^\varphi = \{ \alphabet, Q, \monstate_0, \delta , \lambda\}$ be the 
+\LTLtri monitor of an \LTL formula $\varphi$. An {\em \Exltl}~of $\varphi$ is a 
+deterministic finite state machine $\monitor^\varphi_e = \{ \alphabet, Q_e, 
+\monstate_0, \delta_e , \lambda_e\}$, where $Q_e$ is a set of states s.t. $Q 
+\subseteq Q_e$, $q_0$ is the initial state, $\delta_e: Q_e \times \alphabet 
+\rightarrow 2^{Q_e}$ is a transition function, and $\lambda_e : Q_e 
+\rightarrow \mathbb{B}_3 $ is a mapping function, such that (1) for every 
+non-empty finite trace $\alpha \in \alphabet^*$, we have $\lambda_e 
+(\delta_e(q_0, \alpha)) = \lambda (\delta(q_0, \alpha))$, and (2) at every 
+$\monstate \in Q_e$ we have $|\intersection| = 1$.
+\end{definition}
+
+Algorithm \ref{alg:extendedmonalg} constructs an \Exltl~given an \LTLtri monitor 
+$\monitor^\varphi$. \\
+
+\input{extendedmonalg} \ \ \ \
+
+
+\subsubsection{Detailed Description of Algorithm \ref{alg:extendedmonalg}}
+
+We now explain how Algorithm \ref{alg:extendedmonalg} constructs an 
+\Exltl~$\monitor_\varphi$ from an \LTLtri monitor $\monitor^\varphi$. As 
+described in Definition \ref{def:Exltl}, the goal is to construct a 
+deterministic finite state machine $\monitor^\varphi_e = \{ \alphabet, Q_e, 
+\monstate_0, \delta_e , \lambda_e\}$ such that $|\intersection| = 1$ at every 
+monitor state $\monstate \in Q_e$. Algorithm \ref{alg:extendedmonalg} first 
+initializes $Q_e$ with $Q$ (cf. Line \ref{line:initExl}). Then, for every 
+$\monstate_i \in Q$, it obtains the set of all outgoing transitions from 
+$\monstate_i$, which is denoted by $T_i$ (cf. Line \ref{line:outgoingtrans}). 
+Recall that $t_j^i = \{\state \in \alphabet ~ | ~ \delta (\monstate_i, \state) 
+= \monstate_j\}$ is a transition from monitor state $\monstate_i$ to  monitor 
+state $\monstate_j$. Two variables $N_j$ and $K_j$ are associated to every 
+transition $t^i_j \in T_i$ (cf. Line \ref{line:initNK}). $N_j$ keeps the number 
+of transitions in $T_i$ from which transition $t^i_j$ is \indist, and $K_j$ keeps the 
+number of transitions in $T_i$ that are \textit{\indist}~from transition 
+$t^i_j$. The notion of `\indist' is defined in Definition \ref{def:indisting} below. In Lines 
+\ref{line:indistingfrom}-\ref{line:indistingend}, the algorithm verifies for every 
+transition $t^i_k \in T_i \backslash \{t^i_j\}$ whether $t^i_j$ is \indist~from 
+$t^i_k$, and/or $t^i_k$ is \indist~form $t^i_j$, and updates $N_j$ and $K_j$, 
+respectively. If $N_j = 0$ it means that $t_j^i$ is \textit{\dist} from all 
+transitions in $T_i \backslash \{t_j^i\}$, thus there is no need to 
+\splt~$t_j^i$, therefore the algorithm proceeds to Lines 
+\ref{line:delta-update2}-\ref{line:lambda-update2}. In Lines 
+\ref{line:delta-update2} and \ref{line:lambda-update2} transition function 
+$\delta_e$ and mapping function $\lambda_e$ of the \Exltl~are updated by adding 
+transitions $\delta_e(\monstate_i, \state) = \monstate_j , \forall \state  \in 
+t_j^i$, and  the mapping $\lambda_e(\monstate_j) = \lambda(\monstate_j)$, 
+respectively.
+
+If $N_j > 0$ it means that there is at least one transition $t^i_k \in T_i 
+\backslash \{t^i_j\}$ such that $t_j^i$ is \indist~from $t_k^i$. In this case, 
+the Algorithm proceeds to Lines \ref{line:split}-\ref{line:lambda-update1}. in 
+Line \ref{line:split} transition $t_j^i$ is splitted into two new transitions 
+$t_{j1}^i$ and $t_{j2}^i$ by using the function \splitt. Function \splitt~ is 
+described below. In Line \ref{line:T-update}, the new transitions $t_{j1}^i$ and 
+$t_{j2}^i$  are added to the set of outgoing transitions $T_i$ from monitor 
+state $\monstate_i$ and $t_j^i$ is removed from $T_i$. In Line 
+\ref{line:monstate-update}, monitor state $\monstate_j$ is replaced by two new 
+monitor states $\monstate_{j1}$ and $\monstate_{j2}$ in $Q_e$. The transition 
+function $\delta_e$ is updated in Lines 
+\ref{line:delta-update0}-\ref{line:delta-newtrans1}. If the transition $t_j^i$ 
+is not a self-loop, i.e., $i \neq j$, then the transition function $\delta_e$ is 
+updated through Lines \ref{line:delta-oldtrans0}-\ref{line:delta-newtrans02}. If 
+$t_j^i$ is a self-loop, then $\delta_e$ is updated through Lines 
+\ref{line:delta-oldtrans1}-\ref{line:delta-newtrans1}, where the monitor state 
+$\monstate_i$ is practically replaced by $\monstate_{j1}$. Finally, in Lines 
+\ref{line:lambda-update0}-\ref{line:lambda-update1}, the mapping function 
+$\lambda_e$ is updated with the new mappings $\lambda_e(\monstate_{j1}) = 
+\lambda(\monstate_j)$ and $\lambda_e(\monstate_{j2}) = \lambda(\monstate_j)$.
+
+As mentioned earlier, when a transition $t_j^i$ is \splt ted into two 
+transitions $t_{j1}^0$ and $t_{j2}^0$, consequently two new monitor states 
+$\monstate_{j1}$ and $\monstate_{j2}$ are added to $\monitor_e^\varphi$. Note 
+that $\monstate_{j1}$ and $\monstate_{j2}$ have the same mapping  and the same 
+set of outgoing transitions as $\monstate_i$. Namely, $\lambda(\monstate_{j1}) 
+= \lambda(\monstate_{j2}) = \lambda(\monstate_i)$, and $T_{j1} = T_{j2} = T_i$. 
+This is in fact a necessary condition in order to have
+$$ [\alpha \models_3 \varphi] =  [\alpha \models_3^e \varphi]  $$ where $ [\alpha \models_3^e \varphi] \in \mathbb{B}_3$ denotes the valuation of any finite trace $\alpha$ according to an \Exltl.
+
+\begin{definition}
+\label{def:covered}
+
+We say state $\state$ is `covered' by transition $t$, and we denote it 
+by $\dep(\state, t)$, if we have:
+$$ \forall \ap \in \AP.~ \exists \state' \in t. ~(\ap \in \state 
+\Leftrightarrow \ap \in \state') $$
+
+\end{definition}
+
+
+\begin{definition}
+\label{def:indisting}
+We say a transition $t_1$ is `indistinguishable' from another transition 
+$t_2$, and denote it by $\indisting(t_1, t_2)$, if the following holds:
+$$\exists \state \in t_2 . ~ \dep(\state, t_1)$$
+
+Transition $t_1$ is \textit{\dist} from $t_2$, denoted by $\disting(t_1, t_2)$, if it is not \indist~form $t_2$.
+\end{definition}
+
+
+\subparagraph{Function \splitt} This function is in fact the main function in Algorithm \ref{alg:extendedmonalg}. Given a transition $t_j^i \in T_i$, it splits $t_j^i$ into two new transitions $t_{j1}^i$ and $t_{j2}^i$ such that the total number of transitions in $T_i \backslash \{t_j^i\}$ that are \indist~from $t_{j1}^i$ and transitions that are \indist~from $t_{j2}^i$, plus the total number of transitions in $T_i \backslash \{t_j^i\}$ from which $t_{j1}^i$ is \indist~and transitions from which $t_{j2}^i$ is \indist~is minimum. This is because we are interested in generating the minimum number of new transitions, and consequently minimum number of new monitor states. Hence, we can claim that an \Exltl~constructed by Algorithm \ref{alg:extendedmonalg} is optimum in the terms that $|Q_e|$ is minimum.
+This is done as follows; first all \textit{\partitionn}s of $t_j^i$ are calculated by function \partition~which is described below. Two variables $N_{jl}$ and $K_{jl}$ are used in function \splitt~where $N_{jl}$ is a counter for the total number of transitions in $T_i \backslash \{t_j^i\}$ from which $t_{j1}^i$ is \indist, and transitions from which $t_{j2}^i$ is \indist. $K_{jl}$ is a counter for the total number of transitions in $T_i \backslash \{t_j^i\}$ that are \indist~from $t_{j1}^i$, and transitions that are \indist~from $t_{j2}^i$. Function \splitt~calculates $N_{jl} + K_{jl}$ for all \partitionn s $\{t_{j1}^{i,l}, t_{j2}^{i,l}\} \in \partition$ and returns a \partitionn~with minimum value of $N_{jl} + K_{jl}$. 
+
+
+
+
+\subparagraph{Function \partition} Given a transition $t_j^i$, this function returns the set of all possible partitions $\{t_{j1}^i, t_{j2}^i\}$ such that:
+
+\begin{itemize}
+\item  $t_{j1}^i \cap t_{j2}^i = \emptyset$
+\item  $t_{j1}^i \cup t_{j2}^i = t_j^i$
+\end{itemize}
+
+It is easy to verify that the total number of such \partitionn s is equal to $\frac{2^{|t_j^i|}-2}{2}$. 
+
+Now we employ our \Exltl~in each local monitor's algorithm to consistently monitor the global state of the system. We replace the \LTLtri monitor $\monitor^\varphi$ in Algorithm \ref{alg:localmonalgo2} with an \Exltl. \\
+
+%\input{local_monitor_algo3}
+
+
+\subparagraph{Example} Let us construct an \Exltl~for $\varphi = \F (a \wedge 
+b)$ whose \LTLtri monitor is given in Fig. \ref{fig:exltl-example}(a).
+
+
+ \input{figs/Exltlexamp} 
+
+\ \   \ \
+
+
+We have $\monitor^\varphi = \{ \{a, b\}, \{\monstate_0, \monstate_\top\}, 
+\monstate_0, \delta, \lambda   \}$, where $\delta(\monstate_0, \{a\}) = 
+\delta(\monstate_0, \{b\}) = \delta(\monstate_0, \emptyset) = \monstate_0$ and 
+$\delta(\monstate_0, \{a, b\}) = \monstate_\top$. The set of outgoing 
+transitions from monitor state $\monstate_0$ is $T_0 = \{t_0^0, t_\top^0\}$, 
+where  $t_0^0 = \{\{a\}, \{b\}, \emptyset\}$ and $t_\top^0 = \{\{a,b\}\}$ are 
+the outgoing transitions from monitor state $\monstate_0$ to monitor states 
+$\monstate_0$ and $\monstate_\top$, respectively. We can verify that transition 
+$t_0^0$ is \indist~from $t_\top^0$ since there is a state $\{a, b\} \in 
+t_\top^0$ that is \covered~by transition $t_0^0$, i.e., $\dep (\{a, b\}, t_0^0) 
+= \tru$. But $t_\top^0$ is not \indist~from $t_0^0$. Therefore, we have $N_0 = 
+1$, $K_0 = 0$, $N_\top = 0$, and $K_\top = 0$. Since $N_0 > 0$, we \splt~$t_0^0$ 
+into two transitions $t_{01}^0$ and $t_{02}^0$. Different \partitionn s of 
+$t_0^0$ are as follows: 
+
+\begin{tabbing}
+\hspace{2cm}\= $t_{01}^{0,1} = \{\{a\}\}$ \hspace{1cm} \= $t_{02}^{0,1} = 
+\{\{b\}, \emptyset\}$ \\
+\> $t_{01}^{0,2} = \{\{b\}\}$ \> $t_{02}^{0,2} = \{\{a\}, \emptyset\}$ \\
+\> $t_{01}^{0,3} = \{\emptyset\}$ \> $t_{02}^{0,3} = \{\{b\}, \{a\}\}$ 
+\end{tabbing}
+
+Note that there are $\frac{2^{|t_0^0|}-2}{2} = 3$ different \partitionn s. For 
+each partition $t_{01}^{0,l}$ we calculate $N_{0l}$ and $K_{0l}$ as follows:
+
+
+\begin{tabbing}
+\hspace{2cm} \= $N_{01} = 0$ \hspace{1cm} \= $K_{01} = 0$ \\
+\> $N_{02} = 0$ \> $K_{02} = 0$ \\
+\> $N_{03} = 2$ \> $K_{03} = 1$
+\end{tabbing}
+
+We can verify that $\indisting(t_{02}^{0,3}, t_\top^0) = \tru$ and  
+$\indisting(t_{02}^{0,3}, t_{01}^{0,3}) =\tru$, therefore $N_{03} = 2$. Also 
+$\indisting(t_{02}^{0,3}, t_{01}^{0,3}) =\tru$ results in $K_{03} = 1$. As we 
+can see partitions $\{t_{01}^{0,1}, t_{02}^{0,1}\}$ and $\{t_{01}^{0,2}, 
+t_{02}^{0,2}\}$ are both optimum partitions as they result in minimal value for 
+$N_{0l} + K_{0l}$. Thus, we \splt~$t_0^0$ into two transitions $t_{01}^0 = 
+\{\{a\}\}$ and $t_{02}^0 = \{\{b\}, \emptyset\}$, and consequently add new 
+monitor states $\monstate_{01}$ and $\monstate_{01}$ to $\monitor_e$ (see 
+Figure \ref{fig:exltl-example}(b)). Since transition $t_0^0$ is a self-loop, 
+therefore monitor state $\monstate_0$ is replaced by monitor state 
+$\monstate_{01}$. The mapping function for the new monitor states is as follows:
+
+\begin{center}
+$\lambda(\monstate_{01}) = \lambda(\monstate_0) = ?$\\
+$\lambda(\monstate_{02}) = \lambda(\monstate_0) = ?$
+\end{center}
+
+\noindent It is easy to verify that there are no more \indist~transitions in 
+the monitor, therefore Figure \ref{fig:exltl-example} represents the final 
+\Exltl~for $\varphi = \F (a \wedge b)$. 
+
+
+\iffalse
+\subparagraph{Example} We repeat the example from Section \ref{sec:SAMltl3} and 
+this time we use \Exltl~in our algorithm.
+
+$$\varphi = \F(a \wedge b)$$
+
+
+Let $\monitor=\{M_1, M_2, M_3, M_4\}$, $s=\{a,b\}$, $S^s_1(a)=true$, 
+$S^s_1(b)=\natural$, $S^s_2(a)=\natural$, $S^s_2(b)=true$, $S^s_3(a) =\natural$, 
+$S^s_3(b) =\natural$,  $S^s_4(a) =\natural$, $S^s_4(b) =\natural$, and let 
+$f=2$. According to Algorithm \ref{alg:localmonalgo3}, each local monitor $M_i$ 
+computes an abstract local state $\abstate_i^1$ based on its concrete local 
+state using abstraction functions $\mu_1$ and $\mu_2$ (cf. Line 
+\fi
+
+
+We now repeat the example from Section~\ref{sec:SAMltl3} for formula $\varphi = 
+\F(a \wedge b)$ and this time we use \Exltl~in our algorithm (Algorithm 
+\ref{alg:localmonalgo2}). Let $\monitor=\{M_1, M_2, M_3, M_4\}$, $s=\{a,b\}$, 
+$S^s_1(a) = \tru$, $S^s_1(b)=\natural$, $S^s_2(a)=\natural$, $S^s_2(b)=\tru$, 
+$S^s_3(a) =\natural$, $S^s_3(b) =\natural$,  $S^s_4(a) =\natural$, $S^s_4(b) 
+=\natural$, and let $f=2$. According to Algorithm \ref{alg:localmonalgo2}, each 
+local monitor $M_i$ computes an abstract local state $\abstate_i^1$ based on its 
+concrete local state using abstraction functions $\mu_1$ and $\mu_2$ (cf. Line \ref{line:abst2}). Since all steps are as before except that we use \Exltl~in Algorithm \ref{alg:localmonalgo2}, we skip the details in order to avoid redundancy, and just recalculate the new verdict sets emitted by each local monitor (note that all local monitors are at the initial monitor state $\monstate_{01}$). 
+
+Verdict sets after obtaining initial concrete local states: 
+
+\begin{center}
+$\pevent (\sample_1^\state) = \{\{a\}, \{a,b\}\} \; \Rightarrow \; \abstate_1^1 
+= \verdict_1^1 =  \{\monstate_{02}, \monstate_\top\}$ 
+$\pevent (\sample_2^\state) = \{\{b\}, \{a,b\}\} \; \Rightarrow \; \abstate_2^1 
+= \verdict_2^1 =  \{\monstate_{01}, \monstate_\top\}$ 
+$\pevent (\sample_3^\state) = \{\{a\}, \{b\}, \{a,b\}\} \; \Rightarrow \;
+\abstate_3^1 = \verdict_3^1 =  \{\monstate_{01}, \monstate_{02}, 
+\monstate_\top\}$ 
+$\pevent (\sample_4^\state) = \{\{a\}, \{b\}, \{a,b\}\} \; \Rightarrow \;
+\abstate_4^1 = \verdict_4^1 =  \{\monstate_{01}, \monstate_{02}, 
+\monstate_\top\}$ 
+\end{center}
+
+At the end of round $1$: 
+
+\begin{center}
+$ \abstate_2^2 = \verdict_2^2 =  \{\monstate_\top\}$ \\
+$ \abstate_3^2 = \verdict_3^2 =  \{\monstate_{01}, \monstate_\top\}$ \\
+$ \abstate_4^2 = \verdict_4^2 =  \{\monstate_{01}, \monstate_\top\}$ 
+\end{center}
+
+
+At the end of round $2$: 
+
+\begin{center} 
+$ \abstate_3^3 = \verdict_3^3 =  \{\monstate_\top\}$ \\
+$ \abstate_4^3 = \verdict_4^3 =  \{\monstate_{01}, \monstate_\top\}$ 
+\end{center}
+
+
+
+At the end of round $3$: 
+
+\begin{center} 
+$ \abstate_3^4 = \verdict_3^4 =  \{\monstate_\top\}$ \\
+$ \abstate_4^4 = \verdict_4^4 =  \{\monstate_\top\}$ 
+\end{center}
+
+
+The following tables summarize the scenario:\\
+
+\begin{tabular}{| c |c |c |c|}
+\multicolumn{3}{c}{sample} \\
+\hline
+&$a$&$b$&$\abstate_i^1$\\
+\hline
+$M_1$ & $\tru$  & $\natural$ & $\{\monstate_{02}, \monstate_\top\}$\\
+$M_2$ & $\natural$ & $\tru$ &  $\{\monstate_{01}, \monstate_\top\}$\\
+$M_3$ & $\natural$ & $\natural$ &  $\{\monstate_{01},\monstate_{02}, 
+\monstate_\top\}$ \\
+$M_4$ & $\natural$ & $\natural$ &  $\{\monstate_{01}, \monstate_{02}, 
+\monstate_\top\}$\\
+%$M_5$ & $\natural$ & $true$ \\
+\hline
+\end{tabular} 
+\quad
+\begin{tabular}{| c |c|}
+\multicolumn{2}{c}{round 1} \\
+\hline
+&$\abstate_i^2$\\
+\hline
+$M_1$ & crashed\\
+$M_2$ & $\{\monstate_\top\}$\\
+$M_3$ & $\{\monstate_{01}, \monstate_\top\}$ \\
+$M_4$ & $\{\monstate_{01}, \monstate_\top\}$ \\
+%$M_5$ & $\natural$ & $true$ \\
+\hline
+\end{tabular}
+\quad
+\begin{tabular}{| c |c|}
+\multicolumn{2}{c}{round 2} \\
+\hline
+&$\abstate_i^3$\\
+\hline
+$M_1$ & crashed\\
+$M_2$ & crashed\\
+$M_3$ & $\{\monstate_\top\}$ \\
+$M_4$ & $\{\monstate_{01}, \monstate_\top\}$ \\
+%$M_5$ & $\natural$ & $true$ \\
+\hline
+\end{tabular} 
+
+\begin{tabular}{| c |c|}
+\multicolumn{2}{c}{round 3} \\
+\hline
+&$\abstate_i^4$\\
+\hline
+$M_1$ & crashed\\
+$M_2$ & crashed\\
+$M_3$ & $\{\monstate_\top\}$ \\
+$M_4$ & $\{\monstate_\top\}$ \\
+%$M_5$ & $\natural$ & $true$ \\
+\hline
+\end{tabular} \\ \\
+
+
+
+\noindent As we observe, at the end of round $3$ (namely, $f+1$), the abstract 
+local states of all nonfaulty monitors include the single monitor state 
+$\monstate_\top$, and therefore they both emit the same 
+\truthvalue~$\lambda(\monstate_\top) = \top$.
+
+
+
+\subsubsection{Proof of Correctness of Algorithm \ref{alg:localmonalgo2}}
+
+%\todo{What do you mean by completeness here? You only have to prove the 
+%requirement of your problem statement which is essentially soundness.}
+
+In order to prove the soundness of Algorithm \ref{alg:localmonalgo2}, we have to 
+prove that $|\mathcal{I}^{\monstate}| =1$ at every monitor state $\monstate \in 
+Q_e$. As described above, an \Exltl~is constructed such that at every monitor 
+state $\monstate \in Q_e$, every two outgoing transitions $t_j^\monstate$ and 
+$t_k^\monstate$ from monitor state $\monstate$ are \dist. Therefore, to prove 
+the soundness of Algorithm \ref{alg:localmonalgo2}, it suffices to prove the following theorem.
+
+
+
+\begin{theorem}
+\label{theorem:soundness}
+ If at every monitor state $\monstate \in Q_e$, every two outgoing transitions 
+$t_j^\monstate$ and $t_k^\monstate$ from monitor state $\monstate$ are \dist, 
+then we have $|\intersection| =1$. Formally
+$$(\forall t_j^\monstate , t_k^\monstate \in T_\monstate .~ \disting(t_j^\monstate , t_k^\monstate)) \Leftrightarrow |\intersection| =1$$ where $T_\monstate$ is the set of all outgoing transitions from monitor state $\monstate$.
+
+\end{theorem} 
+
+We prove theorem \ref{theorem:soundness} in two steps. First, we prove that
+
+$$(\forall t_j^\monstate , t_k^\monstate \in T_\monstate .~ \disting(t_j^\monstate , t_k^\monstate)) \Rightarrow |\intersection| =1$$
+
+Proof is by contradiction. Suppose every transition in $T_i$ is \indist~from all other transitions in $T_i$, and suppose $|\intersection| > 1$. Let $\state$ be the global state of the system and suppose $\delta(\monstate, \state) = \monstate_k$, therefore we know $\monstate_k \in \intersection$. Since $|\intersection| > 1$, thus there exists another monitor state $\monstate_j \in \intersection$. Since $\monstate_j \in \intersection$ therefore for every local monitor $M_i$ there exists an state $\state' \in t_j^\monstate$ that is possible to be the global state. We also assumed that the set of monitors satisfy the state coverage, thus for every $\ap \in \AP$, there exists monitor $M_i$ such that $\sample_i^\state(\ap) \neq \udef$. Formally:
+
+
+\begin{enumerate}
+\item $\forall \ap \in \AP. ~ \exists M_i \in \monitor.~ (\sample_i^{\state'}(ap) = \tru \rightarrow ap \in \state) \wedge  (\sample_i^{\state'}(ap) = \fals \rightarrow ap \notin \state) )$
+\item $\forall M_i \in \monitor.~ \exists \state' \in t_j^q.~ \state' \in \pevent_i$
+\end{enumerate}
+
+
+Therefore, for every $\ap \in \AP$ there exists $\state' \in t_j^\monstate$ such that $(\ap \in \state' \Leftrightarrow \ap \in \state)$, which means that $\state$ is \covered~by $t_j^\monstate$, and consequently $t_j^\monstate$ is \indist~from $t_k^\monstate$, which is a contadiction, hence the proof is complete.
+
+
+
+Now we have to prove that
+
+$$  |\intersection| =1   \Rightarrow  (\forall t_j^\monstate , t_k^\monstate \in T_\monstate .~ \disting(t_j^\monstate , t_k^\monstate))$$
+
+The proof, again, is by contradiction. Suppose $|\intersection| = 1$ and suppose there exist transitions $t_j^\monstate$ and $t_k^\monstate$ such that $\indisting(t_j^\monstate, t_k^\monstate) = \tru$. According to Definition \ref{def:indisting}, transition $t_j^\monstate$ 
+is \indist~from $t_k^\monstate$ if there exists an state $\state' \in t_k^\monstate$ 
+such that $\state'$ is \covered~by $t_j^\monstate$, i.e.,
+$$ \forall \ap \in \AP.~ \exists \state \in t_j^\monstate. ~(\ap \in \state' \Leftrightarrow \ap \in \state) $$
+
+Now consider the case where the global state of the system under inspection is $\state'$ and let us verify how the local monitors emit their verdicts. Recall from Section \ref{sec:SAMltl3}, that $\intersection$ is the intersection of all verdict sets emitted by the local monitors which have partial view (concrete local state) of the global state of the system, such that their concrete local states satisfy the state coverage (see Definition \ref{def:state coverage}). It is easy to verify that the worst case scenario, upon which an \Exltl~is constructed, is when each verdict set is emitted by a monitor which knows the value of at most one atomic proposition $\ap \in \AP$. Consider the global state $\state'$, since $\state' \in t_k^\monstate$ thus we have $\delta(\monstate, \state') = \monstate_k$, where $\monstate_k$ is the monitor state for which $t_k^\monstate$ is an incoming transition.  Therefore a local monitor $M_i$ which has full view of the state $\state'$, i.e., for every $\ap \in \AP$, $\sample_i^{\state'}(\ap) \neq \natural$, emits the verdict $\{\monstate_k\}$. However, in the worst case scenario, each local monitor only reads the value of one atomic proposition. In this case, we can verify that
+
+ $$\forall i \in [1, n].~ \monstate_j \in \verdict_i^1$$ where $\verdict_i^1$ is the verdict set emitted by monitor $M_i$ at round $1$ (recall from Algorithm \ref{alg:localmonalgo2} that $\verdict_i^1$ is calculated based on $M_i$'s concrete local state), and $\monstate_j$ is the monitor state for which $t_j^\monstate$ is an incoming transition. This holds because we have 
+
+$$ \forall \ap \in \AP.~ \exists \state \in t_j^\monstate. ~(\ap \in \state' \Leftrightarrow \ap \in \state) $$
+
+To see this more clearly, we need to recall the definition of the set of possible \events~$\pevent_i$ from viewpoint of a local monitor $M_i$,
+
+\begin{center}
+$\pevent(\sample_i^{\state'}) = \{ \state \in \alphabet ~|~ \forall ap \in \AP: (\sample_i^{\state'}(ap) \neq \natural) \rightarrow ( (\sample_i^{\state'}(ap) = \tru \rightarrow ap \in \state) \wedge  (\sample_i^{\state'}(ap) = \fals \rightarrow ap \notin \state) ) \} $
+\end{center}
+
+Now all we need to do is to show that
+
+$$\forall i \in [1, n].~ \exists \state \in t_j^\monstate . ~ \state \in \pevent_i$$
+ 
+and consequently, $\monstate_j \in \verdict_i^1$ for every $i \in [1, n]$.
+
+
+
+
+In order to prove the above statement we claim that
+$$ \nexists \ap \in \AP.~  (  \sample_i^{\state'} (\ap) \neq \natural )  \wedge (\nexists \state \in t_j^\monstate.~ (\ap \in \state' \Leftrightarrow \ap \in \state) ) $$ 
+
+
+Informally, for every local monitor $M_i$, there is an atomic proposition $\ap \in \AP$ such that $\sample_i^{\state'} = \natural$ (since we assumed no local monitor has the full view of the system), and there exists \event~$\state \in t_j^\monstate$ such that $(\ap \in \state' \Leftrightarrow \ap \in \state)$ (since $\state'$ is \covered~by $t_j^\monstate$). Therefore according to definition of $\pevent_i$, we have $\state \in \pevent_i$, and hence $\monstate_j \in \verdict_i^1$. Thus we proved that 
+
+
+$$ \indisting(t_j^\monstate, t_k^\monstate) \Rightarrow \exists \state \in t_k^\monstate. ~  \forall i \in [1, n].~ \{ (\exists \ap \in \AP.~ \sample_i^\state(\ap) = \natural ) \rightarrow  \monstate_j \in \verdict_i^1\}$$
+ 
+Therefore in the worst case scenario where no local monitor has the full view of the system, $\monstate_j$ will appear in the verdict set emitted by each monitor, and therefore $|\intersection| > 1$, which is a contradiction, and the proof is complete.
+
+
+Algorithm \ref{alg:extendedmonalg} constructs an \Exltl~$\monitor_e^\varphi$ such that at every monitor state $\monstate \in Q_e$, every outgoing transition is \dist~from all other outgoing transitions, and therefore $|\intersection| = 1$ at every $\monstate \in Q_e$. 
+
+
+\iffalse
+
+\subsubsection{Complexity of Algorithm \ref{alg:extendedmonalg}}
+
+
+Consider Algorithm \ref{alg:extendedmonalg}: given \LTLtri monitor $\monitor^\varphi$, the number of outgoing transitions from each monitor state $\monstate_i \in Q$ is $2^{|\AP|}$ in the worst case, i.e., $|T_i| \leqslant 2^{|\AP|}$ . For every two outgoing transitions $t_j^i$ and $t_k^i$, the algorithm checks whether $\indisting(t_j^i, t_k^i)$ and $\indisting(t_k^i, t_j^i)$ (cf. Lines \ref{line:indisting}-\ref{line:indistingend}), each of which costs $|AP|.|t_j^i|.|t_k^i|$. We should note that $|t_1^i| + |t_2^i| + \cdots + |t_{m_\monstate}^i| = |T_i|$. Therefore it is easy to verify that the total cost to prerform Lines \ref{line:indisting}-\ref{line:indistingend} is $O(2^{2^{|\AP|}})$. It also causes an exponential blow-up in time with respect to $|t_j^i|$ to split $t_j^i$ (cf. Lines \ref{line:split0}-\ref{line:lambda-update1}), as $\frac{2^{| t_j^i|}-2}{2}$ partitions are generated by function \partition. In total, Algorithm \ref{alg:extendedmonalg} will cost double exponential time with respect to $|\AP|$, i.e., $O(2^{2^{|\AP|}})$. In online monitoring since the monitor is generated only once, the complexity for monitor construction is usually negligible. However, the complexity of the monitor for checking an execution (e.g., Algorithm \ref{alg:localmonalgo2}) are of important interest, since the monitor is part of the running system and should cause a minimal loss on the response time of the system.
+
+\fi
+
+
+
+

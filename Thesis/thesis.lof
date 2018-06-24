@@ -1,0 +1,12 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces {\sc Ltl}\textsubscript {3}\xspace monitor for $\varphi = a \tmspace +\thinmuskip {.1667em} \mathbf {U}\tmspace +\thinmuskip {.1667em} b$.\relax }}{19}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces {\sc Ltl}\textsubscript {4}\xspace monitor of $\varphi _{ra}$.\relax }}{20}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces {\sc Ltl}\textsubscript {3}\xspace monitor of $\varphi = \mathbf {F}(a \wedge b)$.\relax }}{38}
+\contentsline {figure}{\numberline {4.2}{\ignorespaces {\sc Ltl}\textsubscript {3}\xspace monitor vs. Extended {\sc Ltl}\textsubscript {3}\xspace monitor\nobreakspace {}for $\varphi = \mathbf {F}(a \wedge b)$\relax }}{47}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Example: Monitors $M_1$ and $M_2$ monitoring formula $\varphi _{ra_2}$ from two different states $s_0$ and $s'_0$.\relax }}{61}
+\contentsline {figure}{\numberline {5.2}{\ignorespaces $\mathcal {M}_e^\varphi $ for $\varphi = \mathbf {F}(a \wedge b)$\relax }}{65}
+\addvspace {10\p@ }

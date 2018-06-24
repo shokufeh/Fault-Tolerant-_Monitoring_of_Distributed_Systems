@@ -1,0 +1,134 @@
+\relax 
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Decentralized Automata-Based Monitoring}{21}}
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{loa}{\addvspace {10\p@ }}
+\newlabel{chap:extended monitor}{{4}{21}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Synchronous Monitoring Algorithm Sketch}{22}}
+\newlabel{sec:DSM}{{4.1}{22}}
+\@writefile{toc}{\contentsline {subparagraph}{Algorithm sketch:}{23}}
+\newlabel{line:send}{{4}{24}}
+\newlabel{line:computation}{{6}{24}}
+\newlabel{line:emit}{{7}{24}}
+\@writefile{loa}{\contentsline {algocf}{\numberline {1}{\ignorespaces Behavior of Monitor $M_i$, for $i\in [1, n]$\relax }}{24}}
+\newlabel{alg:localmonalgo}{{1}{24}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Model of Computation and Terminology}{24}}
+\newlabel{sec:modelterm}{{4.2}{24}}
+\newlabel{def:concretestate}{{4.1}{24}}
+\newlabel{def:abs}{{4.2}{25}}
+\@writefile{toc}{\contentsline {subparagraph}{State Coverage:}{26}}
+\newlabel{def:state coverage}{{4.4}{26}}
+\@writefile{toc}{\contentsline {subparagraph}{Fault Model:}{26}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Problem Statement}{27}}
+\newlabel{sec:PS}{{4.3}{27}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}Challenges in Synchronous Monitoring}{28}}
+\newlabel{sec:challenge}{{4.4}{28}}
+\@writefile{toc}{\contentsline {subparagraph}{Example:}{28}}
+\citation{p77}
+\citation{bls11}
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}Synchronous Automata-based Monitoring}{32}}
+\newlabel{sec:SAM}{{4.5}{32}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Synchronous Monitoring Using {\sc  Ltl}\textsubscript  {3}\xspace  Monitors}{33}}
+\newlabel{sec:SAMltl3}{{4.5.1}{33}}
+\@writefile{toc}{\contentsline {subparagraph}{Notation:}{35}}
+\newlabel{lem:fullinfo}{{4.1}{35}}
+\@writefile{toc}{\contentsline {subparagraph}{Abstraction Function in Automata-Based Algorithm.}{35}}
+\@writefile{toc}{\contentsline {subparagraph}{Local Computation Function in Automata-Based Algorithm.}{36}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.2}Detailed Description of The Algorithm}{36}}
+\newlabel{line:init2}{{1}{38}}
+\newlabel{line:abst2}{{2}{38}}
+\newlabel{line:send2}{{4}{38}}
+\newlabel{line:rec2}{{5}{38}}
+\newlabel{line:computation2}{{6}{38}}
+\newlabel{line:emit2}{{7}{38}}
+\@writefile{loa}{\contentsline {algocf}{\numberline {2}{\ignorespaces Behavior of Monitor $M_i$, for $i\in [1, n]$\relax }}{38}}
+\newlabel{alg:localmonalgo2}{{2}{38}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces {\sc  Ltl}\textsubscript  {3}\xspace  monitor of $\varphi = \mathbf  {F}(a \wedge b)$.\relax }}{38}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.3}Synchronous Automata-Based Monitoring Using Extended {\sc  Ltl}\textsubscript  {3}\xspace  Monitor}{41}}
+\newlabel{sec:SAMExltl}{{4.5.3}{41}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.5.3.1}Extended {\sc  Ltl}\textsubscript  {3}\xspace  Monitor Construction}{41}}
+\newlabel{sec:ExltlConst}{{4.5.3.1}{41}}
+\newlabel{def:Exltl}{{4.6}{41}}
+\newlabel{line:initExl}{{1}{42}}
+\newlabel{line:everystate}{{2}{42}}
+\newlabel{line:outgoingtrans}{{3}{42}}
+\newlabel{line:everytrans}{{4}{42}}
+\newlabel{line:initNK}{{5}{42}}
+\newlabel{line:indisting}{{6}{42}}
+\newlabel{line:indistingfrom}{{7}{42}}
+\newlabel{line:fromindisting}{{9}{42}}
+\newlabel{line:indistingend}{{10}{42}}
+\newlabel{line:split0}{{11}{42}}
+\newlabel{line:split}{{12}{42}}
+\newlabel{line:T-update}{{13}{42}}
+\newlabel{line:monstate-update}{{14}{42}}
+\newlabel{line:delta-update0}{{15}{42}}
+\newlabel{line:delta-oldtrans0}{{16}{42}}
+\newlabel{line:delta-newtrans01}{{18}{42}}
+\newlabel{line:delta-newtrans02}{{19}{42}}
+\newlabel{line:delta-update1}{{20}{42}}
+\newlabel{line:delta-oldtrans1}{{21}{42}}
+\newlabel{line:delta-newtrans1}{{23}{42}}
+\newlabel{line:lambda-update0}{{24}{42}}
+\newlabel{line:lambda-update1}{{25}{42}}
+\newlabel{line:delta-update2}{{27}{42}}
+\newlabel{line:lambda-update2}{{28}{42}}
+\@writefile{loa}{\contentsline {algocf}{\numberline {3}{\ignorespaces Extended {\sc  Ltl}\textsubscript  {3}\xspace  monitor\nobreakspace  {}Construction\relax }}{42}}
+\newlabel{alg:extendedmonalg}{{3}{42}}
+\@writefile{loa}{\contentsline {algocf}{\numberline {4}{\ignorespaces Functions SPLIT\nobreakspace  {}and PARTITION\relax }}{43}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.5.3.2}Detailed Description of Algorithm 3\hbox {}}{43}}
+\newlabel{def:covered}{{4.7}{45}}
+\newlabel{def:indisting}{{4.8}{45}}
+\@writefile{toc}{\contentsline {subparagraph}{Function SPLIT}{45}}
+\@writefile{toc}{\contentsline {subparagraph}{Function PARTITION}{46}}
+\@writefile{toc}{\contentsline {subparagraph}{Example}{46}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces {\sc  Ltl}\textsubscript  {3}\xspace  monitor vs. Extended {\sc  Ltl}\textsubscript  {3}\xspace  monitor\nobreakspace  {}for $\varphi = \mathbf  {F}(a \wedge b)$\relax }}{47}}
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:exltl-example}{{4.2}{47}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.5.3.3}Proof of Correctness of Algorithm 2\hbox {}}{50}}
+\newlabel{theorem:soundness}{{4.1}{51}}
+\@setckpt{chap4}{
+\setcounter{page}{55}
+\setcounter{equation}{0}
+\setcounter{enumi}{2}
+\setcounter{enumii}{0}
+\setcounter{enumiii}{0}
+\setcounter{enumiv}{0}
+\setcounter{footnote}{0}
+\setcounter{mpfootnote}{0}
+\setcounter{part}{0}
+\setcounter{chapter}{4}
+\setcounter{section}{5}
+\setcounter{subsection}{3}
+\setcounter{subsubsection}{3}
+\setcounter{paragraph}{0}
+\setcounter{subparagraph}{0}
+\setcounter{figure}{2}
+\setcounter{table}{0}
+\setcounter{NAT@ctr}{0}
+\setcounter{parentequation}{0}
+\setcounter{lstnumber}{1}
+\setcounter{AlgoLine}{0}
+\setcounter{algocfline}{4}
+\setcounter{algocfproc}{4}
+\setcounter{algocf}{4}
+\setcounter{ALG@line}{4}
+\setcounter{ALG@rem}{4}
+\setcounter{ALG@nested}{0}
+\setcounter{ALG@Lnr}{3}
+\setcounter{ALG@blocknr}{17}
+\setcounter{ALG@storecount}{0}
+\setcounter{ALG@tmpcounter}{0}
+\setcounter{ContinuedFloat}{0}
+\setcounter{@todonotes@numberoftodonotes}{0}
+\setcounter{lips@count}{0}
+\setcounter{float@type}{8}
+\setcounter{subfigure}{2}
+\setcounter{subtable}{0}
+\setcounter{definition}{8}
+\setcounter{theorem}{1}
+\setcounter{lemma}{1}
+\setcounter{claim}{0}
+\setcounter{corollary}{0}
+\setcounter{lstlisting}{0}
+}

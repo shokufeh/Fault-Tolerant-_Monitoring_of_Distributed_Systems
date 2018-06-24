@@ -1,0 +1,45 @@
+\begin{figure}[H]
+\centering
+\begin{subfigure} [b] {0.4\linewidth}
+
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=4.8cm,
+                    semithick, initial text={}, initial where=right]
+  \tikzstyle{every state}=[scale=0.65, every node/.style={scale=0.65}]
+
+  \node[initial,state] (A)                {$\monstate_0$};
+  \node[state, accepting]         (B) [left of  = A] {$\monstate_\top$};
+ 
+  \path (A) edge              node {$ \{a,b\}$} (B)
+     
+            edge [loop above] node {$\{a\}, \{b\}, \emptyset$} (A) ;
+\end{tikzpicture}    
+\caption{$\monitor^\varphi$}
+\end{subfigure} 
+
+\hfill
+
+\begin{subfigure} [b] {0.4\linewidth}
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=4.8cm,
+                    semithick, initial text={}, initial where=right]
+  \tikzstyle{every state}=[scale=0.65, every node/.style={scale=0.65}]
+
+  \node[initial,state] (A)                {$\monstate_{01}$};
+  \node[state, accepting]         (B) [left of  = A] {$\monstate_\top$};
+  \node[state]         (D) [below of = B] {$\monstate_{02}$};
+
+  \path (A) edge              node {$ \{a,b\}$} (B)
+                 edge [loop above] node {$\{b\}, \emptyset$} (A)
+                 edge      [bend left=20]     node   {$\{a\}$} (D)
+        (B) edge [loop above] node {$\tru$} (B)
+        (D) edge                 node {$\{a,b\}$} (B)
+        (D) edge       [bend left=15]             node {$\{b\}, \emptyset$} (A)
+        (D) edge [loop below] node {$\{a\}$} (D);
+
+\end{tikzpicture}    
+\caption{$\monitor_e^\varphi$}
+\end{subfigure}
+\caption{\LTLtri monitor vs. \Exltl~for $\varphi = \F (a \wedge b)$}
+\label{fig:exltl-example}
+\end{figure}
+
+

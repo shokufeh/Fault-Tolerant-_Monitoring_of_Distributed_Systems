@@ -1,0 +1,265 @@
+% meta
+\newcommand{\integer}{\mathbb{Z}}                 % integer values
+\newcommand{\real}{\mathbb{R}}                    % real numbers
+\newcommand{\realpos}{\mathbb{R}_{\ge 0}}         % non-negative real numbers
+\newcommand{\integerpos}{\mathbb{Z}_{\ge 0}}      % non-negative integer values
+% variables
+\newcommand{\commondomain}{\mathcal{D}}
+\newcommand{\domain}[1]{\mathcal{D}(#1)}
+\newcommand{\valuations}[1]{\mathcal{V}(#1)}
+
+% time
+\newcommand{\timec}{\textnormal{\textsf{tc}}}                  % timing constraint 
+\newcommand{\timeval}{\mathbb{T}}                 % set of time values
+\newcommand{\lazy}{\textnormal{\texttt{l}}}       % urgency type lazy
+\newcommand{\delayable}{\textnormal{\texttt{d}}}  % urgency type delayable
+\newcommand{\eager}{\textnormal{\texttt{e}}}      % urgency type eager
+\newcommand{\clks}{\textnormal{\textsf{C}}}       % set of clocks
+\newcommand{\resetclks}{\textnormal{\textsf{R}}}  % set of clocks that are reset
+\newcommand{\val}{v}                              % valuation of the clocks
+\newcommand{\reset}{w}                            % reset date of the clocks w.r.t. a global clock
+\newcommand{\urg}{\textnormal{\textsf{urg}}}      % urgency predicate: true iff the guard is urgent
+\newcommand{\guard}{\textnormal{\textsf{guard}}}  % 
+\newcommand{\wait}{\textnormal{\textsf{wait}}}
+\newcommand{\untimed}{\textnormal{\textsf{u}}}    % untimed transitions
+\newcommand{\timed}{\textnormal{\textsf{t}}}      % timed transitions
+\newcommand{\guards}[1]{\textnormal{\textsf{TC(}}#1\textnormal{\textsf{)}}} % set of guards over a set of clocks
+\newcommand{\tpc}{\textnormal{\textsf{tpc}}}
+\newcommand{\inv}{\textnormal{\textsf{inv}}}
+% maths
+\newcommand{\pmax}[1]{\textbf{max} \ #1}
+\newcommand{\pmin}[1]{\textbf{min} \ #1}
+\newcommand{\ppmax}[2]{\textbf{max}_{#2} \ #1}
+\newcommand{\ppmin}[2]{\textbf{min}_{#2} \ #1}
+\newcommand{\false}{\textnormal{\texttt{false}}}
+\newcommand{\true}{\textnormal{\texttt{true}}}
+
+% \setlength{\textheight}{22cm}
+% \setlength{\textwidth}{15cm}e added.
+% \setlength{\topmargin}{1cm}
+% \setlength{\oddsidemargin}{.8cm}
+% \setlength{\evensidemargin}{.2cm}
+% \setlength{\voffset}{-1.4cm}
+
+\newcommand{\mycomment}[2]{\textbf{[#1 -- #2]}}
+\newcommand{\todo}[1]{\mycomment{#1}{TODO}}
+\newcommand{\ignore}[1]{}
+
+%\renewcommand\theenumi{\roman{enumi}}
+%\renewcommand\labelenumi{(\theenumi)}
+
+
+\newcommand{\shrinkm}{\vspace{-2mm}}
+\newcommand{\shrink}{\vspace{-5mm}}
+
+\newcommand{\phil}[1] {\marginpar{\small{{\tt phil:} #1 }}}
+\newcommand{\joseph}[1] {{{{\tt js:#1} }}}
+
+% BIP
+\newcommand{\ap}{\mbox{\ensuremath{\cal AI}}}
+\newcommand{\eq}[1]{(\ref{eq:#1})}
+\newcommand{\as}{\mbox{\ensuremath{\cal AS}}}
+\newcommand{\at}{\mbox{\ensuremath{\cal AT}}}
+\newcommand{\ac}[1][{}]{\mbox{\ensuremath{\cal AC_{#1}}}}
+\newcommand{\acs}{\ac{_{S}}}
+\newcommand{\act}{\ac{_{T}}}
+\newcommand{\im}{\mbox{\ensuremath{\cal IM}}}
+\newcommand{\re}{\mbox{\ensuremath{\cal RE}}}
+\newcommand{\synch}{\cdot}
+\newcommand{\degree}[1]{\##1}
+
+\newcommand{\valu}[1]{\mathbf{#1}}
+\newcommand{\arrow}[2]  {\xrightarrow[{\scriptsize #2}]{{\scriptsize #1}}}
+\newcommand{\goesto}[1][]{\stackrel{#1}{\rightarrow}}
+\newcommand{\goestog}[1][]{\stackrel{#1}{\rightarrow}}
+\newcommand{\pgoesto}[1][]{\stackrel{#1}{\leadsto}}
+\newcommand{\pgoestog}[1][]{\stackrel{#1}{\leadsto}}
+\newcommand{\goestop}[1][]{\stackrel{#1}{\rightarrow_B}}
+\newcommand{\longgoesto}[1][]{\stackrel{#1}{\rightarrow}}
+\newcommand{\longleadsto}[1][]{\stackrel{#1}{-\hspace{-4pt}\leadsto}}
+\newcommand{\prio}{\pi}
+\newcommand{\prioop}{\pi}
+\newcommand{\pleq}{\pi}
+\newcommand{\equivc}[1]{[#1]}
+
+
+\newcommand{\busyset}{Q^b}
+\newcommand{\oracle}{\mathcal{O}}
+\newcommand{\staticoracle}{\mathcal{O}_{static}}
+\newcommand{\lazyoracle}{\mathcal{O}_{lazy}}
+\newcommand{\dynoracle}{\mathcal{O}_{dyn}}
+\newcommand{\idealoracle}{\mathcal{O}_{ideal}}
+\newcommand{\safestate}{\mathcal{S}}
+\newcommand{\minsafestate}{\safestate_{min}}
+
+
+\newcommand{\ports}{\texttt{ports}}
+\newcommand{\interactions}{\texttt{interactions}}
+\newcommand{\support}{\texttt{support}}
+\newcommand{\busy}{\texttt{busy}}
+\newcommand{\stable}{\texttt{stable}}
+\newcommand{\busycomp}{\texttt{busycomp}}
+\newcommand{\ready}{\texttt{ready}}
+\newcommand{\enabled}{\texttt{enabled}}
+\newcommand{\disabled}{\texttt{disabled}}
+\newcommand{\disjoint}{\texttt{disjoint}}
+\newcommand{\pending}{\texttt{pending}}
+\newcommand{\initial}{\texttt{initial}}
+\newcommand{\depend}{\sqsubseteq}
+
+\newcommand{\bisim}{\approx}
+
+
+
+% general
+\newcommand{\eg}{\emph{e.g.} }
+\newcommand{\ie}{\emph{i.e.} }
+\newcommand{\apriori}{{\it a priori}}
+\newcommand{\picalc}{$\pi$-calculus}
+
+% syntax tables
+\newcommand{\syntaxdef}{\mathrel{::=}}
+\newcommand{\ou}{\;\;  \mid \;\; }
+
+\let\vec\widetilde
+% environments (not needed with lncs)
+% \newtheorem{theorem}{Theorem}
+% \newtheorem{remark}{Remark}
+% \newtheorem{example}{Example}
+% \newtheorem{fact}{Fact}[section]
+% \newtheorem{lemma}[fact]{Lemma}
+% \newtheorem{proposition}[fact]{Proposition}
+% \newtheorem{definition}[fact]{Definition}
+% \newtheorem{property}[fact]{Property}
+% \newtheorem{corollary}[fact]{Corollary}
+% \newtheorem{convention}{Convention}
+% \newtheorem{notation}{Notation}
+% \newtheorem{proof}{Proof}
+
+% rule name
+\newcommand{\hname}[1]{\textit{{\sc #1}}}
+
+% general mathematics
+\newcommand{\these}{\vdash}
+\newcommand{\eqdef}{\mathrel{\stackrel{\rm\mbox{\tiny $\Delta$}}{=}}}
+\newcommand{\size}[1]{\mid #1 \mid} % la taille d'un vecteur
+\newcommand{\indexvec}[1]{1..\size{\vec{#1}}}
+\newcommand{\powersetfm}{\mathcal{P}_m^f}  % parties finies d'un multiset
+\newcommand{\powersetf}{\mathcal{P}^f}  % parties finies d'un ensemble
+\newcommand{\powerset}{\mathcal{P}}
+\newcommand{\functions}{\mathcal{F}}
+\newcommand{\relations}{\mathcal{R}}
+\newcommand{\seqn}[1]{#1_{1},\ldots,#1_{n}}
+\newcommand{\set}[1]{ \{ #1 \} }
+\newcommand{\dom}{\texttt{dom}}
+\newcommand{\ran}{\texttt{ran}}
+\newcommand{\nat}{\mathbb{N}} % natural numbers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Calculus                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% general
+
+\newcommand{\chole}{\,\cdot\,}
+\newcommand{\fns}{\texttt{fn}}
+\newcommand{\econtap}[1]{\econt\set{#1}}   % evaluation context appl
+\newcommand{\econtapp}[1]{\econt'\set{#1}}   % evaluation context prime appl
+\newcommand{\econt}{\mathbf{E}} % evaluation context
+\newcommand{\ccont}{\mathbf{C}}  % context
+\newcommand{\ccontap}[1]{\ccont\set{#1}}   % context application
+
+% sets
+\newcommand{\names}{\mathsf{N}}
+\newcommand{\labels}{\mathsf{L}}
+
+% relations
+\newcommand{\red}{\rightarrow}
+
+% constructors
+\newcommand{\parop}{\mid}
+\newcommand{\nil}{\boldsymbol {0}}
+\def\new#1{\pep{\nu #1}}
+\newcommand{\doubleopensqbr}{\mbox{\rm [\hspace{-1.67pt}[}}
+\newcommand{\doubleclosesqbr}{\mbox{\rm ]\hspace{-1.67pt}]}}
+\newcommand{\tr}[1]{\doubleopensqbr #1 \doubleclosesqbr}
+\newcommand{\tri}[1]{\doubleopensqbr #1 \doubleclosesqbr^{-1}}
+\newcommand{\trr}[1]{\doubleopensqbr #1 \doubleclosesqbr^r}
+
+\def\pep#1{#1.}
+\def\scop#1{\pep{\nu #1}}
+
+\newcommand{\N}{\mathcal{N}} % set of names
+\newcommand{\La}{\mathcal{L}} % set of labels
+
+%%%%%%%%%%%%%%%%%%%%%
+% Pi-calculus       %
+%%%%%%%%%%%%%%%%%%%%%
+
+% sets
+\newcommand{\processes}{\mathsf{P}}
+\newcommand{\labprocesses}{\mathsf{LP}}
+\newcommand{\wflabprocesses}{\mathsf{WFP}}
+
+% metavariables
+\newcommand{\D}{D} % labelled process + set of labels
+\newcommand{\C}{C} % labelled process + set of labels
+\newcommand{\Pl}{\overline{P}} % labelled process
+\newcommand{\Ql}{\overline{Q}} % labelled process
+\newcommand{\Rl}{\overline{R}} % labelled process
+
+% functions and predicates
+\newcommand{\rad}{\mathrm{rad}}
+\newcommand{\labf}{\mathrm{lab}}
+\newcommand{\unl}{\mathrm{unl}}
+\newcommand{\wf}{\mathrm{wf}}
+
+
+%%%%%%%%%%%%%%%%%%%%%
+% pict              %
+%%%%%%%%%%%%%%%%%%%%%
+
+% sets
+\newcommand{\pictproc}{\mathsf{M}}
+\newcommand{\labpictproc}{\mathsf{LM}}
+\newcommand{\wflabpictproc}{\mathsf{WFM}}
+
+% relations
+\newcommand{\sred}{\leadsto}    % subreduction
+\newcommand{\reds}{\mapsto}
+\newcommand{\cor}{\preceq} % M implements P
+
+% metavariables
+\newcommand{\M}{\mathcal{M}} % machines
+\newcommand{\Hp}{\mathcal{H}} % heap
+\newcommand{\Pq}{\mathcal{P}} % runqueue
+\newcommand{\Hpl}{\overline{\mathcal{H}}} % labelled heap
+\newcommand{\Pql}{\overline{\mathcal{P}}} % labelled runqueue
+\newcommand{\Ml}{\overline{\mathcal{M}}} % labelled machines
+
+% fonctions et predicats
+\newcommand{\fresh}{\mathrm{fresh}}
+\newcommand{\freshn}{\mathrm{freshn}}
+% \newcommand{\mlist}[1]{[#1]}
+\newcommand{\psize}{\mathrm{size}}
+
+% constructors
+\newcommand{\mstate}[2]{\langle#1,#2\rangle}
+\newcommand{\mstatelab}[3]{\langle#1,#2,#3\rangle}
+\newcommand{\mstatefull}[3]{\langle#1,#2,#3\rangle}
+\newcommand{\mstatefulllab}[4]{\langle#1,#2,#3,#4\rangle}
+\newcommand{\empl}{\mathrel{[]}}  % emptlist
+\newcommand{\cons}{\mathrel{::}}  % cons
+\newcommand{\assoc}{\rightarrow}
+
+%\newcommand{\abs}{\texttt{abs}}
+%\newcommand{\fred}{\red^f}
+
+
+
+%\newcommand{\R}{\mathcal{R}} % machines
+
+%\newcommand{\pred}{\mathrm{pred}}
+%\newcommand{\tree}{\mathrm{tree}}
+\newcommand{\inc}{\parop}
+\newcommand{\lab}[1]{\langle#1\rangle}

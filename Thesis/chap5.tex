@@ -1,0 +1,464 @@
+\chapter{Decentralized Asynchronous Monitoring}
+\label{chap:DAM}
+
+
+
+
+
+
+This Chapter discusses the decentralized asynchronous monitoring problem in the presence of faulty monitors. The problem statement and the challenges in asynchronous monitoring are discussed in Sections \ref{sec:PSa} and \ref{sec:challenge-as}, respectively. Model of computation and terminology are presented in Section \ref{sec:model-as}. In Section \ref{sec:AMAltl3} we propose an automata-based algorithm which employs \LTLtri monitor to compute the verdict sets emitted by local monitors. Finally in Section \ref{sec:AMAExltl} we present an Algorithm that uses an \Exltl~to solve the decentralized asynchronous monitoring problem where local monitors emit their verdicts without any round of communication (i.e., accessing the shared memory).
+
+
+
+
+\iffalse
+We present an algorithm for asynchronous distributed fault-tolerant RV, where the monitors are asynchronous wait-free processes that any of them can fail by crashing. Similar to our synchronous model (Section \ref{sec:DSM}), each local monitor obtains a partial view (i.e., a concrete local state) of the system's global state. It communicates with other monitors through a shared memory and updates its knowledge, and then solely based on its partial view, emits a final verdict. We show how, given any \LTL formula and an \Exltl, a set of verdicts collectively provided by the local monitors can be used to compute the verdict computed by a centralized monitor that has full view of the system under scrutiny.
+\fi
+
+
+
+\section{Problem Statement}
+\label{sec:PSa}
+
+The system under inspection produces a finite trace $\alpha = \state_0 \state_1 \cdots \state_k$, and is inspected with respect to an \LTL formula $\varphi$ by a set $\monitor = \{ M_1, M_2, \cdots , M_n \}$ of asynchronous distributed wait-free monitors. The notion of wait-free distributed monitoring is formally introduced in \cite{bfrrt16} as follows.
+
+
+\begin{definition}
+\label{def:wait-free}
+By wait-free monitoring we mean that each monitor (1) runs at its own speed, that may vary along with time and (2) may fail by crashing (i.e., halt and never recover), thus a monitor never “waits” for another monitor (in order to avoid a livelock).
+\end{definition}
+
+
+For every $j \in [0, k-1]$, between each $\state_j$ and $\state_j+1$, each monitor $M_i \in \monitor$, $i \in 
+[1, n]$, in a wait-free manner: \\ 1. reads the value of propositions in $\state_j$, which may result in a partial observation of $\state_j$;\\
+2. repeatedly communicates its partial observation with other monitors through a single-writer/multi-reader shared memory; \\
+3. updates its knowledge resulting from the aforementioned communication, and \\
+4. evaluates $\varphi$ and emits a verdict based on its current knowledge. \\
+
+
+\input{local_monitor_algo4} \ \
+
+
+
+Each monitor $M_i$ in $\monitor$ is a process, and the monitors run in the standard asynchronous wait-free read/write shared memory model \cite{aw04}. We assume that up to $n-1$ monitors can crash. Every monitor that does not fail is required to emit a verdict. Hence, a distributed algorithm in this settings consists for each monitor in a bounded sequence of read/write accesses to the shared memory at the end of which a verdict is emitted. We thus assume without loss of generality that each monitor may access the shared memory a fixed number of times before emitting a verdict \cite{hkr13, bfrrt16}. 
+
+In our setting the assumption is that the set of monitors satisfy the state coverage. Thus if a proposition is read by only one monitor, then this monitor is supposed to send its information to at least one nonfaulty monitor before crashing. 
+
+Algorithm \ref{alg:localmonalgo4} represents the aforementioned asynchronous monitoring scenario. Our problem statement is that when a non-faulty monitor runs Algorithm~\ref{alg:localmonalgo4}, it should compute and emit a verdict such that it ensures consistent distributed monitoring. Namely, one has to be able to map a collective set of verdicts of monitors (for any execution interleaving) to one and only one verdict of a centralized monitor that has the full view $\state_j$. A necessary condition for this mapping is that, for every two finite traces  $\alpha, \alpha' \in \alphabet^\ast$, if $[\alpha \models_3 \varphi] \neq [\alpha' \models_3 \varphi] $ (or alternatively, $[\alpha \models_4 \varphi] \neq [\alpha' \models_4 \varphi] $), then the monitors in $\monitor$ should compute different collective sets of verdicts for $\alpha$ and $\alpha'$, regardless of their initial partial observation and different read/write interleavings.
+
+
+\section{Model of Computation and Terminology}
+\label{sec:model-as}
+For every state $\state_j$ in $\alpha = \state_0 \state_1 \cdots \state_k$, each monitor $M_i$ maintains a \localreg~$\LS_i$. Each \localreg~has $n$ registers, one per each monitor in $\monitor$. The local register of monitor $M_i$ associated with monitor $M_l$ for state $\state_j$ is denoted by $\LS_i^{\state_j}[l]$. Each register has $|AP|$ elements, one for each atomic proposition in $AP$. The monitors in $\monitor$ communicate by means of shared memory. The structure of the shared memory $\SM$ is as follows: for each state $\state_j$, $\SM^{\state_j}$ consists of $n$ atomic registers, one per monitor, and each register has $|AP|$ elements one for each atomic proposition (i.e, single-writer/multiple-reader (SWMR) registers). Thus, for state $\state_j$, each monitor $M_i$ can read the entire content of $\SM^{\state_j}$, but can only write into register $\SM_i^{\state_j}$. We assume that each monitor is aware of the change of state of the system under inspection. Thus, for a state $\state_j$, a monitor $M_i$ reads and writes in the associated local and shared memory locations, i.e., $\LS_i^{\state_j}$ and $\SM^{\state_j}$. \\ 
+
+
+\subparagraph{The asynchronous monitoring algorithm.}  Each monitor $M_i \in \monitor$ , $i \in [1, n]$, runs Algorithm \ref{alg:localmonalgo4}. For any given new state $\state_j$, Monitor $M_i$ first initializes all elements of its \localreg~to $\natural$ (cf. Line \ref{line:init4}). Then, $M_i$ takes a sample from state $\state_j$ and obtains a concrete local state $\sample_i^{\state_j}$(cf. Line \ref{line:sample4}). Recall from Definition \ref{def:concretestate} that the value of an atomic proposition in a concrete local state is either $\tru$, $\fals$, or $\natural$. We assume that the set of monitors satisfy the state coverage whose definiton was presented in Chapter \ref{chap:extended monitor}. The set of values in the concrete local state is copied in \localreg~$\LS_i^{\state_j}$. Then each monitor $M_i$ executes a sequence of write/read actions (cf. Lines \ref{line:write4} and \ref{line:snapshot4}) for some a priori known number of times. in Line  \ref{line:write4}, it atomically writes the content of its \localreg~$\LS_i^{\state_j}$ into its associated register $\SM_i^{\state_j}$ in the shared memory. In Line \ref{line:snapshot4}, $M_i$ reads of all the registers in $\SM_i^{\state_j}$, and copies them into $\LS_i^{\state_j}$, in a single atomic step.
+
+
+
+\section{Challenges in Asynchronous Monitoring}
+\label{sec:challenge-as}
+
+
+In \cite{bfrrt16} it is shown that \RVLTL is not sufficient to consistenly monitor the global system state in a distributed asynchronous environment. To overcome this insufficiency, they introduced a family of multi-valued logics (called \LTLk), for every $k \geqslant 0$, where $k$ relates to the notion of alternation number which is introduced and formally defined in \cite{bfrrt16}.  
+
+We use the example from \cite{bfrrt16} and we show how each local monitor runs Algorithm \ref{alg:localmonalgo4} and emits a verdict from $\mathbb{B}_4$ based on the final content of its \localreg. \\
+
+
+
+
+
+\subparagraph{Example}
+Let $\monitor = \{M_1, M_2\}$ and consider the formula for two requests and  
+acknowledgments: 
+\[
+\varphi_{ra_2} = \Big(\G(\neg a_1 \wedge \neg r_1) \, \vee \, [(\neg a_1 \, 
+\U \, r_1) \, \wedge \, \F a_1]\Big)\, \wedge \, \Big(\G(\neg a_2 \wedge \neg 
+r_2) \, \vee \, [(\neg a_2 \, \U \, r_2) \,\wedge \, \F a_2]\Big)
+\]
+Fig.~\ref{fig:example1} shows different execution interleavings of monitors 
+$M_1$ and $M_2$ when running Algorithm~\ref{alg:localmonalgo} from states 
+$\state_0  = \{r_1, a_1\}$ and $\state_0' = \{r_1, a_1, r_2\}$. Based on the 
+order of monitor write-snapshot actions: $M_1, M_2$ (resp., $M_2, M_1$) denotes 
+the case where monitor $M_1$ (resp., $M_2$) executes a write-snapshot before 
+monitor $M_2$ (resp., $M_1$) does, and $M_1|| M_2$ denotes the case where 
+monitors $M_1$ and $M_2$ execute their write-snapshot actions concurrently. In 
+case of $\state_0$, after executing Line~\ref{line:sample4} of 
+Algorithm~\ref{alg:localmonalgo4}, monitor $M_1$'s sample, i.e., the local 
+snapshot $\LS_1^{\state_0}[1]$, consists of $\sample_1^{\state_0}(r_1) = \tru$,  
+$\sample_1^{\state_0}(a_1) = \udef$, and $\sample_1^{\state_0}(r_2) = 
+\sample_1^{\state_0}(a_2) = \fals$. Moreover, initially, $M_1$ has no knowledge 
+of $M_2$'s sample. Monitor $M_2$'s sample from $\state_0$, i.e., the local 
+snapshot $\LS_2^{\state_0}[2]$, consists of $\sample_2^{\state_0}(r_1) = 
+\sample_2^{\state_0}(a_1) = \tru$, $\sample_2^{\state_0}(r_2)=\udef$, and 
+$\sample_2^{\state_0}(a_2)= \fals$ while it initially has no knowledge of 
+$M_1$'s sample. Likewise, for state $\state'_0$, Fig.~\ref{fig:example1} 
+shows different local snapshots by $M_1$ and $M_2$. Given two values $v_1$ and 
+$v_2$, we define (an arbitrary) extrapolation function as follows:
+\begin{equation*}
+%\label{eq:fra}
+\extr_\ap(v_1, v_2) = \begin{cases}
+\tru   & \mbox{if } (v_1=\tru)  \, \vee \, (v_2=\tru) \\
+\fals & \mbox{otherwise} \end{cases} 
+\end{equation*}
+where $\ap \in \{a_1, r_1, a_2, r_2\}$.
+% The intuition behind this is that if some monitor observes a request, say 
+% $r_1$, (respectively, an acknowledgment, say $a_1$), then this 
+% request (respectively, acknowledgment) exists; i.e., $r_1 = \tru$ 
+% (respectively, $a_1 = \tru$). Otherwise, the request (respectively,
+% acknowledgment) does not exist; i.e $r_1 = \fals$ (respectively, $a_1 = 
+% \fals$).
+Finally, starting from $\state_0$, if (1) the for loop of 
+Algorithm~\ref{alg:localmonalgo4} terminates after 1~communication round, and 
+(2) the interleaving is $M_1, M_2$, then $\extr(\llbracket \LS_2^{\state_0} \rrbracket) 
+= \{r_1, a_1\}$, and  evaluation of $\varphi_{ra_2}$ by $M_2$ in \LTLfour 
+results in $[\extr(\llbracket \LS_2^{\state_0} \rrbracket) \models_4 \varphi_{ra_2}] = 
+\top_p$. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% EXAMPLE 
+\input{example1}
+
+
+Note that $v_0$ and $v'_0$ denote the sets of verdict emitted by monitors at states $\state_0$ and $\state'$, respectively. 
+
+
+We observe that \LTLfour is not sufficienet to consistently monitor all \LTL 
+formulas. We can see that in Fig.~\ref{fig:example1}, the shaded 
+collective verdicts $v_0$ and $v'_0$ are both equal to $\{\bot_p, \top_p\}$, 
+but $[\state_0 \models_4 \varphi] \neq [\state'_0 \models_4 \varphi]$. Therefore it violates the condition that, if $[\alpha \models_4 \varphi] \neq [\alpha' \models_4 \varphi] $, then the monitors in $\monitor$ should compute different collective sets of verdicts for $\alpha$ and $\alpha'$.  
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Asynchronous Automata-Based Monitoring Algorithm Using \LTLtri Monitor}
+\label{sec:AMAltl3}
+
+
+
+In this Section, we present a new approach to solve the asynchronous monitoring problem in a failure-prone distributed environment utilizing the idea of computing the intersection of the verdict sets emitted by the distributed monitors.
+
+We use the abstraction functions and the local computation function that were defined in Chapter \ref{chap:extended monitor}. We modify Algorithm \ref{alg:localmonalgo4} as follows; After a number of read/write accesses to the shared memory, each local monitor $M_i$ computes a verdict set $\verdict_i^{\state_j}$ based on its \localreg~$\LS_i^{\state_j}$, where $\verdict_i^{\state_j}$ is defined as follows:
+
+
+\begin{center}
+
+                $\verdict_i^{\state_j}= \absfunc_2(\pevent(\LS_i^{\state_j})) = \{\delta(\monstate, \state)\}_{\state \in \pevent(\LS_i^{\state_j})} $ \\
+                $  \pevent(\LS_i^{\state_j}) = \absfunc_1(\LS_i^{\state_j}, \monitor^\varphi) = \{ \state \in \alphabet ~|~ \forall ap \in \AP: (\LS_i^{\state_j}(ap) \neq \natural) \rightarrow ( (\LS_i^{\state_j}(ap) = \tru \rightarrow ap \in \state_j) \wedge  (\LS_i^{\state_j}(ap) = \fals \rightarrow ap \notin \state_j) ) \} $
+\end{center}
+where $\absfunc_1$ and $\absfunc_2$ are the abstraction functions. In fact each monitor $M_i$ emits a set of all monitor states that can be reach by any of possible global states from viewpoint of $M_i$, i.e., by any $\state \in \pevent(\LS_i^{\state_j})$ (cf. Line \ref{line:emit5}).\\
+
+
+
+\input{local_monitor_algo5} \ \ 
+
+
+
+As we see in Line \ref{line:round5} of the Algorithm $r \geqslant 1$, i.e., each monitor has at least one read/write access to the shared memory before emitting a verdict. Thus there is at least one monitor (the one that accesses the shared memory last) that has the full view of state $\state_j$ before emitting its verdict. According to Lemma \ref{lem:fullinfo}, If there is at least one monitor $M_i$ such that $\forall p \in 
+\AP. ~ \sample_i^\state(ap) \neq \natural$, then we have $|\intersection| = 1$, where $\monstate$ is the current monitor state. Therefore we claim that, at every monitor state $\monstate \in Q$, the intersection of the verdict sets emitted by all local monitors (obviously the ones that have not crashed) includes only the monitor state $\monstate_c$ where $\delta(\monstate, \state_j) = \monstate_c$, and we have:
+
+$$[\state_0 \cdots \state_j \models_3 \varphi] = \lambda (\monstate_c)$$  \\ 
+
+Therefore, regardless of initial partial observations of the local monitors and different read/write interleavings, a set of verdicts collectively provided by the local monitors can be used to compute the verdict computed by a centralized monitor that has full view of the system under scrutiny.
+
+
+
+\section{Asynchronous Automata-Based Monitoring Algorithm Using Extended \LTLtri Monitor}
+\label{sec:AMAExltl}
+
+
+In Algorithm \ref{alg:localmonalgo5} each monitor is required to access the shared memory at least once, i.e., $r \geqslant 1$ (see Line \ref{line:round5}). As we observed in Section \ref{sec:AMAltl3} this is in fact a necessary condition to ensure that there is at least one monitor that obtains the full view of the global state of the system before emitting its verdict. In this section we present an Algorithm that can solve our asynchronous monitoring problem without any round of communication (i.e., accessing the shared memory). This is done by employing an \Exltl~that we introduced in Chapter \ref{chap:extended monitor}, in each local monitor's algorithm. \\
+
+
+\input{local_monitor_algo6} \ \
+
+
+Recall that we assumed the set of local monitors (namely, their concrete local states) satisfy the state coverage. As described in Chapter \ref{chap:extended monitor}, an \Exltl~is constructed based on the worst case scenario where each local monitor reads the value of at most one atomic proposition, and we also recall that if each monitor uses an \Exltl~to calculate its verdict set, then we always have $|\intersection| =1$ at every monitor state $\monstate \in Q_e$, where $\intersection$ is the intersection of all verdict sets emitted by all monitors in $\monitor$. Therefore Algorithm \ref{alg:localmonalgo6} always computes the same verdict that is computed by a centralized monitor that has full view of the system, regardless of initial partial observations of the local monitors.
+
+
+Let us look at the following example to see how Algorithm \ref{alg:localmonalgo6} is employed by local monitors to emit their verdict sets.
+
+
+
+\subparagraph{Example} Let $\varphi = \F (a \wedge b)$ whose \Exltl~is given below: \\
+
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=4.8cm,
+                    semithick, initial text={}, initial where=right]
+  \tikzstyle{every state}=[scale=0.65, every node/.style={scale=0.65}]
+
+  \node[initial,state] (A)                {$\monstate_0$};
+  \node[state, accepting]         (B) [left of  = A] {$\monstate_\top$};
+  \node[state]         (D) [below of = B] {$\monstate_1$};
+
+  \path (A) edge              node {$ \{a,b\}$} (B)
+                 edge [loop above] node {$\{b\}, \emptyset$} (A)
+                 edge      [bend left=20]     node   {$\{a\}$} (D)
+        (B) edge [loop above] node {$\tru$} (B)
+        (D) edge                 node {$\{a,b\}$} (B)
+        (D) edge       [bend left=15]             node {$\{b\}, \emptyset$} (A)
+        (D) edge [loop below] node {$\{a\}$} (D);
+
+\end{tikzpicture}    
+\caption{$\monitor_e^\varphi$ for $\varphi = \F (a \wedge b)$} 
+\end{figure}
+\label{fig:exltla&b}
+
+
+Suppose monitors are at monitor state $\monstate_0$, and let $\state= \{a, b\} $. The following tables represent each monitor $M_i$'s initial \localreg~$\snap_i^\state$ and its verdict set $\verdict_i$ calculated based on only $\snap_i^\state$.
+
+
+
+ \begin{tabular}{|c|c|c|c|}
+   \multicolumn{1}{r}{} &  \multicolumn{2}{c}{ {$\snap_1^\state$}}\\
+\hline
+  & $M_1$ & $M_2$ & $M_3$\\
+ \hline
+   $a$ & $\tru$ & $\udef$ & $\udef$\\
+   $b$ & $\udef$ & $\udef$ & $\udef$\\
+\hline
+  $\verdict_1$  &  \multicolumn{3}{c|}{\cellcolor{gray!25}$\{\monstate_1, \monstate_\top\}$}\\
+\hline
+  \end{tabular}  
+\quad
+ \begin{tabular}{|c|c|c|c|}
+   \multicolumn{1}{r}{} &  \multicolumn{2}{c}{ {$\snap_2^\state$}}\\
+\hline
+  & $M_1$ & $M_2$ & $M_3$\\
+ \hline
+   $a$ & $\udef$ & $\udef$ & $\udef$\\
+   $b$ & $\udef$ & $\tru$ & $\udef$\\
+\hline
+  $\verdict_2$  &  \multicolumn{3}{c|}{\cellcolor{gray!25}$\{\monstate_0, \monstate_\top\}$}\\
+\hline
+  \end{tabular}
+\quad
+ \begin{tabular}{|c|c|c|c|}
+   \multicolumn{1}{r}{} &  \multicolumn{2}{c}{ {$\snap_3^\state$}}\\
+\hline
+  & $M_1$ & $M_2$ & $M_3$\\
+ \hline
+   $a$ & $\udef$ & $\udef$ & $\udef$\\
+   $b$ & $\udef$ & $\udef$ & $\udef$\\
+\hline
+  $\verdict_3$  &  \multicolumn{3}{c|}{\cellcolor{gray!25}$\{\monstate_0, \monstate_1, \monstate_\top\}$}\\
+\hline
+  \end{tabular}   \\ \\
+
+
+
+
+And by calculating the intersection of the verdict sets we obtain $\mathcal{I}^\monstate_0 = \monstate_\top$, which is the verdict that a centralized monitor that has full view of state $\state = \{a, b\}$ would compute. Note that a verdict form $\mathbb{B}_3$ can be emitted simply by applying the mapping function $\lambda_e$, i.e., by calculating $\lambda_e(v)$ where $v \in \intersection$, which in this example is $\lambda_e(\monstate_\top) = \top$.
+
+
+
+
+
+
+
+
+
+\iffalse
+
+\begin{tabular}{| c |c |c |c|}
+\multicolumn{4}{c}{$M_1$} \\
+\hline
+&$M_1$&$M_2$ & $M_3$\\
+\hline
+$a$ & $true$ & $\natural$ & $\natural$ \\
+$b$ & $\natural$ & $\natural$ & $\natural$\\
+\hline
+\end{tabular}  
+\quad
+\begin{tabular}{| c |c |c |c|}
+\multicolumn{4}{c}{$M_1$} \\
+\hline
+&$M_1$&$M_2$ & $M_3$\\
+\hline
+$a$ & $\natural$ & $\natural$ & $\natural$ \\
+$b$ & $\natural$ & $true$ & $\natural$\\
+\hline
+\end{tabular}  
+\quad
+\begin{tabular}{| c |c |c |c|}
+\multicolumn{4}{c}{$M_1$} \\
+\hline
+&$M_1$&$M_2$ & $M_3$\\
+\hline
+$a$ & $\natural$ & $\natural$ & $\natural$ \\
+$b$ & $\natural$ & $\natural$ & $\natural$\\
+\hline
+\end{tabular}  \\ \\
+
+
+
+
+
+
+
+
+\subsection{The Overall Idea of The Automata-Based Algorithm}
+
+
+
+We first introduce an algorithm that constructs an `\textit{\Exltl}'. The algorithm receives as input an \LTLtri monitor and solely based on the structure of the input monitor, it may add new monitor states to the original \LTLtri monitor. The \Exltl~ then is used in each local monitor $M_i$'s algorithm to consistently solve the decentralized asynchronous monitoring problem. As we will describe further, the intuition behind this algorithm is to monitor the system under inspection by taking the intersection of the sets of verdicts emitted by a set of distributed monitors. 
+
+
+Let $\monitor^\varphi=\{\Sigma, Q, \delta, \monstate_0, F\}$ be the \LTLtri monitor for \LTL formula $\varphi$. Our goal is to construct an \Exltl~ $\monitor_e^\varphi =  \{ \alphabet, Q_e, \monstate_0, \delta_e , \lambda_e\}$ such that $|\intersection|=1$ at every monitor state $\monstate \in Q_e$.
+
+
+
+\begin{definition}
+ Let $\monitor^\varphi = \{ \alphabet, Q, \monstate_0, \delta , \lambda\}$ be the \LTLtri monitor for an \LTL formula $\varphi$. The \Exltl~ of $\varphi$ is the unique deterministic finite state machine $\monitor^\varphi_e = \{ \alphabet, Q_e, \monstate_0, \delta_e , \lambda_e\}$, where $Q_e$ is a set of states s.t. $Q \subseteq Q_e$, $q_0$ is the initial state, $\delta: Q_e \times \alphabet \rightarrow 2^Q_e $ is the transition function, and $\lambda_e : Q_e \rightarrow \mathbb{B}_3 $ is a mapping function, such that (1) for every non-empty finite trace $\alpha \in \alphabet^*$, we have $\lambda_e (\delta_e(q_0, \alpha)) = \lambda (\delta(q_0, \alpha))$, and (2) at every $\monstate \in Q_e$ we have $|\intersection| = 1$.
+\end{definition}
+
+Algorithm \ref{alg:extendedmonalg} constructs \Exltl. 
+
+
+\input{extendedmonalg}
+
+
+
+
+\newpage
+
+\subsection*{Results}
+
+
+
+
+\begin{lemma}
+Let $f^r$ be the number of crashes at round $r$. The following holds:
+
+`number of different local states obtained by monitors at round $r$' $\leq$ $min\{f^r+1, |AP|+1\}$
+\end{lemma}
+
+
+Let $M_r \subseteq M$ be the set of remaining monitors at the begining of round $r$, and $f_r$ be the number of crashes at round $r$.
+
+\begin{lemma}
+If $f_r<2$ or $|M_r| - f_r<2$ then at least one monitor knows the value of all propositions at the end of round r, i.e., $\exists M_i \in M_r$ such that  $\forall p_j \in AP$ we have $S^s_i(p_j) \neq \natural$. 
+\end{lemma}
+
+
+Let $V_i$ be the verdict set emitted by monitor $M_i$, and $I_r$ be the intersection of all verdict sets emitted by nonfaulty monitors at round $r$. 
+
+\begin{lemma}
+if $\exists M_i\in M_r$ such that  $\forall p_j\in AP$. $S^s_i(p_j) \neq \natural$, then we have $|I_r|=1$.
+\end{lemma}
+
+
+\begin{lemma}
+If $nf<|AP|$ where $n\geq 1$, then there exists at least one monitor which knows the value of at least $n+1$ propositions.
+\end{lemma}
+
+
+\begin{lemma}
+If $\forall r. (f_r\geq 2  \wedge  |M_r|-f_r\geq 2)$, then we have $|I_r|\neq1$ for every $r$ where $r < f +1$.
+\end{lemma}
+
+%\begin{lemma}
+%In a synchronous system with up to $t$ crash failures solving consensus requires at least $t+1$ rounds (Ref3, Ref5).
+%\end{lemma}
+
+\begin{lemma}
+Solving fault-tolerant distributed monitoring (FTDM) problem in a synchronous system with up to $t$ crash failures requires $f+1$ rounds.
+\end{lemma}
+
+\begin{lemma}
+Increasing the number of rounds does not improve the minimum number of new monitor states required in the extended $LTL_3$ monitor.
+\end{lemma}
+
+\textit{Note:} The extended $LTL_3$ monitor for $\varphi$ is the monitor that we construct from the $LTL_3$ monitor of $\varphi$ to solve the synchronous fault-tolerant distributed monitoring in only one round of communication.
+
+
+\begin{lemma}
+
+If there are exactly $f$ faulty monitors, where $1 \leq f \leq t$, in every round then solving synchronous FTDM requires $f + 1$ rounds.
+
+\end{lemma}
+
+
+
+\subsection*{Proof}
+
+Let $s$ be the state that is being monitored. Let $P = \{p_1 p_2 \cdots p_k\}$ be the set of all propositions and $FI = \{v^s_{p_1} v^s_{p_2} \cdots v^s_{p_k}\}$ be the set of values of all propositions at state $s$, we call it Full Information set. Each monitor's information about state $s$ is a subset of FI. It is easy to verify that, if there are $f_i$ crashes in round $r_i$, then the number of different subsets of FI that can be obtained as the monitor's information at the end of round $r_i$, is at most $f_i+1$. This occurs when no two crashed monitors send their information to the same uncrashed monitor. Clearly, the following conditions must also hold: \\ \\
+$i)$the number of uncrashed monitors in round $r_i$ is at least $f_i+1$,   \\ 
+$ii)$ $2^{|P|} \geq f_i+1$. 
+\\ 
+
+From the previous lemma we know that if $f_i = 1$ then the correct opinion is reached at round $r_i$. Therefore, the worst case happens if $f_i = 2$ for any $i$, i.e., there are exactly two crashes in each round. Suppose the two monitors that crash in the first round have different information about state $s$ (i.e., different subsets of FI) and they send their information to two differnet uncrashed monitors (whose information unioned by the received information is still not full information) and in the next round the same two monitors crash and send their information to two different uncrashed monitors and so on. Hence, it is easy to verify that in the worst case senario it is only after $f + 1$ number of rounds that at least one state obtains full information. 
+
+
+%\subsubsection{\textbf{Upper bound on the number of rounds}}
+
+In our setting the assumption is that the set of monitors satisfy the state coverage. Thus if a proposition is read by only one monitor, then this monitor is supposed to send its information to at least one nonfaulty monitor before crashing. A direct consequence of this assumption is the following lemma.
+
+\begin{lemma}
+If there is only one monitor crash in some round, then at least one monitor outputs the correct opinion at the same round. 
+\end{lemma}
+
+If only one monitor crashes in any round then, based on our assumption, it sends its information to at least one other monitor before crashing. Thus the monitor which receives the message from the crashed monitor has the value of all propositions (full information), and it outputs the correct opinion. 
+
+
+
+\subsubsection{\textbf{Adding states to the FSM}}
+
+In the previous section it was shown that in less than $f + 1$ rounds it is not guaranteed that at least one monitor has the full information about the current state and therefore outputs the correct opinion. So if the total number of crashes is large, the monitors have to communicate in many rounds. Hence, we take another approach by which we no longer require the monitors to communicate a mimimum number of rounds before they can output their final opinion. This can be done by adding new states to the original $LTL_3$ monitor. 
+
+\subsubsection*{Examples}
+
+\textbf{ $i)\mathbf{\Diamond (a \wedge b)}$}
+
+\textbf{ $ii)\mathbf{\Diamond (a \vee b)}$}
+
+
+Suppose each monitor reads only the value of one proposition (which is the worst case scenario), and it has to output its opinion only based on the value of that single proposition. Consider the monitor for $\Diamond (a \wedge b)$ above, suppose the current state is state $0$, and monitor 1($M_1$) only reads the value of $a$ and monitor 2($M_2$) only reads the value of $b$. Then if in the current state both $a$ and $b$ hold, then $M_1$ outputs $\{0,T\}$ since it does not know the value of $b$ and therefore from its point of view both states $0$ and $T$ are possible. Similarly, $M_2$ also outputs  $\{0,T\}$. Clearly, the correct opinion belongs to the intersection of all sets of opinions generated by monitors. Thus if the intersection consists of only one opinion, then it is the correct opinion. If the intersection includes more than one opinion, then we say that those opinions (equivalently states of monitor) are indistinguishable from each other in the viewpoint of the current state. 
+
+\begin{claim}
+
+Any two indistinguishable states can be turned into distinguishable states by adding new state(s) to the current monitor. 
+
+\end{claim}
+
+ For example in both above examples two indistinguishable states ($0$ and $T$) become distinguishable by adding state $1$ to the current monitors. 
+ 
+ 
+ Based on this idea, we need to find an algorithm which receives as input a $LTL_3$ monitor and returns a new monitor with possibly equal or more number of states in which all states are distinguishable from the viewpoint of any state. In order to do so, we first build an algorithm that given a state and its transitions, detects all indistinguishable states from the viewpoint of that state. Then we write another algorithm  that starting from the initial state, sequentially generates and adds new states to the original monitor untill all states are distinguishable. 
+ 
+ \subsubsection*{Algorithm to detect indistinguishable states}
+ 
+ 
+ \begin{description}
+ 
+ 
+ \item[1)] For every outgoing transition from the current state, list all propositions and their negations which appear on that transition. For example for $\Diamond (a \wedge b)$  at the initial state, the list of propositions/their negations on the outgoing transition to state $T$ is $SP_T = \{a, b, -a, -b\}$ and to state $0$ is $SP_0 = \{a, b\}$.
+ 
+ \item[2)] For every pair of outgoing transitions verify whether $SP_i \subseteq SP_j$ or $SP_i \nsubseteq SP_j$. Then apply the following rules\\ 
+ 
+ 
+$i)$ $SP_i \subseteq SP_j \Longrightarrow  j \in OP_i $  \\ \\
+% $ii)$ $SP_i \subseteq SP_j \Longrightarrow  j \notin OP_i $  \\
+ 
+ 
+ Where $SP_i$ and $SP_j$ are the sets of propositions/their negations for the outgoing transitions to states $i$ and $j$, respectively. And $OP_i$ (or $OP_j$)is the greatest intersection of the sets of opinions generated by all monitors, corresponding to the events that appear on the outgoing transition to state $i$ (or $j$). For example in the $LTL_3$ monitor for $\Diamond (a \wedge b)$,  we have $OP_0 = \{ 0 \}$ and $OP_T = \{0, T\}$.
+
+We say state $i$ is indistinguishable from state $j$, if $ j \in OP_i $.
+ 
+ 
+ 
+ \end{description}
+ 
+ 
+
+\fi

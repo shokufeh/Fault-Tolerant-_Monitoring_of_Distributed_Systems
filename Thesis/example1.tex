@@ -1,0 +1,390 @@
+% !TEX root = main.tex
+\begin{figure}[H]
+\hspace{-8mm}
+\scriptsize
+\tiny
+\begin{minipage}{\textwidth}
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+                    semithick, initial text={}, initial where=right, scale=.7]
+                    
+\begin{scope}
+\node (tab1) {
+  \begin{tabular}{c|c|c|}
+   \multicolumn{1}{r}{} &  \multicolumn{2}{c}{ {$M_1$}}\\
+  \cline{2-3}
+  & $M_1$ & $M_2$\\
+  \cline{2-3}
+   $r_1$ & $t$ & $\udef$\\
+   $a_1$ & $\udef$ & $\udef$\\
+   $r_2$ & $f$ & $\udef$\\
+   $a_2$ & $f$ & $\udef$\\
+   \cline{2-3}
+  \end{tabular}
+};
+
+\node [below = -1mm of tab1] (tab2) {
+\begin{tabular}{c|c|c|}
+    \multicolumn{1}{r}{} &  \multicolumn{2}{c}{ {$M_2$}}\\
+  \cline{2-3}
+  & $M_1$ & $M_2$\\
+  \cline{2-3}
+   $r_1$ & $\udef$ & $t$\\
+   $a_1$ & $\udef$ & $t$\\
+   $r_2$ & $\udef$ & $\udef$\\
+   $a_2$ & $\udef$ & $f$\\
+   \cline{2-3}
+  \end{tabular}
+};
+
+\end{scope}
+
+\draw[-] [decorate,decoration={brace,amplitude=8pt},decorate, thick]
+([xshift=-1.4cm]tab1.south) -- ([xshift=-1.4cm, yshift=-6mm]tab1.north) node 
+[black,midway,xshift=-0.3cm] {\footnotesize $\LS_1^{\state_0}$};
+
+\draw[-] [decorate,decoration={brace,amplitude=8pt},decorate, thick]
+([xshift=-1.4cm]tab2.south) -- ([xshift=-1.4cm, yshift=-6mm]tab2.north) node 
+[black,midway,xshift=-0.3cm] {\footnotesize $\LS_2^{\state_0}$};
+
+\draw[-] [decorate,decoration={brace,amplitude=8pt},decorate, thick]
+([xshift=-3.5cm]tab2.south) -- ([xshift=-3.5cm, yshift=-6mm]tab1.north) node 
+[black,midway,xshift=-0.4cm] {\footnotesize 
+samples};
+
+\begin{scope}[xshift=-3.2cm, yshift=-10.2cm]
+\node (tab3) {
+  \begin{tabular}{c|c|c|}
+   \multicolumn{1}{r}{} &  \multicolumn{2}{c}{ {$M_1$}}\\
+  \cline{2-3}
+  & $M_1$ & $M_2$\\
+  \cline{2-3}
+   $r_1$ & $t$ & $\udef$\\
+   $a_1$ & $\udef$ & $\udef$\\
+   $r_2$ & $f$ & $\udef$\\
+   $a_2$ & $f$ & $\udef$\\
+   \cline{2-3}
+    &  \multicolumn{2}{c|}{\cellcolor{gray!25}$\boldsymbol{\bot_p}$}\\
+   \cline{2-3}
+  \end{tabular}
+};
+\node [below = -1mm of tab3] (tab4) {
+\begin{tabular}{c|c|c|}
+    \multicolumn{1}{r}{} &  \multicolumn{2}{c}{ {$M_2$}}\\
+  \cline{2-3}
+  & $M_1$ & $M_2$\\
+  \cline{2-3}
+   $r_1$ & $t$ & $t$\\
+   $a_1$ & $\udef$ & $t$\\
+   $r_2$ & $f$ & $\udef$\\
+   $a_2$ & $f$ & $f$\\
+   \cline{2-3}
+   &  \multicolumn{2}{c|}{\cellcolor{gray!25}$\boldsymbol{\top_p}$}\\
+   \cline{2-3}
+  \end{tabular}
+};
+\end{scope}
+
+\begin{scope}[yshift=-10.2cm] \node (tab5) {
+  \begin{tabular}{|c|c|}
+   \multicolumn{2}{c}{ {$M_1$}}\\
+  \cline{1-2}
+   $M_1$ & $M_2$\\
+  \cline{1-2}
+   $t$ & $t$\\
+   $\udef$ & $t$\\
+   $f$ & $\udef$\\
+   $f$ & $f$\\
+   \cline{1-2}
+   \multicolumn{2}{|c|}{\cellcolor{gray!25}$\boldsymbol{\top_p}$}\\
+   \cline{1-2}
+  \end{tabular}
+};
+\node [below = -1mm of tab5] (tab6) {
+\begin{tabular}{|c|c|}
+  \multicolumn{2}{c}{ {$M_2$}}\\
+  \cline{1-2}
+   $M_1$ & $M_2$\\
+  \cline{1-2}
+   $t$ & $t$\\
+   $\udef$ & $t$\\
+   $f$ & $\udef$\\
+   $f$ & $f$\\
+   \cline{1-2}
+   \multicolumn{2}{|c|}{\cellcolor{gray!25} $\boldsymbol{\top_p}$}\\
+   \cline{1-2}
+  \end{tabular}
+};
+\end{scope}
+
+\begin{scope}[xshift=2.7cm, yshift=-10.2cm]
+\node (tab7) {
+  \begin{tabular}{|c|c|}
+   \multicolumn{2}{c}{ {$M_1$}}\\
+  \cline{1-2}
+  $M_1$ & $M_2$\\
+  \cline{1-2}
+   $t$ & $t$\\
+   $\udef$ & $t$\\
+   $f$ & $\udef$\\
+   $f$ & $f$\\
+   \cline{1-2}
+   \multicolumn{2}{|c|}{\cellcolor{gray!25} $\boldsymbol{\top_p}$}\\
+   \cline{1-2}
+  \end{tabular}
+};
+\node [below = -1mm of tab7] (tab8) {
+\begin{tabular}{|c|c|}
+    \multicolumn{2}{c}{ {$M_2$}}\\
+  \cline{1-2}
+   $M_1$ & $M_2$\\
+  \cline{1-2}
+   $\udef$ & $t$\\
+   $\udef$ & $t$\\
+   $\udef$ & $\udef$\\
+   $\udef$ & $f$\\
+   \cline{1-2}
+   \multicolumn{2}{|c|}{\cellcolor{gray!25}$\boldsymbol{\top_p}$}\\
+   \cline{1-2}
+  \end{tabular}
+};
+\end{scope}
+
+
+\draw[-] [decorate,decoration={brace,amplitude=8pt},decorate, thick]
+([xshift=-1.1cm, yshift=12.5cm]tab3.west) -- ([yshift=12.5cm]tab7.east) 
+node [black,midway, yshift=1cm, text width=2.3cm,xshift=3mm,fill=gray!25] 
+{$\state_0 = \{r_1, a_1\}$ \\ $[\state_0 \models_F \varphi_{ra_2}] = \top$ };
+
+
+
+
+\draw[-] [decorate,decoration={brace,amplitude=8pt},decorate, thick]
+([xshift=-.2cm, yshift=-1mm]tab3.north) -- ([xshift=-.2cm, 
+yshift=24mm]tab3.north) node [black,midway,xshift=-0.3cm] {\footnotesize 
+write/snapshot} node [black,midway,yshift = -5mm, xshift=-.2cm] {\footnotesize 
+interleavings};
+
+
+\draw[->] ([xshift=.4cm]tab2.south) -- +(-2.5, -2.8) 
+node[draw=none,fill=white,midway,left, below] {$M_1, M_2$};
+
+\draw[->] ([xshift=.4cm]tab2.south) -- +(0, -2.8) node 
+[draw=none,fill=white,midway, above] {$M_1||M_2$};
+  
+\draw[->] ([xshift=.4cm]tab2.south) -- +(2.5, -2.8) 
+node[draw=none,fill=white,midway,below] {$M_2, M_1$};
+
+\draw[-] [decorate,decoration={brace,amplitude=8pt},decorate, thick]
+([xshift=-1.4cm]tab3.south) -- ([xshift=-1.4cm, yshift=-6mm]tab3.north) node 
+[black,midway,xshift=-0.3cm] {\tiny $\LS_1^{\state_0}$};
+
+\draw[-] [decorate,decoration={brace,amplitude=8pt},decorate, thick]
+([xshift=-1.4cm]tab4.south) -- ([xshift=-1.4cm, yshift=-6mm]tab4.north) node 
+[black,midway,xshift=-0.3cm] {\tiny $\LS_2^{\state_0}$};
+
+\draw[-] [decorate,decoration={brace,amplitude=8pt},decorate, thick]
+([yshift=-2.2cm]tab4.east) -- ([xshift=10mm,yshift=-2.2cm]tab4.west) node 
+[black,midway,yshift=-0.4cm,xshift=-2mm,fill=gray!25] {\footnotesize 
+$v_0=\{\top_p, \bot_p\}$};
+
+\draw[-] [decorate,decoration={brace,amplitude=8pt},decorate, thick]
+([yshift=-2.2cm]tab6.east) -- ([xshift=2mm,yshift=-2.2cm]tab6.west) node 
+[black,midway,yshift=-0.4cm] {\footnotesize $v_0=\{\top_p\}$};
+
+\draw[-] [decorate,decoration={brace,amplitude=8pt},decorate, thick]
+([yshift=-2.2cm]tab8.east) -- ([xshift=2mm,yshift=-2.2cm]tab8.west) node 
+[black,midway,yshift=-0.4cm] {\footnotesize $v_0=\{\top_p\}$};
+
+%----------------------------s'_0 State---------------------------------
+
+\begin{scope}[xshift=9.5cm] \node (tabb1) {
+  \begin{tabular}{c|c|c|}
+   \multicolumn{1}{r}{} &  \multicolumn{2}{c}{ {$M_1$}}\\
+  \cline{2-3}
+  & $M_1$ & $M_2$\\
+  \cline{2-3}
+   $r_1$ & $\udef$ & $\udef$\\
+   $a_1$ & $\udef$ & $\udef$\\
+   $r_2$ & $t$ & $\udef$\\
+   $a_2$ & $f$ & $\udef$\\
+   \cline{2-3}
+  \end{tabular}
+};
+\node [below = -1mm of tabb1] (tabb2) {
+\begin{tabular}{c|c|c|}
+    \multicolumn{1}{r}{} &  \multicolumn{2}{c}{ {$M_2$}}\\
+  \cline{2-3}
+  & $M_1$ & $M_2$\\
+  \cline{2-3}
+   $r_1$ & $\udef$ & $t$\\
+   $a_1$ & $\udef$ & $t$\\
+   $r_2$ & $\udef$ & $\udef$\\
+   $a_2$ & $\udef$ & $f$\\
+   \cline{2-3}
+  \end{tabular}
+};
+\end{scope}
+
+
+\draw[-] [decorate,decoration={brace,amplitude=8pt},decorate, thick]
+([xshift=-1.4cm]tabb1.south) -- ([xshift=-1.4cm, yshift=-6mm]tabb1.north) node 
+[black,midway,xshift=-0.3cm] {\footnotesize $\LS_1^{\state^{'}_0}$};
+
+\draw[-] [decorate,decoration={brace,amplitude=8pt},decorate, thick]
+([xshift=-1.5cm]tabb2.south) -- ([xshift=-1.5cm, yshift=-6mm]tabb2.north) node 
+[black,midway,xshift=-0.3cm] {\footnotesize $\LS_2^{\state^{'}_0}$};
+
+\draw[->] ([xshift=.4cm]tabb2.south) -- +(-2.5, -2.8) 
+node[draw=none,fill=white,midway,below] {$M_2, M_1$};
+
+\draw[->] ([xshift=.4cm]tabb2.south) -- +(0, -2.8) node 
+[draw=none,fill=white,midway, above] {$M_1||M_2$};
+  
+\draw[->] ([xshift=.4cm]tabb2.south) -- +(2.5, -2.8) 
+node[draw=none,fill=white,midway,below] {$M_1, M_2$};
+
+
+\begin{scope}[xshift=7.2cm, yshift=-10.2cm]
+\node (tabb3) {
+  \begin{tabular}{c|c|c|}
+   \multicolumn{1}{r}{} &  \multicolumn{2}{c}{ {$M_1$}}\\
+  \cline{2-3}
+  & $M_1$ & $M_2$\\
+  \cline{2-3}
+   $r_1$ & $\udef$ & $t$\\
+   $a_1$ & $\udef$ & $t$\\
+   $r_2$ & $t$ & $\udef$\\
+   $a_2$ & $f$ & $f$\\
+   \cline{2-3}
+   & \multicolumn{2}{c|}{\cellcolor{gray!25}$\boldsymbol{\bot_p}$}\\
+   \cline{2-3}
+  \end{tabular}
+};
+\node [below = -1mm of tabb3] (tabb4) {
+\begin{tabular}{c|c|c|}
+    \multicolumn{1}{r}{} &  \multicolumn{2}{c}{ {$M_2$}}\\
+  \cline{2-3}
+  & $M_1$ & $M_2$\\
+  \cline{2-3}
+   $r_1$ & $\udef$ & $t$\\
+   $a_1$ & $\udef$ & $t$\\
+   $r_2$ & $\udef$ & $\udef$\\
+   $a_2$ & $\udef$ & $f$\\
+   \cline{2-3}
+   & \multicolumn{2}{c|}{\cellcolor{gray!25}$\boldsymbol{\top_p}$}\\
+   \cline{2-3}
+  \end{tabular}
+};
+\end{scope}
+  
+\begin{scope}[xshift=10.4cm, yshift=-10.2cm] \node (tabb5) {
+  \begin{tabular}{|c|c|}
+  \multicolumn{2}{c}{{$M_1$}}\\
+  \cline{1-2}
+  $M_1$ & $M_2$\\
+  \cline{1-2}
+   $\udef$ & $t$\\
+   $\udef$ & $t$\\
+   $t$ & $\udef$\\
+   $f$ & $f$\\
+   \cline{1-2}
+   \multicolumn{2}{|c|}{\cellcolor{gray!25}$\boldsymbol{\bot_p}$}\\
+   \cline{1-2}
+  \end{tabular}
+};
+\node [below = -1mm of tabb5] (tabb6) {
+\begin{tabular}{|c|c|}
+  \multicolumn{2}{c}{ {$M_2$}}\\
+  \cline{1-2}
+  $M_1$ & $M_2$\\
+  \cline{1-2}
+   $\udef$ & $t$\\
+   $\udef$ & $t$\\
+   $t$ & $\udef$\\
+   $f$ & $f$\\
+   \cline{1-2}
+   \multicolumn{2}{|c|}{\cellcolor{gray!25}$\boldsymbol{\bot_p}$}\\
+   \cline{1-2}
+  \end{tabular}
+};
+\end{scope}
+
+\begin{scope}[xshift=13.1cm, yshift=-10.2cm]
+\node (tabb7) {
+  \begin{tabular}{|c|c|}
+  \multicolumn{2}{c}{ {$M_1$}}\\
+  \cline{1-2}
+  $M_1$ & $M_2$\\
+  \cline{1-2}
+   $\udef$ & $\udef$\\
+   $\udef$ & $\udef$\\
+   $t$ & $\udef$\\
+   $f$ & $\udef$\\
+   \cline{1-2}
+   \multicolumn{2}{|c|}{\cellcolor{gray!25}$\boldsymbol{\bot_p}$}\\
+   \cline{1-2}
+  \end{tabular}
+};
+\node [below = -1mm of tabb7] (tabb8) {
+\begin{tabular}{|c|c|}
+  \multicolumn{2}{c}{ {$M_2$}}\\
+  \cline{1-2}
+   $M_1$ & $M_2$\\
+  \cline{1-2}
+   $\udef$ & $t$\\
+   $\udef$ & $t$\\
+   $t$ & $\udef$\\
+   $f$ & $f$\\
+   \cline{1-2}
+   \multicolumn{2}{|c|}{\cellcolor{gray!25}$\boldsymbol{\bot_p}$}\\
+   \cline{1-2}
+  \end{tabular}
+};
+\end{scope}
+
+
+
+\draw[-] [decorate,decoration={brace,amplitude=8pt},decorate, thick]
+([xshift=-1.1cm, yshift=12.5cm]tabb3.west) -- ([yshift=12.5cm]tabb7.east) 
+node [black,midway, yshift=1cm, text width=2.3cm,xshift=3mm,fill=gray!25] 
+{$\state'_0 = \{r_1, a_1, r_2\}$ \\ $[\state'_0 \models_F \varphi_{ra_2}] = 
+\bot$ };
+
+\draw[-] [decorate,decoration={brace,amplitude=8pt},decorate, thick]
+([xshift=-1.4cm]tabb3.south) -- ([xshift=-1.4cm, yshift=-6mm]tabb3.north) node 
+[black,midway,xshift=-0.3cm] {\tiny $\LS_1^{\state^{'}_0}$};
+
+\draw[-] [decorate,decoration={brace,amplitude=8pt},decorate, thick]
+([xshift=-1.4cm]tabb4.south) -- ([xshift=-1.4cm, yshift=-6mm]tabb4.north) node 
+[black,midway,xshift=-0.3cm] {\tiny $\LS_2^{\state^{'}_0}$};
+
+\draw[-] [decorate,decoration={brace,amplitude=8pt},decorate, thick]
+([yshift=-2.2cm]tabb4.east) -- ([xshift=10mm,yshift=-2.2cm]tabb4.west) node 
+[black,midway,yshift=-0.4cm,fill=gray!25] {\footnotesize $v'_0=\{\top_p, 
+\bot_p\}$};
+
+\draw[-] [decorate,decoration={brace,amplitude=8pt},decorate, thick]
+([yshift=-2.2cm]tabb6.east) -- ([xshift=5mm,yshift=-2.2cm]tabb6.west) node 
+[black,midway,xshift=1mm,yshift=-0.3cm] {\footnotesize $v'_0=\{\bot_p\}$};
+
+\draw[-] [decorate,decoration={brace,amplitude=8pt},decorate, thick]
+([yshift=-2.2cm]tabb8.east) -- ([xshift=5mm,yshift=-2.2cm]tabb8.west) node 
+[black,midway,yshift=-0.3cm,xshift=1mm] {\footnotesize 
+$v'_0=\{\bot_p\}$};
+
+\draw[-] ([yshift=-3.6cm]tab4.center) -- ([yshift=-4.1cm]tab4.center);
+\draw[->] ([yshift=-4cm]tab4.center) -- ([yshift=-4cm, 
+xshift=2.5cm]tab4.center) node [xshift=1.5cm] {\bf Inconsistency};
+
+\draw[-] ([yshift=-3.6cm]tabb4.center) -- ([yshift=-4.1cm]tabb4.center);
+\draw[->] ([yshift=-4cm]tabb4.center) -- ([yshift=-4cm, 
+xshift=-3.7cm]tabb4.center);
+
+\end{tikzpicture}
+\end{minipage}
+
+\caption{Example: Monitors $M_1$ and $M_2$ monitoring formula $\varphi_{ra_2}$ 
+from two different states $\state_0$ and $\state'_0$.}
+\label{fig:example1}
+\end{figure}
+

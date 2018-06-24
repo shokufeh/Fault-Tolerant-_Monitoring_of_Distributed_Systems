@@ -1,0 +1,57 @@
+\contentsline {chapter}{Abstract}{iii}
+\contentsline {chapter}{Acknowledgements}{iv}
+\contentsline {chapter}{\numberline {1}Introduction}{1}
+\contentsline {section}{\numberline {1.1}Decentralized Runtime Verification}{2}
+\contentsline {section}{\numberline {1.2}Decentralized Synchronous Monitoring}{4}
+\contentsline {subparagraph}{Uniform Consensus in the Crash Failure Model}{4}
+\contentsline {section}{\numberline {1.3}Decentralized Asynchronous Monitoring}{5}
+\contentsline {section}{\numberline {1.4}Thesis Statement}{6}
+\contentsline {section}{\numberline {1.5}Contributions}{7}
+\contentsline {section}{\numberline {1.6}Thesis Organization}{8}
+\contentsline {chapter}{\numberline {2}Literature Review}{9}
+\contentsline {section}{\numberline {2.1}Lattice-based Distributed Monitoring}{10}
+\contentsline {section}{\numberline {2.2}Distributed Monitoring for Past-time LTL}{12}
+\contentsline {section}{\numberline {2.3}Synchronous Distributed Monitoring}{13}
+\contentsline {section}{\numberline {2.4}Fault-tolerant Distributed Monitoring}{14}
+\contentsline {chapter}{\numberline {3}Preliminaries}{15}
+\contentsline {section}{\numberline {3.1}Linear Temporal Logics}{15}
+\contentsline {subparagraph}{LTL Syntax.}{15}
+\contentsline {subparagraph}{LTL Semantics.}{16}
+\contentsline {section}{\numberline {3.2}LTL for Runtime Verification}{17}
+\contentsline {subsection}{\numberline {3.2.1}Finite LTL (FLTL)}{17}
+\contentsline {subsection}{\numberline {3.2.2}3-valued LTL}{18}
+\contentsline {subsection}{\numberline {3.2.3}RV-LTL}{19}
+\contentsline {chapter}{\numberline {4}Decentralized Automata-Based Monitoring}{21}
+\contentsline {section}{\numberline {4.1}Synchronous Monitoring Algorithm Sketch}{22}
+\contentsline {subparagraph}{Algorithm sketch:}{23}
+\contentsline {section}{\numberline {4.2}Model of Computation and Terminology}{24}
+\contentsline {subparagraph}{State Coverage:}{26}
+\contentsline {subparagraph}{Fault Model:}{26}
+\contentsline {section}{\numberline {4.3}Problem Statement}{27}
+\contentsline {section}{\numberline {4.4}Challenges in Synchronous Monitoring}{28}
+\contentsline {subparagraph}{Example:}{28}
+\contentsline {section}{\numberline {4.5}Synchronous Automata-based Monitoring}{32}
+\contentsline {subsection}{\numberline {4.5.1}Synchronous Monitoring Using {\sc Ltl}\textsubscript {3}\xspace Monitors}{33}
+\contentsline {subparagraph}{Notation:}{35}
+\contentsline {subparagraph}{Abstraction Function in Automata-Based Algorithm.}{35}
+\contentsline {subparagraph}{Local Computation Function in Automata-Based Algorithm.}{36}
+\contentsline {subsection}{\numberline {4.5.2}Detailed Description of The Algorithm}{36}
+\contentsline {subsection}{\numberline {4.5.3}Synchronous Automata-Based Monitoring Using Extended {\sc Ltl}\textsubscript {3}\xspace Monitor}{41}
+\contentsline {subsubsection}{\numberline {4.5.3.1}Extended {\sc Ltl}\textsubscript {3}\xspace Monitor Construction}{41}
+\contentsline {subsubsection}{\numberline {4.5.3.2}Detailed Description of Algorithm 3\hbox {}}{43}
+\contentsline {subparagraph}{Function SPLIT}{45}
+\contentsline {subparagraph}{Function PARTITION}{46}
+\contentsline {subparagraph}{Example}{46}
+\contentsline {subsubsection}{\numberline {4.5.3.3}Proof of Correctness of Algorithm 2\hbox {}}{50}
+\contentsline {chapter}{\numberline {5}Decentralized Asynchronous Monitoring}{55}
+\contentsline {section}{\numberline {5.1}Problem Statement}{56}
+\contentsline {section}{\numberline {5.2}Model of Computation and Terminology}{58}
+\contentsline {subparagraph}{The asynchronous monitoring algorithm.}{58}
+\contentsline {section}{\numberline {5.3}Challenges in Asynchronous Monitoring}{59}
+\contentsline {subparagraph}{Example}{60}
+\contentsline {section}{\numberline {5.4}Asynchronous Automata-Based Monitoring Algorithm Using {\sc Ltl}\textsubscript {3}\xspace Monitor}{62}
+\contentsline {section}{\numberline {5.5}Asynchronous Automata-Based Monitoring Algorithm Using Extended {\sc Ltl}\textsubscript {3}\xspace Monitor}{64}
+\contentsline {subparagraph}{Example}{65}
+\contentsline {chapter}{\numberline {6}Conclusion}{67}
+\contentsline {section}{\numberline {6.1}Summary}{67}
+\contentsline {section}{\numberline {6.2}Future Work}{68}

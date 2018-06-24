@@ -1,0 +1,282 @@
+\newcommand{\SortNoop}[1]{}
+\begin{thebibliography}{}
+
+\bibitem[Agrawal and Bonakdarpour(2016)]{ab16}
+Agrawal, S. and Bonakdarpour, B. (2016).
+\newblock Runtime verification of k-safety hyperproperties in hyperltl.
+\newblock In {\em Proceedings of the 20th {IEEE} Computer Security Foundations
+  Symposium, {CSF}}, pages 239--252.
+
+\bibitem[Attiya and Welch(2004)]{aw04}
+Attiya, H. and Welch, J. (2004).
+\newblock {\em Distributed Computing: Fundamentals, Simulations, and Advanced
+  Topics}.
+\newblock Wiley.
+
+\bibitem[Bartocci {\em et~al.}(2018)]{sttt-rv}
+Bartocci, E., Falcone, Y., Bonakdarpour, B., Colombo, C., Decker, N., Klaedtke,
+  F., Havelund, K., Joshi, Y., Milewicz1, R., Reger, G., Rosu, G., Signoles,
+  J., Thoma, D., Zalinescu, E., and Zhang, Y. (2018).
+\newblock First international competition on runtime verification.
+\newblock {\em Software Tools for Technology Transfer (STTT)}.
+
+\bibitem[Basin {\em et~al.}(2013)]{bjkz13}
+Basin, D.~A., Jug{\'{e}}, V., Klaedtke, F., and Zalinescu, E. (2013).
+\newblock Enforceable security policies revisited.
+\newblock {\em {ACM} Transaction on Information Systems and Security}, {\bf
+  16}(1), 3:1--3:26.
+
+\bibitem[Basin {\em et~al.}(2016)]{DBLP:journals/fmsd/BasinCEHKM16}
+Basin, D.~A., Caronni, G., Ereth, S., Harvan, M., Klaedtke, F., and Mantel, H.
+  (2016).
+\newblock Scalable offline monitoring of temporal specifications.
+\newblock {\em Formal Methods in System Design}, {\bf 49}(1-2), 75--108.
+
+\bibitem[Bauer and Falcone(2016)]{bf16}
+Bauer, A. and Falcone, Y. (2016).
+\newblock Decentralised {LTL} monitoring.
+\newblock {\em Formal Methods in System Design}, {\bf 48}(1-2), 46--93.
+
+\bibitem[Bauer {\em et~al.}(2010)]{bls10}
+Bauer, A., Leucker, M., and Schallhart, C. (2010).
+\newblock {C}omparing {LTL} {S}emantics for {R}untime {V}erification.
+\newblock {\em Journal of Logic and Computation}, {\bf 20}(3), 651--674.
+
+\bibitem[Bauer {\em et~al.}(2011)]{bls11}
+Bauer, A., Leucker, M., and Schallhart, C. (2011).
+\newblock {R}untime {V}erification for {LTL} and {TLTL}.
+\newblock {\em ACM Transactions on Software Engineering and Methodology
+  (TOSEM)}, {\bf 20}(4), 14:1--14:64.
+
+\bibitem[Bonakdarpour {\em et~al.}(2011)]{bnf11}
+Bonakdarpour, B., Navabpour, S., and Fischmeister, S. (2011).
+\newblock Sampling-based runtime verification.
+\newblock In {\em Formal Methods (FM)}, pages 88--102.
+
+\bibitem[Bonakdarpour {\em et~al.}(2013)]{bnf13}
+Bonakdarpour, B., Navabpour, S., and Fischmeister, S. (2013).
+\newblock Time-triggered runtime verification.
+\newblock {\em Formal Methods in System Design}, {\bf 43}(1), 29--60.
+
+\bibitem[Bonakdarpour {\em et~al.}(2016)]{bfrrt16}
+Bonakdarpour, B., Fraigniaud, P., Rajsbaum, S., Rosenblueth, D.~A., and
+  Travers, C. (2016).
+\newblock Decentralized asynchronous crash-resilient runtime verification.
+\newblock In {\em Proceedings of the 27th International Conference on
+  Concurrency Theory (CONCUR)}, pages 16:1--16:15.
+
+\bibitem[Brett {\em et~al.}(2017)]{bsb17}
+Brett, N., Siddique, U., and Bonakdarpour, B. (2017).
+\newblock Rewriting-based runtime verification for alternation-free hyperltl.
+\newblock In {\em Proceedings of the 23rd International Conference on Tools and
+  Algorithms for the Construction and Analysis of Systems (TACAS)}, pages
+  77--93.
+
+\bibitem[Chauhan {\em et~al.}(2013)]{cgnm13}
+Chauhan, H., Garg, V.~K., Natarajan, A., and Mittal, N. (2013).
+\newblock A distributed abstraction algorithm for online predicate detection.
+\newblock In {\em {IEEE} 32nd Symposium on Reliable Distributed Systems
+  (SRDS)}, pages 101--110.
+
+\bibitem[Chen and Rosu(2007)]{cr07}
+Chen, F. and Rosu, G. (2007).
+\newblock {MOP}: {A}n {E}fficient and {G}eneric {R}untime {V}erification
+  {F}ramework.
+\newblock In {\em Object-Oriented Programming, Systems, Languages, and
+  Applications (OOPSLA)}, pages 569--588.
+
+\bibitem[Colombo and Falcone(2016)]{cf16}
+Colombo, C. and Falcone, Y. (2016).
+\newblock Organising {LTL} monitors over distributed systems with a global
+  clock.
+\newblock {\em Formal Methods in System Design}, {\bf 49}(1-2), 109--158.
+
+\bibitem[d'Amorim and Rosu(2005)]{ar05}
+d'Amorim, M. and Rosu, G. (2005).
+\newblock {E}fficient {M}onitoring of omega-{L}anguages.
+\newblock In {\em Computer Aided Verification (CAV)}, pages 364--378.
+
+\bibitem[Deshmukh {\em et~al.}(2015)]{DBLP:conf/rv/DeshmukhDGJJS15}
+Deshmukh, J.~V., Donz{\'{e}}, A., Ghosh, S., Jin, X., Juniwal, G., and Seshia,
+  S.~A. (2015).
+\newblock Robust online monitoring of signal temporal logic.
+\newblock In {\em Runtime Verification - 6th International Conference, {RV}
+  2015 Vienna, Austria, September 22-25, 2015. Proceedings}, pages 55--70.
+
+\bibitem[Finkbeiner {\em et~al.}(2017)]{fhst17}
+Finkbeiner, B., Hahn, C., Stenger, M., and Tentrup, L. (2017).
+\newblock Monitoring hyperproperties.
+\newblock In {\em Proceedings of the 17th International Conference on Runtime
+  Verification (RV)}, pages 190--207.
+
+\bibitem[Fischer {\em et~al.}(1985)]{flp}
+Fischer, M.~J., Lynch, N.~A., and Peterson, M.~S. (1985).
+\newblock Impossibility of distributed consensus with one faulty processor.
+\newblock {\em Journal of the ACM}, {\bf 32}(2), 373--382.
+
+\bibitem[Fraigniaud {\em et~al.}(2013)]{frt13}
+Fraigniaud, P., Rajsbaum, S., and Travers, C. (2013).
+\newblock Locality and checkability in wait-free computing.
+\newblock {\em Distributed Computing}, {\bf 26}(4), 223--242.
+
+\bibitem[Fraigniaud {\em et~al.}(2014a)]{frt14}
+Fraigniaud, P., Rajsbaum, S., and Travers, C. (2014a).
+\newblock On the number of opinions needed for fault-tolerant run-time
+  monitoring in distributed systems.
+\newblock In {\em Runtime Verification - 5th International Conference (RV)},
+  pages 92--107.
+
+\bibitem[Fraigniaud {\em et~al.}(2014b)]{frrt14}
+Fraigniaud, P., Rajsbaum, S., Roy, M., and Travers, C. (2014b).
+\newblock The opinion number of set-agreement.
+\newblock In {\em Principles of Distributed Systems - 18th International
+  Conference (OPODIS)}, pages 155--170.
+
+\bibitem[Garg(2002)]{g02}
+Garg, V.~K. (2002).
+\newblock {\em Elements of distributed computing}.
+\newblock Wiley.
+
+\bibitem[Havelund and Rosu(2001a)]{hr01a}
+Havelund, K. and Rosu, G. (2001a).
+\newblock {M}onitoring {J}ava {P}rograms with {J}ava {P}ath{E}xplorer.
+\newblock {\em Electronic Notes in Theoretical. Computer Science}, {\bf 55}(2).
+
+\bibitem[Havelund and Rosu(2001b)]{hr01}
+Havelund, K. and Rosu, G. (2001b).
+\newblock {M}onitoring {P}rograms {U}sing {R}ewriting.
+\newblock In {\em Automated Software Engineering (ASE)}, pages 135--143.
+
+\bibitem[Havelund and Rosu(2002)]{hr02}
+Havelund, K. and Rosu, G. (2002).
+\newblock Synthesizing monitors for safety properties.
+\newblock In {\em International Conference on Tools and Algorithms for the
+  Construction and Analysis of Systems (TACAS)}, pages 342 --356.
+
+\bibitem[Havelund and Rosu(2004)]{hr04}
+Havelund, K. and Rosu, G. (2004).
+\newblock {E}fficient {M}onitoring of {S}afety {S}roperties.
+\newblock {\em Software Tools and Technology Transfer (STTT)}, {\bf 6}(2),
+  158--173.
+
+\bibitem[Lamport(1978)]{lamport}
+Lamport, L. (1978).
+\newblock Time, clocks, and the ordering of events in a disributed system.
+\newblock {\em Communications of the ACM}, {\bf 21}(7), 558--565.
+
+\bibitem[M.~Herlihy and Rajsbaum(2013)]{hkr13}
+M.~Herlihy, D.~K. and Rajsbaum, S. (2013).
+\newblock {\em Distributed Computing Through Combinatorial Topology}.
+\newblock Morgan Kaufmann.
+
+\bibitem[Manna and Pnueli(1979)]{mp79}
+Manna, Z. and Pnueli, A. (1979).
+\newblock The modal logic of programs.
+\newblock In {\em Proceedings of the 6th Colloquium on Automata, Languages and
+  Programming (ICALP)}, pages 385--409.
+
+\bibitem[Manna and Pnueli(1995)]{mp95}
+Manna, Z. and Pnueli, A. (1995).
+\newblock {\em Temporal verification of reactive systems - safety}.
+\newblock Springer.
+
+\bibitem[Medhat {\em et~al.}(2015)]{mbfk15}
+Medhat, R., Bonakdarpour, B., Kumar, D., and Fischmeister, S. (2015).
+\newblock Runtime monitoring of cyber-physical systems under timing and memory
+  constraints.
+\newblock {\em {ACM} Transactions on Embedded Computing Systems}, {\bf 14}(4),
+  79:1--79:29.
+
+\bibitem[Mittal and Garg(2001)]{mg01}
+Mittal, N. and Garg, V.~K. (2001).
+\newblock On detecting global predicates in distributed computations.
+\newblock In {\em Proceedings of the 21st International Conference on
+  Distributed Computing Systems {(ICDCS} 2001), Phoenix, Arizona, USA, April
+  16-19, 2001}, pages 3--10.
+
+\bibitem[Mittal and Garg(2005)]{mg05}
+Mittal, N. and Garg, V.~K. (2005).
+\newblock Techniques and applications of computation slicing.
+\newblock {\em Distributed Computing}, {\bf 17}(3), 251--277.
+
+\bibitem[Mostafa and Bonakdarpour(2015)]{mb15}
+Mostafa, M. and Bonakdarpour, B. (2015).
+\newblock Decentralized runtime verification of {LTL} specifications in
+  distributed systems.
+\newblock In {\em Proceedings of the 29th {IEEE} International Parallel and
+  Distributed Processing Symposium (IPDPS)}, pages 494--503.
+
+\bibitem[Navabpour {\em et~al.}(2011)]{nwbf11}
+Navabpour, S., Wu, C.~W., Bonakdarpour, B., and Fischmeister, S. (2011).
+\newblock Efficient techniques for near-optimal instrumentation in
+  time-triggered runtime verification.
+\newblock In {\em International Conference on Runtime Verification (RV)}.
+\newblock To appear.
+
+\bibitem[Navabpour {\em et~al.}(2015)]{nbf15}
+Navabpour, S., Bonakdarpour, B., and Fischmeister, S. (2015).
+\newblock Time-triggered runtime verification of component-based multi-core
+  systems.
+\newblock In {\em Proceedings of the 6th International Conference on Runtime
+  Verification (RV)}, pages 153--168.
+
+\bibitem[Nguyen {\em et~al.}(2017)]{nkjdj17}
+Nguyen, L.~V., Kapinski, J., Jin, X., Deshmukh, J.~V., and Johnson, T.~T.
+  (2017).
+\newblock Hyperproperties of real-valued signals.
+\newblock In {\em Proceedings of the 15th {ACM-IEEE} International Conference
+  on Formal Methods and Models for System Design (MEMOCODE)}, pages 104--113.
+
+\bibitem[Ogale and Garg(2007)]{og07}
+Ogale, V.~A. and Garg, V.~K. (2007).
+\newblock Detecting temporal logic predicates on distributed computations.
+\newblock In {\em Proceedings of the 21st International Symposium on
+  Distributed Computing (DISC)}, pages 420--434.
+
+\bibitem[Pnueli(1977)]{p77}
+Pnueli, A. (1977).
+\newblock The temporal logic of programs.
+\newblock In {\em Symposium on Foundations of Computer Science (FOCS)}, pages
+  46--57.
+
+\bibitem[Schneider(2000)]{s00}
+Schneider, F.~B. (2000).
+\newblock Enforceable security policies.
+\newblock {\em {ACM} Transactions on Information and System Security (TISSEC)},
+  {\bf 3}, 30--50.
+
+\bibitem[Sen {\em et~al.}(2004)]{svar04}
+Sen, K., a.~Vardhan, Agha, G., and Rosu, G. (2004).
+\newblock Efficient decentralized monitoring of safety in distributed systems.
+\newblock In {\em Proceedings of the 26th International Conference on Software
+  Engineering (ICSE)}, pages 418--427.
+
+\bibitem[Sen {\em et~al.}(2006)]{svar06}
+Sen, K., Vardhan, A., Agha, G., and Rosu, G. (2006).
+\newblock Decentralized runtime analysis of multithreaded applications.
+\newblock In {\em 20th International Parallel and Distributed Processing
+  Symposium {(IPDPS} 2006), Proceedings, 25-29 April 2006, Rhodes Island,
+  Greece}.
+
+\bibitem[Stoller and Schneider(1995)]{ss95}
+Stoller, S.~D. and Schneider, F.~B. (1995).
+\newblock Verifying programs that use causally-ordered message-passing.
+\newblock {\em Sci. Comput. Program.}, {\bf 24}(2), 105--128.
+
+\bibitem[Valapil {\em et~al.}(2017)]{vyktd17}
+Valapil, V.~T., Yingchareonthawornchai, S., Kulkarni, S.~S., Torng, E., and
+  Demirbas, M. (2017).
+\newblock Monitoring partially synchronous distributed systems using {SMT}
+  solvers.
+\newblock In {\em Runtime Verification - 17th International Conference, {RV}
+  2017, Seattle, WA, USA, September 13-16, 2017, Proceedings}, pages 277--293.
+
+\bibitem[Yingchareonthawornchai {\em et~al.}(2016)]{ynvkd16}
+Yingchareonthawornchai, S., Nguyen, D.~N., Valapil, V.~T., Kulkarni, S.~S., and
+  Demirbas, M. (2016).
+\newblock Precision, recall, and sensitivity of monitoring partially
+  synchronous distributed systems.
+\newblock In {\em Runtime Verification - 16th International Conference, {RV}
+  2016, Madrid, Spain, September 23-30, 2016, Proceedings}, pages 420--435.
+
+\end{thebibliography}

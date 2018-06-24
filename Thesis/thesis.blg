@@ -1,0 +1,61 @@
+This is BibTeX, Version 0.99d (TeX Live 2016)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: thesis.aux
+A level-1 auxiliary file: abstr.aux
+A level-1 auxiliary file: acknowledgements.aux
+A level-1 auxiliary file: chap1.aux
+A level-1 auxiliary file: chap2.aux
+A level-1 auxiliary file: chap3.aux
+A level-1 auxiliary file: chap4.aux
+A level-1 auxiliary file: chap5.aux
+A level-1 auxiliary file: chap7.aux
+The style file: natbib.bst
+Database file #1: bibliography.bib.bib
+Name 1 in "M. Herlihy, D. Kozlov, and S. Rajsbaum" has a comma at the end for entry hkr13
+while executing---line 2223 of file natbib.bst
+Name 1 in "M. Herlihy, D. Kozlov, and S. Rajsbaum" has a comma at the end for entry hkr13
+while executing---line 2223 of file natbib.bst
+Name 1 in "M. Herlihy, D. Kozlov, and S. Rajsbaum" has a comma at the end for entry hkr13
+while executing---line 2367 of file natbib.bst
+You've used 46 entries,
+            2150 wiz_defined-function locations,
+            821 strings with 14804 characters,
+and the built_in function-call counts, 22227 in all, are:
+= -- 2304
+> -- 836
+< -- 45
++ -- 244
+- -- 234
+* -- 1729
+:= -- 3510
+add.period$ -- 139
+call.type$ -- 46
+change.case$ -- 290
+chr.to.int$ -- 44
+cite$ -- 46
+duplicate$ -- 1072
+empty$ -- 1682
+format.name$ -- 316
+if$ -- 4779
+int.to.chr$ -- 3
+int.to.str$ -- 0
+missing$ -- 50
+newline$ -- 235
+num.names$ -- 138
+pop$ -- 424
+preamble$ -- 2
+purify$ -- 294
+quote$ -- 0
+skip$ -- 753
+stack$ -- 0
+substring$ -- 1612
+swap$ -- 329
+text.length$ -- 23
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 268
+warning$ -- 0
+while$ -- 184
+width$ -- 0
+write$ -- 596
+(There were 3 error messages)

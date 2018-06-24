@@ -1,0 +1,59 @@
+\chapter{Conclusion}
+\label{chap:Conclusion}
+
+\section{Summary}
+
+
+In this thesis, we studied synchronous and asynchronous runtime verification of 
+distributed systems and presented distributed monitoring algorithms 
+for this purpose, which allow three-valued LTL monitoring. In particular,
+
+\begin{itemize}
+
+\item we proposed a synchronous monitoring algorithm that copes with $f$ crash 
+failures in a distributed setting. The algorithm solves the synchronous 
+monitoring problem in $f+1$ rounds of communication, where at each round each 
+local monitor broadcasts a message, receives messages from other monitors, and 
+performs local computation based on the received messages and computes a message 
+to be sent in the subsequent round. We proposed an automata-based algorithm 
+where each local monitor's message is a set of monitor states that are reachable 
+from the current monitor state (according to the input automaton) by the set of 
+possible global states from viewpoint of that local monitor. Therefore our 
+algorithm reduces the message size overhead from $|\AP|$ to $\log(m_\monstate)$ 
+where $m_\monstate$ is the number of outgoing transitions from the current 
+monitor state $\monstate$. We showed that the input automaton (that is employed 
+in each monitor's algorithm) must satisfy the following condition:
+$$\forall \monstate \in Q.~ |\intersection| = 1$$ where $Q$ is the set of all 
+monitor states in the input automaton, and $\intersection$ denotes the 
+intersection of all verdict sets emitted by local monitors. Therefore we 
+introduced an algorithm to construct an \Exltl~that satisfies the aforementioned 
+condition.
+
+\item We proposed an algorithm for distributed crash-resilient asynchronous RV that consistently monitors the system under inspection without any communication between monitors. Each local monitor emits a verdict set solely based on its own partial observation, and the intersection of the verdict sets will be the same as the verdict computed by a centralized monitor that has full view of the system. 
+
+\end{itemize}
+
+
+\section{Future Work}
+
+Some open problems for further research are as follows:
+
+\begin{itemize}
+
+\item In our framework the fault model was crash failure, i.e., the monitors can only fail by crashing. From a more practical perspective, it would be interesting to address more severe, e.g., Byzantine failures.
+
+\item In the asynchronous monitoring, although we assumed the monitors are 
+asynchronous wait-free processes, however, it was supposed that the global state 
+of the system changes synchronously, i.e., all monitors observe the same 
+global state. We can relax the timing model so that monitors observe, 
+communicate, and emit verdicts between any two global states. 
+
+\item Our results in the decentralized asynchronous monitoring can 
+theoretically be transformed to more practical refinements such as message 
+passing frameworks.
+
+\item It would of course be interesting to extend our results to the case where 
+the input to the monitors is a sequence of global states and each monitor 
+produces a sequence of verdict sets, one per each global state. 
+
+\end{itemize}

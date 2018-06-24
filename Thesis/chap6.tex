@@ -1,0 +1,277 @@
+\chapter{Alternation Number for \LTL Formula}
+
+
+\section{The Alternation Number: Previous Work}
+
+\section{Calculating the Alternation Number for \LTL Formula}
+\label{sec:AN}
+
+
+\subsection{Alternation Number for $\varphi_1 \, \cup \, \varphi_2$}
+
+\begin{definition}
+
+ Let  $\varphi_1$ and $\varphi_2$ be $LTL$ formulas and $\alpha = 
+\alpha_0\alpha_1\cdots \alpha_{n}$ be a finite word.\\
+
+$   [ \alpha \models_F \varphi_1 \, \cup \, \varphi_2] =  \left\{ \begin{array}{rcl} \top & \mbox{if}
+         & \exists k \in [0,n] \, : \, [\alpha_k \models_F \varphi_2] = \top\, \wedge \, \\& \mbox{} & \mbox{} \forall l \in [0,k] \, : \, [\alpha_l \models_F \varphi_1] = \top  \\ \bot  & \mbox{otherwise} \end{array}\right. $ 
+
+\end{definition}
+~~~
+
+%\begin{theorem}
+
+
+%$  \left. 
+%\begin{cases}
+%\text{if} ~ AN(\varphi_2) = 0 & ~~~~  AN(\varphi_1 \, \cup \, \varphi_2) = 1  \\ 
+%\text{if} ~ AN(\varphi_2) \geq 1 & ~~~~  AN(\varphi_1 \, \cup \, \varphi_2) \leq \infty \\
+%\text{if} ~  AN(\varphi_2) \geq 1 ~ \text{and} ~ \varphi_2  ~ \text{is a co-safety property} & ~~~~ AN(\varphi_1 \, \cup \, varphi_2) = AN(\varphi_2)\\
+%\text{if} ~  AN(\varphi_2) \geq 1 ~ \text{and} ~ \varphi_2  ~ \text{is a safety property} & ~~~~ AN(\varphi_1 \, \cup \, \varphi_2) \leq \infty\\
+%\end{cases}\right. $
+
+%\end{theorem}
+
+
+\begin{lemma}
+
+If $\varphi$ is a safety formula, then its maximum alternating sequence ends with an illegal state. 
+
+\end{lemma}
+
+\subparagraph{Proof}
+The proof is by contradiction. Let $\alpha = s_0s_1s_2 \cdots s_{n-1} s_n $ be the maximum alternating sequence for safety property $\varphi$. Suppose it ends with a legal state, i.e., $[s_0s_1s_2 \cdots s_{n-1} s_n \models_F \varphi] = \top$. Then it follows that $[s_0s_1s_2 \cdots s_{n-1} \models_F \varphi] = \bot$. We can employ the infinite trace $\alpha = s_0 s_1 s_2 \cdots s_{n-1} s_{n-1} s_{n-1} \cdots$ as a counter example which does not satisfy the safety formula $\varphi$, however, there is no bad prefix for it; since state $s_n$ can be added to any prefix of $\alpha$ to turn it to a legal trace.  
+
+\begin{lemma}
+
+If $\varphi$ is a co-safety formula, then its maximum alternating sequence ends with a legal state. 
+
+\end{lemma}
+
+\subparagraph{Proof}
+The proof is similar to lemma 1. Let $\alpha = s_0s_1s_2 \cdots s_{n-1} s_n $ be the maximum alternating sequence for co-safety property $\varphi$. Suppose it ends with an illegal state, i.e., $[s_0s_1s_2 \cdots s_{n-1} s_n \models_F \varphi] = \bot$. Then it follows that $[s_0s_1s_2 \cdots s_{n-1} s_n \models_F \varphi] = \top$. \\
+We can employ the infinite trace $\alpha = s_0 s_1 s_2 \cdots s_{n-1} s_{n-1} s_{n-1} \cdots$ as a counter example which satisfies the co-safety formula $\varphi$, however, there is no good prefix for it; since state $s_n$ can be added to any prefix of $\alpha$ to turn it to an illegal trace.  \\
+
+
+
+
+\begin{theorem}
+
+If $\varphi$ is a safety or co-safety formula, then $AN(\varphi) \leq 1$
+
+\end{theorem} 
+
+\subparagraph{Proof}
+
+We prove this theorem by contradiction. First, suppose $\varphi$ is a safety formula and its alternation number is greater than 1, e.g., $AN(\varphi) = 2$, and let $\alpha = s_0 s_1 s_2$ represent the maximum alternating trace for $\varphi$.  Since $AN(\varphi) = 2$ and considering lemma 1, there is only one possible scenario for alternation of $\varphi$ over $\alpha$ which is as follows,\\ 
+
+
+\begin{center}
+$\left.
+\begin{cases}
+[s_0 \models_F \varphi] = \bot_p\\
+[s_0 s_1 \models_F \varphi] = \top_p\\
+[s_0 s_1 s_2 \models_F \varphi] = \bot \\
+\end{cases}
+\right.
+$
+\end{center}
+
+We observe that an infinite trace can be defined as $ \alpha = s_0 s_0 s_0 \cdots $ which does not satisfy the safety formula $\varphi$, however, there is no bad prefix for it. Because any prefix of $\alpha$ can be extended to state $s_1$ where $\varphi$ is satisfied. This contradicts with our assumption of $\varphi$ being a safety property and the proof is complete. 
+
+Now suppose $\varphi$ is co-safety formula $AN(\varphi) \geq 1$, i.e., $AN(\varphi) = 2$. Let $\alpha = s_0 s_1 s_2$ be the maximum alternating trace for $\varphi$. Based on lemma 2, the only possible alternation of $\varphi$ over $\alpha$ is as follows,
+
+\begin{center}
+$\left.
+\begin{cases}
+[s_0 \models_F \varphi] = \top_p\\
+[s_0 s_1 \models_F \varphi] = \bot_p\\
+[s_0 s_1 s_2 \models_F \varphi] = \top \\
+\end{cases}
+\right.
+$
+\end{center}
+
+Then, an infinite trace $ \alpha = s_0 s_0 s_0 \cdots $ can be defined, which satisfies co-safety formula $\varphi$ but it does not have a good prefix, since any prefix of $\alpha$ can be extended to state $s_1$ which satisfies $\varphi$. This is a contradiction as we assumed $\varphi$ is a co-safety formula. Thus, the proof is complete.
+
+
+~\\
+
+
+\begin{theorem}
+
+$ 
+% AN(\varphi_1 \, \cup \, \varphi_2) =
+ \left. 
+\begin{cases} 
+ \text{if} ~ AN(\varphi_2) = 0 ~  \text{or} ~ \varphi_2 ~ \text{is a co-safety property,} & AN(\varphi_1 \, \cup \, \varphi_2) \leq 1. \\ 
+ \text{Otherwise,} \\
+\text{if} ~ \varphi_1~  \text{and}~ \varphi_2 ~ \text{do not share variables} \\
+ \text{and} ~ \varphi_1 \neq \text{False,}  & AN(\varphi_1 \, \cup \, \varphi_2) = \infty~ \text{or}~ AN(\varphi_2)\\
+\end{cases}\right. $  \\  \\
+  
+%\textbf{Note:} $(\leq)$ becomes $(=)$ if $\varphi_1$ and $\varphi_2$ do not share variables.
+
+\end{theorem}
+
+
+
+\subparagraph{Proof}
+
+%\subsection*{}
+
+We prove the first statement of the theorem by contradiction. Suppose $AN(\varphi_2) = 0$ and $AN(\varphi_1 \, \cup \, \varphi_2)$ can be greater than 1, e.g., $AN(\varphi_1 \, \cup \, \varphi_2) = 2$. \\ 
+Without loss of generality, let $\alpha = s_0 s_1 s_2$ represent the finite trace over which we verify the correctness of the formula. Since $AN(\varphi_1 \, \cup \, \varphi_2) = 2$, there can be two possible scenarios.\\
+\textit{Note} : Throughout this proof we label a state $s_i$ by $\top$ if the formula is satisfied by the finite trace starting at $s_i$ and we label it by $\bot$ otherwise. 
+
+\subsection*{}
+
+\textit{Scenario 1.} \\
+
+First scenario is as follows, 
+~~~
+ \begin{center}
+ $
+  \left.
+  \begin{cases}
+    [s_0 \, \models_F \, \varphi_1 \, \cup \, \varphi_2] = \top \\
+    [s_0 s_1 \, \models_F \, \varphi_1 \, \cup \, \varphi_2] = \bot \\
+     [s_0 s_1 s_2\, \models_F \, \varphi_1 \, \cup \, \varphi_2] = \top \\
+  \end{cases}
+  \right.
+$
+\end{center}
+
+~~
+%\[
+ %    \left\{\begin{array}{lr}
+ %       x(n), & \text{for } 0\leq n\leq 1\\
+  %      x(n-1), & \text{for } 0\leq n\leq 1\\
+   %     x(n-1), & \text{for } 0\leq n\leq 1
+   %     \end{array}\right.
+ % \]
+  
+$s_0$ holds only if $[s_0 \, \models_F \, \varphi_2] = \top$ (in general, any finite trace may satisfy $\varphi_1 \, \cup \, \varphi_2$ only if it satisfies $\varphi_2$. This is directly implied by Definition 1).  Also, $[s_0 s_1 \, \models_F \,  \varphi_1 \, \cup \, \varphi_2] = \bot$ holds only if $[s_0 s_1 \, \models_F \, \varphi_2] = \bot$. Hence, we have  
+~~~
+ \begin{center}
+$
+  \left.
+  \begin{cases}
+    [s_0 \, \models_F \, \varphi_2] = \top \\
+    [s_0 s_1 \, \models_F \, \varphi_2] = \bot \\
+  \end{cases}
+  \right. 
+\Longrightarrow     ~~~   AN(\varphi_2) > 0
+$
+\end{center}
+  
+  Which contradicts with our assumption $AN(\varphi_2) = 0$. This means that if the alternation number of $\varphi_2$ is zero, the valuation of $\varphi_1 \, \cup \, \varphi_2$ can never alter from True to False over any finite trace. 
+
+
+\subsection*{}
+
+\textit{Scenario 2}
+
+The second scenario is as follows,
+~~~
+ \begin{center}
+ 
+$  \left.
+  \begin{cases}
+    [s_0 \, \models_F \, \varphi_1 \, \cup \, \varphi_2] = \bot \\
+    [s_0 s_1 \, \models_F \, \varphi_1 \, \cup \, \varphi_2] = \top \\
+    [s_0 s_1 s_2\, \models_F \, \varphi_1 \, \cup \, \varphi_2] = \bot \\
+  \end{cases}
+  \right.
+  $
+\end{center}
+~~~ \\
+ $[s_0 \, \models_F \, \varphi_1 \, \cup \, \varphi_2] = \bot$ leads to $ [s_0 \, \models_F \, \varphi_2] = \bot $. 
+ $[s_0 s_1 \, \models_F \, \varphi_1 \, \cup \, \varphi_2] = \top$ can hold only if $ [s_1 \, \models_F \, \varphi_2] = \top $ and $ [s_0 \, \models_F \, \varphi_1] = \top$. 
+Also, from $ [s_0 s_1 \, \models_F \, \varphi_1 \, \cup \, \varphi_2] = \top$ and $ [s_0 s_1 s_2\, \models_F \, \varphi_1 \, \cup \, \varphi_2] = \bot $ we can conclude that $[s_1 s_2\, \models_F \, \varphi_2] = \bot$. Because if $[s_1 s_2\, \models_F \, \varphi_2] = \top$, then $s_0s_1s_2$ cannot violate $\varphi_1 \, \cup \, \varphi_2$, since $\varphi_2$ is True at $s_1$ and $\varphi_1$ holds at $s_0$. Thus, we have
+
+ \begin{center}
+$
+  \left.
+  \begin{cases}
+    [s_1 \, \models_F \, \varphi_2] = \top \\
+    [s_1 s_2 \, \models_F \, \varphi_2] = \bot \\
+  \end{cases}
+  \right. 
+\Longrightarrow     ~~~   AN(\varphi_2) > 0
+$
+\end{center}
+
+
+Which again contradicts with our assumption $AN(\varphi_2) = 0$. Now the proof for the first statement of Theorem 1 is complete. \\ \\ 
+
+
+The second statement claims that if $\varphi_2$ is a co-safety property, then the alternation number for $ \varphi_1 \, \cup \, \varphi_2$ is equal to 1. If $\varphi_2$ is a co-safety property then based on lemma 2 and theorem 1, its legality can alternate only once and only from illegal to legal state over any finite/infinite trace. 
+Now let us verify the maximum number of times that the legality of $ \varphi_1 \, \cup \, \varphi_2$ may alternate over an infinite trace. As mentioned before, the maximum alternation for $ \varphi_1 \, \cup \, \varphi_2$ can be obtained over a trace where $\varphi_1$ holds in all states and the valuation of $ \varphi_1 \, \cup \, \varphi_2$ alternates based on the alternation of $\varphi_2$ only. In this case, since $\varphi_2$ is a co-safety property, its valuation can only change from False to True and once it becomes True it can never become False over any infinite trace. Thus, the valuation of $ \varphi_1 \, \cup \, \varphi_2$ can also alternate once from False to True. 
+
+Our assertion is, that if $\varphi_2$ is not co-safety and its alternation number is greater than zero, then the alternation number for $ \varphi_1 \, \cup \, \varphi_2$ could be infinity. Because in this case, there most be at least one alternation from True to False for $\varphi_2$ over its maximum alternating trace. Thus, there are states $s_0$ and $s_1$ such that $\varphi_2$ holds in $s_0$ and it does not hold in $s_1$.  It is straightforward to verify that $ \varphi_1 \, \cup \, \varphi_2$ may alternate infinitely many times over the following infinite trace:
+
+\begin{center}
+$\alpha = s_0s_1s_0s_1s_0s_1 \cdots$
+\end{center}
+
+And the alternation is as follows,
+
+ \begin{center}
+$
+  \left.
+  \begin{cases}
+    [s_0 \, \models_F \, \varphi_1 \, \cup \, \varphi_2] = \top \\
+    [s_0 s_1 \, \models_F \, \varphi_1 \, \cup \, \varphi_2] = \bot \\
+    [s_0 s_1 s_0 \, \models_F \, \varphi_1 \, \cup \, \varphi_2] = \top \\
+    [s_0 s_1 s_0 s_1 \, \models_F \, \varphi_1 \, \cup \, \varphi_2] = \bot \\
+    \vdots
+  \end{cases}
+  \right. 
+$
+\end{center}
+
+The first two rows can be directly obtained from the assumptions $[s_0 \, \models_F \, \varphi_2] = \top$ and $[s_0s_1 \, 
+\models_F \, \varphi_2] = \bot$. 
+
+$[s_0 s_1 s_0 \, \models_F \, \varphi_1 \, \cup \, \varphi_2] = \top$ holds, because $\varphi_2$ is True in the last state, $s_0$, and $\varphi_1$ holds over the preceding states. 
+
+(I need to edit this part) Let us verify $[s_0 s_1 s_0 s_1 \, \models_F \, \varphi_1 \, \cup \, \varphi_2] = \bot$. Here we need to evaluate three possible scenarios. \\
+Scenario 1: $[s_0 s_1 s_0 \, \models_F \, \varphi_2] = \top_p$, in this case the alternation number for $\varphi_2$ is infinity over the infinite trace $\alpha = s_0s_1s_0s_1s_0s_1 \cdots$. Hence, the alternation number for $ \varphi_1 \, \cup \, \varphi_2$  is also infinity. \\ Scenario 2: $[s_0 s_1 s_0 \, \models_F \, \varphi_2] = \bot$, in this case the alternation number for $ \varphi_1 \, \cup \, \varphi_2$ is again infinity. \\ Scenario 3: $[s_0 s_1 s_0 \, \models_F \, \varphi_2] = \top$, in this case the alternation number for $ \varphi_1 \, \cup \, \varphi_2$ is 2. \\ Scenario 4: $[s_0 s_1 s_0 \, \models_F \, \varphi_2] = \bot_p$ and $[s_0 s_1 s_0 s_1 \, \models_F \, \varphi_2] = \top$, in this case the alternation number for $ \varphi_1 \, \cup \, \varphi_2$ is 2.
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Alternation Number for $\varphi_1 \, \wedge \, \varphi_2$  and $\varphi_1 \, \vee \, \varphi_2$}
+
+
+
+\begin{theorem}
+
+$
+% AN(\varphi_1 \, \cup \, \varphi_2) =
+ \left. 
+\begin{cases} 
+ AN(\varphi_1 \, \wedge \, \varphi_2) \leq AN(\varphi_1) + AN(\varphi_2) \\ 
+ AN(\varphi_1 \, \vee \, \varphi_2) \leq AN(\varphi_1) + AN(\varphi_2)\\
+\end{cases}\right. $  \\  \\
+
+\end{theorem}
+
+\subparagraph{Proof}
+
+The maximum alternation number for $\varphi_1 \, \wedge \, \varphi_2$  can be obtained on a finite trace where one of the formulas, e.g., $\varphi_1$, may stay True while the other formula, e.g, $\varphi_2$, alternates $AN(\varphi_2)$ times. Then $\varphi_2$ can stay True while $\varphi_1$ alternates $AN(\varphi_1)$ times. Hence, the maximum alternation number for $\varphi_1 \, \wedge \, \varphi_2$ is equal to $AN(\varphi_1) + AN(\varphi_2)$. 
+Since $\varphi_1 \, \vee \, \varphi_2$ is logically equivalent to $ - ( -\varphi_1 \, \wedge \, -\varphi_2)$, we can use the similar argue as for $\varphi_1 \, \wedge \, \varphi_2$, and hence, the upper bound for $AN(\varphi_1 \, \vee \, \varphi_2) $ is, too, $AN(\varphi_1) + AN(\varphi_2)$.
+
+
+
+
+

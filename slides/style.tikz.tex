@@ -1,0 +1,26 @@
+\tikzset{%
+  every state/.style={
+    draw=maincolor,
+    thick,
+    fill=maincolor!18,
+    inner sep=.8ex,
+    minimum size=0pt
+  },
+  active/.style={
+    draw=alertedcolor,
+    fill=alertedcolor!18
+  },
+  bool/.style={
+    state,
+    shape aspect=2,
+    shape=diamond
+  },
+  shorten >=1pt,
+  initial text={},
+  every initial by arrow/.style={thick},
+  frame/.style={
+    line width=.5ex,
+    rounded corners=1ex,
+    inner sep=1ex
+  }
+}

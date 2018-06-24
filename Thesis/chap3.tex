@@ -1,0 +1,308 @@
+\chapter{Preliminaries}
+\label{chap:Preliminaries}
+
+In this chapter, we review the preliminary concepts.
+
+\section{Linear Temporal Logics}
+\label{sec:pre}
+
+Let $\AP$ be a set of {\em atomic propositions} and $\alphabet = 2^{\AP}$ be the 
+{\em alphabet}. We call each element of $\alphabet$ an {\em state}. A {\em 
+trace} is a sequence $ \state_0\state_1\cdots$, where  $\state_i\in \alphabet$ 
+for every $i\geq 0$. The set of all finite (resp., infinite) traces over 
+$\alphabet$ is denoted by $\alphabet^*$ (resp., $\alphabet^\omega$). Throughout 
+the thesis, we denote finite traces by the letter $\fintrace$, and infinite 
+traces by the  letter $\inftrace$. We denote the empty trace by $\emptyword$. 
+Finally, For a finite trace $\fintrace = \state_0\state_1\cdots \state_n$, by 
+$\fintrace^i$ we mean trace suffix $\state_i\state_{i+1}\cdots\state_n$ of 
+$\fintrace$.
+
+\subparagraph{LTL Syntax.} Formulas in {\em linear temporal logic} 
+(\LTL)~\cite{mp79} are defined using the following grammar:
+$$\varphi ::=  p \; \mid \; \neg\varphi \; \mid \; \varphi\vee\varphi \; \mid 
+\; \X\varphi \; \mid \; \varphi \, \U \, \varphi$$
+where $p   \in \AP$ is an atomic proposition, $\U$ is the ``until'' operator, 
+and $\X$ is the ``next operator''. Additionally, we allow the following 
+operators as syntactic sugar, each of which is defined in terms of the above 
+ones: $ \tru = p \vee  \neg p, \fals = \neg \tru, \varphi_1 \wedge \varphi_2  = 
+\neg (\neg \varphi_1 \vee \neg \varphi_2), \textbf{F} \varphi = \tru 
+\, \textbf{U} \, \varphi $,and $\textbf{G} \varphi  = \neg \F (\neg \varphi)$. 
+Formulas without temporal operators are called state formulas.
+
+\subparagraph{LTL Semantics.}  The semantics of \LTL is defined w.r.t. infinite 
+traces. Let $\inftrace = s_0s_1\cdots$ be an infinite trace in 
+$\alphabet^\omega$, $i \geq 0$, and $\models$ denote the {\em satisfaction} 
+relation. The semantics of 
+\LTL is defined as follows:
+
+\begin{tabbing}
+\hspace{5mm} \=  $\inftrace, i \models p$ \hspace*{2cm} \= iff \hspace*{.5cm} 
+\= $p \in \state_i$ \\
+\> $\inftrace, i \models \neg \varphi$ \> iff \> $\inftrace,i \not \models 
+\varphi$ \\
+\> $\inftrace, i \models \varphi_1\vee\varphi_2$ \> iff \> $\inftrace, i 
+\models 
+\varphi_1 \; \text{ or } \; \inftrace, i \models \varphi_2$ \\
+\> $\inftrace, i \models \X \varphi$ \> iff \> $\inftrace, i+1 \models \varphi$ 
+\\
+\> $\inftrace, i \models \varphi_1 \, \U \, \varphi_2$  \> iff \> $\exists k 
+\geq 
+i : \inftrace, k \models \varphi_2 \; \text{ and } \; \forall j \in [i, k): 
+\inftrace, j \models \varphi_1$.
+\end{tabbing}
+Also, $\inftrace \models \varphi$ holds \; iff \; $\inftrace, 0 
+\models \varphi$ holds. For example, consider the following 
+\emph{request/acknowledgment} \LTL formula:
+$$\varphi_{ra} = \G\Big(\neg a \wedge \neg r\Big) \; \vee \, \Big((\neg a \, \U 
+\, r) \, \wedge \, \F a\Big)$$
+This formula requires that (1) if a request is emitted (i.e., $r=\tru$), 
+then it should eventually be acknowledged (i.e., $a=\tru$), and (2) an 
+acknowledgment happens only in response to a request.
+
+\section{LTL for Runtime Verification}
+
+\subsection{Finite LTL (FLTL)}
+
+The semantics of \LTL is defined over infinite traces. In the context of 
+runtime verification, since a system only generates finite traces, the standard 
+\LTL semantics does not seem to be the appropriate formalism. Finite \LTL 
+(denoted \FLTL~\cite{mp95}) allows us to reason about finite traces for 
+verifying properties at run time. The syntax of \FLTL is identical to that of 
+\LTL and the semantics is based on the truth values 
+$\mathbb{B}_2=\{\top,\bot\}$. The semantics of \FLTL for atomic propositions and 
+Boolean operators are identical to those of \LTL. We now recall the semantics of 
+\FLTL for the temporal operators. Let $\varphi$, $\varphi_1$, and $\varphi_2$ be 
+\LTL formulas, $\fintrace = \state_0\state_1 \cdots \state_{n}$ be a non-empty 
+finite trace, and $\models_F$ denote satisfaction in~\FLTL. We have
+
+\[
+\left[\fintrace \models_F \X\, \varphi\right]  = 
+\begin{cases}
+	[\fintrace^1 \models_F \varphi] & \text{if}\; 
+\fintrace^1 \neq \emptyword \\
+	\bot & \text{\normalfont otherwise}
+\end{cases}
+\]
+and
+\[
+\left[\fintrace \models_F \varphi_1 \,\U\, \varphi_2\right] 
+= 
+\begin{cases}
+\top & \text{if}\; \exists k \in [0,n]: ([\fintrace^k 
+\models_F \varphi_2] = \top) \;\wedge \; (\forall \ell \in [0,k), 
+[\fintrace^\ell \models_F \varphi_1] = \top)\\
+	\bot & \text{\normalfont otherwise}
+\end{cases}
+\]
+
+%\begin{definition} [\FLTL semantics]
+%Let $\varphi$, $\varphi_1$, and $\varphi_2$ be \LTL formulas, and $\fintrace = 
+%\state_0\state_1 \cdots \state_{n}$ be a finite trace.
+%
+%\begin{align*}
+%\left[\fintrace \models_{\text{\normalfont F}} \X\, \varphi\right] &= 
+%\begin{cases}
+%	[\fintrace^1 \models_{\text{\normalfont F}} \varphi] & \text{if }~~~~ 
+%\fintrace^1 \neq \emptyword \\
+%	\bot & \text{\normalfont otherwise}
+%\end{cases}\\ \\
+%\left[\fintrace \models_{\text{\normalfont F}} \varphi_1 \,\U\, \varphi_2\right] 
+%&= 
+%\begin{cases}
+%\top & \text{if }~~~~\exists k \in [0,n]: [\fintrace^k 
+%\models_{\text{\normalfont F}} \varphi_2] = \top \;\;\wedge \\
+%	&~~~~~~~\forall l \in [0,k) : [\fintrace^l \models_{\text{\normalfont 
+%F}} \varphi_1] = 
+%\top\\
+%	\bot & \text{\normalfont otherwise}
+%\end{cases}
+%\end{align*}
+%\qed
+%\end{definition}
+
+
+
+
+
+To illustrate the difference between \LTL and \FLTL, let $\varphi = \F p$ and  
+$\fintrace=\state_0\state_1\cdots \state_{n}$. If $p \in \state_i$ for some $i 
+\in [0, n]$, then we have $[\fintrace \models_F \varphi] = \top$. Otherwise, 
+$[\fintrace \models_F \varphi] = \bot$, and this holds even if the program under 
+inspection extends $\fintrace$ in the future to a state where $p$ becomes true. 
+
+% \begin{definition} [\FLTL Monitor]
+% \label{def:monitorf}
+% Let $\varphi$ be an \LTL formula. The \FLTL~{\em monitor} of $\varphi$ is 
+% the unique deterministic finite state machine $\monitor^{\varphi}_F = 
+% (\alphabet, Q, q_0, \delta, \lambda)$, where $Q$ is a set of states, 
+% $q_0$ is the initial state, $\delta \subseteq Q \times \alphabet \times Q$ is 
+% the transition relation, and $\lambda: Q \rightarrow \mathbb{B}_2$ is a 
+% function such that:
+% 
+%  \begin{equation*}
+% \lambda(\delta(q_0, u)) = 
+% \begin{cases} \left[u \models_F \varphi\right] & \text{if } 
+% u \neq \epsilon \\
+% 
+% \tru & \text{if } u = \epsilon
+% \end{cases}
+%  \end{equation*}
+% for every finite word $u \in \alphabet^*$.
+%  \qed
+%  \end{definition}
+% \noindent In~\cite{mp95}, the authors propose an algorithm that takes as 
+% input an \LTL formula and constructs as output an \FLTL monitor. 
+
+\subsection{3-valued LTL}
+\label{sec:ltl3}
+
+As illustrated above, for a finite trace $\fintrace$, \FLTL ignores the 
+possible future extensions of $\fintrace$, when evaluating a formula. The 
+3-valued semantics of \LTL (denoted \LTLtri~\cite{bls11}) evaluates \LTL 
+formulas for finite traces with an eye on possible future extensions. In 
+\LTLtri, the set of truth values is $\mathbb{B}_3=\{\top,\bot, ?\}$, where 
+`$\top$' (resp., `$\bot$') denotes that the formula is permanently satisfied 
+(resp., violated), no matter how the 
+current execution extends, and `?' denotes an unknown \truthvalue; i.e., there exist 
+an extension that can falsify the formula, and another extension that can 
+truthify the formula.
+%
+% \begin{definition}[\LTLtri semantics]
+% \label{def:ltl3}
+
+Now, let $\fintrace \in \alphabet^{*}$ be a non-empty finite trace. The truth 
+value 
+of an \LTLtri formula $\varphi$ with respect to $\fintrace$, denoted by 
+$[\fintrace \models_3 \varphi]$, is defined as follows:
+ \begin{equation*}
+ 	\left[\fintrace \models_3 \varphi \right] = 
+ 		\begin{cases} \top & \text{if }~~~~~\forall \inftrace \in 
+\alphabet^\omega : \fintrace\inftrace \models \varphi\\
+ 		\bot & \text{if }~~~~~\forall \inftrace \in \alphabet^\omega : 
+\fintrace\inftrace \not \models \varphi\\
+ 		? & \text{otherwise}.
+ 	\end{cases}
+ \end{equation*}
+% \qed
+% \end{definition} 
+
+
+The \LTLtri~{\em monitor} of a formula $\varphi$ is the unique deterministic 
+finite state machine $\monitor^{\varphi}_3 = \{ \alphabet, Q, q_0, \delta, 
+\lambda \}$, where $Q$ is a set of states, $q_0$ is the initial state, $\delta: Q 
+\times \alphabet \to Q$ is the transition function, and $\lambda: Q 
+\rightarrow \mathbb{B}_3$, is a function such that:
+\[
+\lambda(\delta(q_0, \fintrace)) = \left[\fintrace\models_3 \varphi\right]
+\]
+for every finite trace $\fintrace  \in \alphabet^*$.
+%\qed
+% \end{definition}
+%
+In~\cite{bls11}, the authors introduce an algorithm that takes as input an \LTL 
+formula and constructs as output an \LTLtri monitor. For example, 
+Fig. 3.1 shows the \LTLtri monitor for the \LTL formula $\varphi = a \, \U \, b$.
+
+
+
+
+ \begin{figure}[H]
+     \centering
+  \input{figs/aub-ltl3}
+   \caption{\LTLtri monitor for $\varphi = a \, \U \, b$.}
+    \end{figure}
+   \label{fig:LTL3}
+%\todo{Place this in a figure environment.}
+
+%\section{Decentralized Synchronous Monitoring }
+%\label{sec:synch}
+
+
+
+\subsection{RV-LTL}
+
+
+\RVLTL \cite{bls10}, which we will denote in this thesis by \LTLfour, refines 
+the truth value ? into $\bot_p$ and~$\top_p$. That is, 
+$\mathbb{B}_4=\{\top,\TT,\FT,\bot\}$. More specifically, evaluation of 
+a formula in \LTLfour agrees with \LTLtri if the verdict is $\bot$ or 
+$\top$. Otherwise, (i.e., when the verdict in \LTLtri is ?), \LTLfour 
+utilizes \FLTL to compute a more refined truth value.
+
+Now, let $\fintrace \in \alphabet^{*}$ be a finite trace. The truth value of an 
+\LTLfour formula $\varphi$ with respect to $\fintrace$, denoted by $[\fintrace 
+\models_4 \varphi]$, is defined as follows:
+\begin{equation*}
+ 	\left[\fintrace \models_{4} \varphi \right] = 
+ 		\begin{cases} \top & \text{if }~~~~~[\fintrace \models_3 
+\varphi] = \top\\
+ 		\bot & \text{if }~~~~~[\fintrace \models_3 \varphi] = 
+\bot\\
+ 		\TT & \text{if }~~~~~[\fintrace \models_3 \varphi] =? \; \wedge 
+\; [\fintrace \models_F \varphi] = \top\\ 
+
+ 		\FT & \text{if }~~~~~[\fintrace \models_3 \varphi] =? \; \wedge 
+\; [\fintrace \models_F \varphi] = \bot\\ 
+ 	\end{cases}
+ \end{equation*}
+
+
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+                    semithick, initial text={}, initial where=right]
+  \tikzstyle{every state}=[scale=0.65, every node/.style={scale=0.65}]
+
+  \node[initial,state] (A)                {$\top_p$};
+  \node[state]         (B) [left of  = A] {$\bot_p$};
+  \node[state, accepting]         (D) [below of = B] {$\top$};
+  \node[state, accepting]         (C) [below of = A] {$\bot$};
+
+  \path (A) edge              node {$\neg a \wedge r$} (B)
+            edge              node {$a \wedge \neg r$} (C)
+            edge [loop above] node {$\neg a \wedge \neg r$} (A)
+            edge              node {$a\wedge r$} (D)
+        (B) edge [loop above] node {$\neg a \wedge r$} (B)
+            edge              node {$a$} (D)
+        (C) edge [loop below] node {$\tru$} (D)
+        (D) edge [loop below] node {$\tru$} (D);
+
+
+\end{tikzpicture}     \caption{\LTLfour monitor of $\varphi_{ra}$.}
+\end{figure}
+  \label{fig:RVltl}
+
+
+
+
+
+ 
+ 
+The \LTLfour~{\em monitor} of a formula $\varphi$ is the unique deterministic 
+finite state machine $\monitor^{\varphi}_4 = \{ \alphabet, Q, q_0, \delta, 
+\lambda\}$, where $Q$ is a set of states, $q_0$ is the initial state, $\delta: Q 
+\times \alphabet \to Q$ is the transition function, and $\lambda: Q 
+\rightarrow \mathbb{B}_4$, is a function 
+such that:
+\[
+\lambda(\delta(q_0, \fintrace)) = \left[\fintrace\models_4 \varphi\right]
+\]
+for every finite trace $\fintrace  \in \alphabet^*$.
+%\qed
+% \end{definition}
+%
+In \cite{bls11} , the authors introduce an algorithm that takes as input an \LTL 
+formula and constructs as output an \LTLfour monitor. For example, 
+Fig. 3.2 shows the \LTLfour monitor for the 
+request/acknowledgement formula 
+$\varphi_{ra} = \G(\neg a \wedge \neg r) \; \vee \, [(\neg a \, \U \, r) 
+\,\wedge \, \F a]$.
+
+
+
+
+
+
+
+
